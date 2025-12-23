@@ -4,22 +4,27 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import java.net.URISyntaxException
-
-// 👇 QUAN TRỌNG: Chỉ giữ 2 dòng import này của Socket.IO
-// Tuyệt đối KHÔNG import java.net.Socket hay kotlinx.coroutines.Dispatchers.IO
 import io.socket.client.IO
 import io.socket.client.Socket
+import kotlinx.coroutines.launch
+import org.json.JSONObject // 👈 Thư viện để đóng gói JSON
 
+// 1. Định nghĩa cấu trúc tin nhắn
+data class ChatMessage(
+    val user: String,
+    val content: String,
+    val isMine: Boolean // Để biết tin này của mình hay của người khác
+)
 
 class ChatViewModel : ViewModel() {
-    // List tin nhắn
-    val messages = mutableStateListOf<String>()
+    // List bây giờ chứa ChatMessage chứ không phải String nữa
+    val messages = mutableStateListOf<ChatMessage>()
+
+    // Tên người dùng (Tạm thời fix cứng, bài sau sẽ cho nhập)
+    private val myName = "User Android"
 
     private var mSocket: Socket? = null
-
-    // ⚠️ Đổi IP này thành IP máy tính của bạn
+    // ⚠️ Nhớ check lại IP của bạn nhé
     private val SERVER_URL = "http://192.168.148.167:3000"
 
     init {
@@ -28,62 +33,46 @@ class ChatViewModel : ViewModel() {
 
     private fun connectSocket() {
         try {
-            // Cấu hình Socket
-            val options = IO.Options().apply {
-                forceNew = true
-            }
-
-            // Khởi tạo socket
+            val options = IO.Options().apply { forceNew = true }
             mSocket = IO.socket(SERVER_URL, options)
 
-            // 1. Lắng nghe sự kiện kết nối thành công
             mSocket?.on(Socket.EVENT_CONNECT) {
-                Log.d("SocketIO", "Đã kết nối")
-                addMessage("✅ Đã kết nối tới Server!")
+                // Khi kết nối xong, tự thêm 1 tin báo
+                addMessageToList("System", "✅ Đã vào phòng chat", false)
             }
 
-            // 2. Lắng nghe tin nhắn từ Server
+            // 2. Nhận tin nhắn dạng JSON Object
             mSocket?.on("chat_message") { args ->
                 if (args.isNotEmpty()) {
-                    val msg = args[0].toString()
-                    addMessage(msg)
+                    val data = args[0] as JSONObject
+                    val user = data.getString("user")
+                    val content = data.getString("content")
+
+                    // Logic: Nếu tên người gửi trùng tên mình -> Là tin của mình (isMine = true)
+                    val isMine = (user == myName)
+
+                    addMessageToList(user, content, isMine)
                 }
             }
 
-            // 3. Lắng nghe lỗi kết nối
-            mSocket?.on(Socket.EVENT_CONNECT_ERROR) { args ->
-                val err = if (args.isNotEmpty()) args[0].toString() else "Lỗi không xác định"
-                Log.e("SocketIO", "Lỗi: $err")
-                addMessage("❌ Lỗi kết nối: $err")
-            }
-
-            // Bắt đầu kết nối
             mSocket?.connect()
-
-        } catch (e: URISyntaxException) {
-            e.printStackTrace()
-            addMessage("❌ Lỗi URI: ${e.message}")
         } catch (e: Exception) {
             e.printStackTrace()
-            addMessage("❌ Lỗi Code: ${e.message}")
         }
     }
 
-    // Gửi tin nhắn
-    fun sendMessage(msg: String) {
-        mSocket?.emit("chat_message", msg)
+    // 3. Gửi tin nhắn dạng JSON Object
+    fun sendMessage(content: String) {
+        val jsonObject = JSONObject()
+        jsonObject.put("user", myName)
+        jsonObject.put("content", content)
+
+        mSocket?.emit("chat_message", jsonObject)
     }
 
-    // Helper cập nhật UI
-    private fun addMessage(msg: String) {
+    private fun addMessageToList(user: String, content: String, isMine: Boolean) {
         viewModelScope.launch {
-            messages.add(msg)
+            messages.add(ChatMessage(user, content, isMine))
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        mSocket?.disconnect()
-        mSocket?.off()
     }
 }

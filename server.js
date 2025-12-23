@@ -16,10 +16,12 @@ io.on('connection', (socket) => {
     console.log('Có người kết nối: ' + socket.id);
 
     // Lắng nghe sự kiện chat
-    socket.on('chat_message', (msg) => {
-        console.log('Tin nhắn nhận được: ' + msg);
-        // Gửi lại cho tất cả mọi người
-        io.emit('chat_message', msg);
+    socket.on('chat_message', (data) => {
+        // data bây giờ là một Object: { user: "Huy", content: "Xin chào" }
+        console.log("Tin nhắn mới:", data);
+        
+        // Gửi nguyên cục data này cho tất cả mọi người (bao gồm cả người gửi)
+        io.emit('chat_message', data);
     });
 
     socket.on('disconnect', () => {

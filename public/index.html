@@ -1,45 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Web Chat Client</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Web Chat</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        #messages { list-style-type: none; margin: 0; padding: 0; height: 300px; overflow-y: scroll; border: 1px solid #ccc; margin-bottom: 10px;}
-        #messages li { padding: 5px 10px; }
-        #messages li:nth-child(odd) { background: #eee; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
+        #chat-box { 
+            height: 300px; 
+            overflow-y: scroll; 
+            border: 1px solid #ccc; 
+            padding: 10px; 
+            background: white; 
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .message { margin-bottom: 8px; padding: 8px; border-radius: 5px; display: inline-block; max-width: 80%; }
+        .my-message { background-color: #dcf8c6; float: right; clear: both; }
+        .other-message { background-color: #e5e5ea; float: left; clear: both; }
+        .message-content { font-size: 16px; }
+        .user-name { font-size: 11px; color: #555; margin-bottom: 2px; font-weight: bold; }
+        .clearfix::after { content: ""; clear: both; display: table; }
+        
+        #input-area { display: flex; }
+        #msg-input { flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; margin-left: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h2>User B (Laptop)</h2>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-        <input id="input" autocomplete="off" style="width: 70%; padding: 10px;" /><button style="width: 20%; padding: 10px;">Gửi</button>
-    </form>
+
+    <h2>🌐 Nexus Web Client</h2>
+    <div id="chat-box"></div>
+
+    <div id="input-area">
+        <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()">Gửi</button>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var socket = io(); // Kết nối tới server chính mình
+        const socket = io();
+        
+        // Đặt tên cố định cho Web Client
+        const myName = "User Web";
 
-        var form = document.getElementById('form');
-        var input = document.getElementById('input');
-        var messages = document.getElementById('messages');
+        const chatBox = document.getElementById('chat-box');
+        const input = document.getElementById('msg-input');
 
-        // Gửi tin nhắn
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (input.value) {
-                socket.emit('chat_message', input.value); // Gửi sự kiện 'chat_message'
-                input.value = '';
+        // 1. Nhận tin nhắn (Đã nâng cấp để hiểu Object)
+        socket.on('chat_message', (data) => {
+            console.log("Tin mới:", data);
+            
+            // data bây giờ là { user: "...", content: "..." }
+            // Logic phân biệt tin nhắn của mình vs người khác
+            const isMine = (data.user === myName);
+            displayMessage(data.user, data.content, isMine);
+        });
+
+        // 2. Gửi tin nhắn (Gửi dạng Object thay vì String)
+        function sendMessage() {
+            const msg = input.value;
+            if (msg.trim() !== "") {
+                // Đóng gói thành Object trước khi gửi
+                const messageData = {
+                    user: myName,
+                    content: msg
+                };
+                
+                socket.emit('chat_message', messageData);
+                input.value = "";
             }
-        });
+        }
 
-        // Nhận tin nhắn
-        socket.on('chat_message', function(msg) {
-            var item = document.createElement('li');
-            item.textContent = msg;
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
-        });
+        // Hàm vẽ tin nhắn lên màn hình
+        function displayMessage(user, content, isMine) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "clearfix"; // Fix lỗi float
+
+            const bubble = document.createElement('div');
+            bubble.className = "message " + (isMine ? "my-message" : "other-message");
+            
+            // Nếu không phải tin mình thì hiện tên
+            let nameHtml = "";
+            if (!isMine) {
+                nameHtml = `<div class="user-name">${user}</div>`;
+            }
+
+            bubble.innerHTML = `${nameHtml}<div class="message-content">${content}</div>`;
+            
+            msgDiv.appendChild(bubble);
+            chatBox.appendChild(msgDiv);
+            
+            // Tự cuộn xuống dưới cùng
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
     </script>
 </body>
 </html>

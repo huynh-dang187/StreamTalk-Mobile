@@ -7,28 +7,33 @@ import androidx.lifecycle.viewModelScope
 import io.socket.client.IO
 import io.socket.client.Socket
 import kotlinx.coroutines.launch
-import org.json.JSONObject // 👈 Thư viện để đóng gói JSON
+import org.json.JSONObject
+import java.net.URISyntaxException
 
-// 1. Định nghĩa cấu trúc tin nhắn
+// Dữ liệu tin nhắn
 data class ChatMessage(
     val user: String,
     val content: String,
-    val isMine: Boolean // Để biết tin này của mình hay của người khác
+    val isMine: Boolean
 )
 
 class ChatViewModel : ViewModel() {
-    // List bây giờ chứa ChatMessage chứ không phải String nữa
     val messages = mutableStateListOf<ChatMessage>()
 
-    // Tên người dùng (Tạm thời fix cứng, bài sau sẽ cho nhập)
-    private val myName = "User Android"
+    // 👇 1. SỬA Ở ĐÂY: Không fix cứng tên nữa, để rỗng ban đầu
+    var myName = ""
 
     private var mSocket: Socket? = null
-    // ⚠️ Nhớ check lại IP của bạn nhé
+    // ⚠️ Check lại IP lần cuối nhé
     private val SERVER_URL = "http://192.168.148.167:3000"
 
-    init {
-        connectSocket()
+    // 👇 2. XÓA khối init { connectSocket() } cũ đi
+    // Chúng ta sẽ không kết nối ngay khi mở App nữa
+
+    // 👇 3. THÊM HÀM MỚI: Chỉ kết nối khi người dùng bấm nút "Join"
+    fun joinChat(name: String) {
+        myName = name // Lưu tên người dùng nhập vào
+        connectSocket() // Bắt đầu kết nối
     }
 
     private fun connectSocket() {
@@ -37,22 +42,24 @@ class ChatViewModel : ViewModel() {
             mSocket = IO.socket(SERVER_URL, options)
 
             mSocket?.on(Socket.EVENT_CONNECT) {
-                // Khi kết nối xong, tự thêm 1 tin báo
-                addMessageToList("System", "✅ Đã vào phòng chat", false)
+                // Gửi tin nhắn báo danh (Optional)
+                addMessageToList("System", "👋 Chào mừng $myName tham gia!", false)
             }
 
-            // 2. Nhận tin nhắn dạng JSON Object
             mSocket?.on("chat_message") { args ->
                 if (args.isNotEmpty()) {
                     val data = args[0] as JSONObject
                     val user = data.getString("user")
                     val content = data.getString("content")
 
-                    // Logic: Nếu tên người gửi trùng tên mình -> Là tin của mình (isMine = true)
+                    // So sánh tên người gửi với tên mình
                     val isMine = (user == myName)
-
                     addMessageToList(user, content, isMine)
                 }
+            }
+
+            mSocket?.on(Socket.EVENT_CONNECT_ERROR) {
+                addMessageToList("System", "❌ Lỗi kết nối", false)
             }
 
             mSocket?.connect()
@@ -61,12 +68,10 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    // 3. Gửi tin nhắn dạng JSON Object
     fun sendMessage(content: String) {
         val jsonObject = JSONObject()
-        jsonObject.put("user", myName)
+        jsonObject.put("user", myName) // Gửi kèm tên thật
         jsonObject.put("content", content)
-
         mSocket?.emit("chat_message", jsonObject)
     }
 
@@ -74,5 +79,10 @@ class ChatViewModel : ViewModel() {
         viewModelScope.launch {
             messages.add(ChatMessage(user, content, isMine))
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mSocket?.disconnect()
     }
 }

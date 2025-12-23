@@ -1,0 +1,64 @@
+    # ========================
+# 1. GLOBAL / OS FILES
+# ========================
+# File rác của hệ điều hành (không nên up lên)
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+
+# ========================
+# 2. NODE.JS (Backend)
+# ========================
+# Thư viện tải về (Rất nặng - XÓA NÀY LÀ QUAN TRỌNG NHẤT)
+node_modules/
+# Log lỗi
+npm-debug.log
+yarn-error.log
+# File môi trường chứa mật khẩu/API Key (Bảo mật)
+.env
+.env.local
+
+# ========================
+# 3. ANDROID & KOTLIN (Mobile Client)
+# ========================
+# Thư mục build sinh ra khi chạy code (Rất nặng)
+build/
+app/build/
+.gradle/
+
+# File cấu hình máy cá nhân (SDK path) - Mỗi máy mỗi khác nên không up
+local.properties
+
+# Cấu hình IDE Android Studio
+.idea/
+*.iml
+*.ids
+.cxx/
+
+# File capture màn hình hoặc layout inspector
+captures/
+.externalNativeBuild
+.navigation/
+
+# Key store (Chứa khóa ký ứng dụng - CỰC KỲ BẢO MẬT - KHÔNG UP)
+*.jks
+*.keystore
+
+# ========================
+# 4. C# / VISUAL STUDIO (Nếu có dùng C# Client)
+# ========================
+# Thư mục build của .NET
+bin/
+obj/
+# Cấu hình user visual studio
+.vs/
+*.user
+*.suo
+
+# ========================
+# 5. JETPACK COMPOSE SPECIFIC
+# ========================
+# Thực ra Compose dùng chung rule với Android, nhưng có thể thêm report
+compose-compiler-metrics.json
+compose-compiler-report.json

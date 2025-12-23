@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Chat Client</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; height: 300px; overflow-y: scroll; border: 1px solid #ccc; margin-bottom: 10px;}
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+    </style>
+</head>
+<body>
+    <h2>User B (Laptop)</h2>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" style="width: 70%; padding: 10px;" /><button style="width: 20%; padding: 10px;">Gửi</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io(); // Kết nối tới server chính mình
+
+        var form = document.getElementById('form');
+        var input = document.getElementById('input');
+        var messages = document.getElementById('messages');
+
+        // Gửi tin nhắn
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat_message', input.value); // Gửi sự kiện 'chat_message'
+                input.value = '';
+            }
+        });
+
+        // Nhận tin nhắn
+        socket.on('chat_message', function(msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+</body>
+</html>

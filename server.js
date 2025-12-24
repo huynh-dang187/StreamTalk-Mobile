@@ -1,35 +1,42 @@
 const express = require('express');
-const app = express();
 const http = require('http');
-const server = http.createServer(app);
 const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
 
 // Cấu hình Socket.io
 const io = new Server(server, {
-    maxHttpBufferSize: 55 * 1024 * 1024 // Chuẩn bị sẵn cho file 50MB
+    cors: {
+        origin: "*", 
+        methods: ["GET", "POST"]
+    },
+    // 👇 QUAN TRỌNG: Cho phép gói tin lên tới 50MB (để gửi ảnh/video)
+    maxHttpBufferSize: 50 * 1024 * 1024 
 });
 
-// Phục vụ file html tĩnh trong thư mục public
+// Cho phép truy cập thư mục public (nơi chứa file html, css)
 app.use(express.static('public'));
 
+// Lắng nghe kết nối
 io.on('connection', (socket) => {
-    console.log('Có người kết nối: ' + socket.id);
+    console.log('⚡ Có người kết nối: ' + socket.id);
 
-    // Lắng nghe sự kiện chat
+    // Lắng nghe sự kiện gửi tin nhắn (Gồm cả chữ và ảnh)
     socket.on('chat_message', (data) => {
-        // data bây giờ là một Object: { user: "Huy", content: "Xin chào" }
-        console.log("Tin nhắn mới:", data);
+        // data là object: { user: "Ten", content: "Noi dung", image: "base64..." }
+        console.log(`📩 Tin nhắn từ ${data.user}`);
         
-        // Gửi nguyên cục data này cho tất cả mọi người (bao gồm cả người gửi)
+        // Gửi lại cho TẤT CẢ mọi người (Broadcast)
         io.emit('chat_message', data);
     });
 
     socket.on('disconnect', () => {
-        console.log('User đã thoát: ' + socket.id);
+        console.log('❌ Một user đã thoát');
     });
 });
 
-// Chạy server ở cổng 3000
+// Chạy Server tại port 3000
 server.listen(3000, () => {
-    console.log('Server đang chạy tại http://localhost:3000');
+    console.log('🚀 Server đang chạy tại http://localhost:3000');
 });

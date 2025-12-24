@@ -1,39 +1,40 @@
 package com.example.androidclient
 
-import android.util.Log
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.socket.client.IO
 import io.socket.client.Socket
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.net.URISyntaxException
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
-// Dữ liệu tin nhắn
+// 1. Cập nhật cấu trúc tin nhắn: Thêm trường 'image' (có thể null)
 data class ChatMessage(
     val user: String,
-    val content: String,
+    val content: String, // Nội dung chữ (nếu có)
+    val image: String?,  // Nội dung ảnh Base64 (nếu có)
     val isMine: Boolean
 )
 
 class ChatViewModel : ViewModel() {
     val messages = mutableStateListOf<ChatMessage>()
-
-    // 👇 1. SỬA Ở ĐÂY: Không fix cứng tên nữa, để rỗng ban đầu
     var myName = ""
-
     private var mSocket: Socket? = null
-    // ⚠️ Check lại IP lần cuối nhé
+
+    // ⚠️ IP CỦA BẠN
     private val SERVER_URL = "http://192.168.148.167:3000"
 
-    // 👇 2. XÓA khối init { connectSocket() } cũ đi
-    // Chúng ta sẽ không kết nối ngay khi mở App nữa
-
-    // 👇 3. THÊM HÀM MỚI: Chỉ kết nối khi người dùng bấm nút "Join"
     fun joinChat(name: String) {
-        myName = name // Lưu tên người dùng nhập vào
-        connectSocket() // Bắt đầu kết nối
+        myName = name
+        connectSocket()
     }
 
     private fun connectSocket() {
@@ -42,42 +43,73 @@ class ChatViewModel : ViewModel() {
             mSocket = IO.socket(SERVER_URL, options)
 
             mSocket?.on(Socket.EVENT_CONNECT) {
-                // Gửi tin nhắn báo danh (Optional)
-                addMessageToList("System", "👋 Chào mừng $myName tham gia!", false)
+                addMessage("System", "👋 Chào mừng $myName!", null, false)
             }
 
+            // 2. Nhận tin nhắn (Check cả chữ và ảnh)
             mSocket?.on("chat_message") { args ->
                 if (args.isNotEmpty()) {
                     val data = args[0] as JSONObject
-                    val user = data.getString("user")
-                    val content = data.getString("content")
+                    val user = data.optString("user")
+                    val content = data.optString("content")
+                    val image = data.optString("image") // Lấy chuỗi ảnh (nếu có)
 
-                    // So sánh tên người gửi với tên mình
+                    // Nếu trường image rỗng thì gán là null
+                    val finalImage = if (image.isNotEmpty()) image else null
+
                     val isMine = (user == myName)
-                    addMessageToList(user, content, isMine)
+                    addMessage(user, content, finalImage, isMine)
                 }
             }
-
-            mSocket?.on(Socket.EVENT_CONNECT_ERROR) {
-                addMessageToList("System", "❌ Lỗi kết nối", false)
-            }
-
             mSocket?.connect()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
     }
 
     fun sendMessage(content: String) {
-        val jsonObject = JSONObject()
-        jsonObject.put("user", myName) // Gửi kèm tên thật
-        jsonObject.put("content", content)
-        mSocket?.emit("chat_message", jsonObject)
+        val json = JSONObject()
+        json.put("user", myName)
+        json.put("content", content)
+        json.put("image", "") // Không có ảnh
+        mSocket?.emit("chat_message", json)
     }
 
-    private fun addMessageToList(user: String, content: String, isMine: Boolean) {
+    // 3. HÀM MỚI: Gửi ảnh
+    fun sendImage(context: Context, uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) { // Chạy ở luồng phụ để không đơ máy
+            try {
+                // Nén ảnh và chuyển thành Base64
+                val base64Image = encodeImageToBase64(context, uri)
+
+                if (base64Image != null) {
+                    val json = JSONObject()
+                    json.put("user", myName)
+                    json.put("content", "Đã gửi một ảnh") // Tin nhắn phụ
+                    json.put("image", base64Image) // Chuỗi ảnh dài ngoằng nằm ở đây
+
+                    mSocket?.emit("chat_message", json)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Hàm phụ: Biến Uri -> Base64 String
+    private fun encodeImageToBase64(context: Context, uri: Uri): String? {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val bitmap = BitmapFactory.decodeStream(inputStream) ?: return null
+
+        // Nén ảnh xuống còn 50% chất lượng để gửi cho nhanh
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+        val byteArray = outputStream.toByteArray()
+
+        return "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.NO_WRAP)
+    }
+
+    private fun addMessage(user: String, content: String, image: String?, isMine: Boolean) {
         viewModelScope.launch {
-            messages.add(ChatMessage(user, content, isMine))
+            messages.add(ChatMessage(user, content, image, isMine))
         }
     }
 

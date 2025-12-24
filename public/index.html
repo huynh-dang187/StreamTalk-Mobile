@@ -7,42 +7,54 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
-        /* Màn hình đăng nhập */
+        /* --- MÀN HÌNH ĐĂNG NHẬP --- */
         #login-screen {
             background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center;
         }
         #login-input { padding: 10px; width: 200px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; display: block; margin: 0 auto 15px auto; }
-        #btn-join { background: #6200EE; color: white; border: none; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        #btn-join { background: #6200EE; color: white; border: none; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: 0.3s; }
         #btn-join:hover { background: #3700b3; }
 
-        /* Màn hình Chat (Mặc định ẩn) */
-        #chat-screen { width: 400px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; display: none; flex-direction: column; height: 80vh; }
+        /* --- MÀN HÌNH CHAT --- */
+        #chat-screen { width: 450px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; display: none; flex-direction: column; height: 85vh; }
         
         /* Header */
-        .chat-header { background: #6200EE; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
+        .chat-header { background: #6200EE; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Vùng tin nhắn */
+        /* Khu vực hiển thị tin nhắn */
         #chat-box { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
         
         /* Bong bóng chat */
-        .message-container { display: flex; flex-direction: column; margin-bottom: 10px; }
-        .message-bubble { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 15px; line-height: 1.4; position: relative; word-wrap: break-word; }
-        .my-message { align-self: flex-end; background-color: #6200EE; color: white; border-bottom-right-radius: 2px; }
-        .other-message { align-self: flex-start; background-color: #E0E0E0; color: #333; border-bottom-left-radius: 2px; }
+        .message-container { display: flex; flex-direction: column; margin-bottom: 15px; }
         .sender-name { font-size: 11px; color: #888; margin-bottom: 4px; margin-left: 10px; }
+        
+        .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 15px; font-size: 15px; line-height: 1.4; position: relative; word-wrap: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        
+        /* Tin nhắn của mình (Phải, Xanh) */
+        .my-message { align-self: flex-end; background-color: #6200EE; color: white; border-bottom-right-radius: 2px; }
+        
+        /* Tin nhắn người khác (Trái, Xám) */
+        .other-message { align-self: flex-start; background-color: #E0E0E0; color: #333; border-bottom-left-radius: 2px; }
 
-        /* Vùng nhập liệu */
-        .input-area { padding: 15px; border-top: 1px solid #eee; display: flex; background: white; }
-        #msg-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-        #btn-send { margin-left: 10px; background: #6200EE; color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; }
+        /* Ảnh trong tin nhắn */
+        .msg-image { max-width: 100%; border-radius: 10px; margin-bottom: 5px; display: block; margin-top: 5px; cursor: pointer; }
+
+        /* Khu vực nhập liệu */
+        .input-area { padding: 10px; border-top: 1px solid #eee; display: flex; align-items: center; background: white; }
+        #msg-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; background: #f0f2f5; }
+        #btn-send { margin-left: 10px; background: #6200EE; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        
+        /* Nút chọn file */
+        .attach-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 0 10px; color: #6200EE; }
+        .attach-btn:hover { color: #3700b3; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h2 style="color: #6200EE; margin-bottom: 20px;">👋 Xin chào!</h2>
+        <h2 style="color: #6200EE; margin-bottom: 20px;">👋 Nexus Chat</h2>
         <input type="text" id="login-input" placeholder="Nhập tên của bạn...">
-        <button id="btn-join" onclick="joinChat()">Vào Chat Ngay</button>
+        <button id="btn-join" onclick="joinChat()">Tham Gia</button>
     </div>
 
     <div id="chat-screen">
@@ -54,6 +66,10 @@
         <div id="chat-box"></div>
 
         <div class="input-area">
+            <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect()">
+            
+            <button class="attach-btn" onclick="document.getElementById('file-input').click()" title="Gửi ảnh">📎</button>
+            
             <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." onkeypress="handleEnter(event)">
             <button id="btn-send" onclick="sendMessage()">Gửi</button>
         </div>
@@ -62,32 +78,28 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        let myName = ""; // Biến lưu tên, ban đầu rỗng
+        let myName = ""; 
 
-        // Xử lý khi bấm nút "Vào Chat"
+        // --- 1. XỬ LÝ LOGIN ---
         function joinChat() {
             const inputName = document.getElementById('login-input').value.trim();
             if (inputName) {
                 myName = inputName;
-                
-                // Ẩn màn login, hiện màn chat
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-screen').style.display = 'flex';
-                
-                // Hiển thị tên lên góc phải
                 document.getElementById('display-name').innerText = "👤 " + myName;
             } else {
                 alert("Vui lòng nhập tên!");
             }
         }
 
-        // Nhận tin nhắn từ Server
+        // --- 2. XỬ LÝ NHẬN TIN NHẮN ---
         socket.on('chat_message', (data) => {
             const isMine = (data.user === myName);
-            displayMessage(data.user, data.content, isMine);
+            displayMessage(data, isMine); 
         });
 
-        // Gửi tin nhắn
+        // --- 3. XỬ LÝ GỬI TIN NHẮN (TEXT) ---
         function sendMessage() {
             const input = document.getElementById('msg-input');
             const msg = input.value.trim();
@@ -95,38 +107,79 @@
             if (msg !== "") {
                 const messageData = {
                     user: myName,
-                    content: msg
+                    content: msg,
+                    image: "" // Không có ảnh
                 };
                 socket.emit('chat_message', messageData);
                 input.value = "";
             }
         }
 
-        // Vẽ bong bóng chat
-        function displayMessage(user, content, isMine) {
+        // --- 4. XỬ LÝ GỬI ẢNH (IMAGE) ---
+        function handleFileSelect() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result; // Chuỗi ảnh mã hóa
+                    
+                    // Gửi ngay lập tức
+                    const messageData = {
+                        user: myName,
+                        content: "Đã gửi một ảnh", // Tin nhắn hiển thị kèm
+                        image: base64Image
+                    };
+                    socket.emit('chat_message', messageData);
+                };
+                reader.readAsDataURL(file); // Bắt đầu đọc file
+                
+                // Reset input để chọn lại được ảnh cũ nếu muốn
+                fileInput.value = "";
+            }
+        }
+
+        // --- 5. HÀM HIỂN THỊ (RENDER) ---
+        function displayMessage(data, isMine) {
             const chatBox = document.getElementById('chat-box');
+            
+            // Container bao ngoài
             const container = document.createElement('div');
             container.className = "message-container";
+            container.style.alignItems = isMine ? "flex-end" : "flex-start";
 
-            // Nếu là tin người khác thì hiện tên
+            // Nếu tin nhắn của người khác -> Hiện tên
             if (!isMine) {
                 const nameTag = document.createElement('div');
                 nameTag.className = "sender-name";
-                nameTag.innerText = user;
+                nameTag.innerText = data.user;
                 container.appendChild(nameTag);
             }
 
+            // Bong bóng chat
             const bubble = document.createElement('div');
             bubble.className = "message-bubble " + (isMine ? "my-message" : "other-message");
-            bubble.innerText = content;
-
-            container.appendChild(bubble);
             
-            // Căn lề cho container
-            container.style.alignItems = isMine ? "flex-end" : "flex-start";
+            // Logic hiển thị nội dung (Ảnh + Chữ)
+            let htmlContent = "";
 
+            // Nếu có ảnh -> chèn thẻ img
+            if (data.image && data.image !== "") {
+                htmlContent += `<img src="${data.image}" class="msg-image">`;
+            }
+
+            // Nếu có chữ -> chèn text
+            if (data.content && data.content !== "") {
+                htmlContent += `<div>${data.content}</div>`;
+            }
+
+            bubble.innerHTML = htmlContent;
+            container.appendChild(bubble);
             chatBox.appendChild(container);
-            chatBox.scrollTop = chatBox.scrollHeight; // Tự cuộn xuống cuối
+            
+            // Tự cuộn xuống dưới cùng
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         // Bấm Enter để gửi

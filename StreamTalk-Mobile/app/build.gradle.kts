@@ -63,4 +63,7 @@ dependencies {
     implementation("io.socket:socket.io-client:2.1.0") {
         exclude(group = "org.json", module = "json")
     }
+    //URI
+    // 👇 THÊM DÒNG NÀY (Thư viện load ảnh siêu nhẹ cho Compose)
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

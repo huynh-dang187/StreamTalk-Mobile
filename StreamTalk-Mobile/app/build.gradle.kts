@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+
+
 }
 
 android {
@@ -66,4 +69,10 @@ dependencies {
     //URI
     // 👇 THÊM DÒNG NÀY (Thư viện load ảnh siêu nhẹ cho Compose)
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    //Room DB
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version") // Hỗ trợ Coroutines
+    kapt("androidx.room:room-compiler:$room_version")
 }

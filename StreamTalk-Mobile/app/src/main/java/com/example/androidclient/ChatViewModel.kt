@@ -1,5 +1,6 @@
 package com.example.androidclient
 
+import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,7 +8,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Base64
 import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -17,27 +18,76 @@ import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
-// 1. Cập nhật cấu trúc tin nhắn
+// Data class cho UI (Vẫn giữ nguyên để không phải sửa UI)
 data class ChatMessage(
     val user: String,
     val content: String,
     val image: String? = null,
-    val fileData: String? = null, // Base64 của file
-    val fileName: String? = null, // Tên file
+    val fileData: String? = null,
+    val fileName: String? = null,
     val isMine: Boolean
 )
 
-class ChatViewModel : ViewModel() {
+// 👇 QUAN TRỌNG: Đổi từ ViewModel -> AndroidViewModel(application) để lấy Context làm DB
+class ChatViewModel(application: Application) : AndroidViewModel(application) {
+
     val messages = mutableStateListOf<ChatMessage>()
     var myName = ""
     private var mSocket: Socket? = null
 
-    // ⚠️ Nhớ kiểm tra lại IP của bạn
-    private val SERVER_URL = "http://192.168.148.167:3000"
+    // 👇 Khởi tạo Database
+    private val database = ChatDatabase.getDatabase(application)
+    private val chatDao = database.chatDao()
+
+    private val SERVER_URL = "http://192.168.148.167:3000" // ⚠️ Check IP
 
     fun joinChat(name: String) {
         myName = name
+
+        // 1. Load lịch sử tin nhắn cũ từ Database ngay khi tham gia
+        loadHistoryFromDb()
+
+        // 2. Sau đó mới kết nối mạng
         connectSocket()
+    }
+
+    // 👇 Hàm mới: Load tin nhắn từ DB lên màn hình
+    private fun loadHistoryFromDb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val history = chatDao.getAllMessages()
+
+            // Chuyển về luồng chính để cập nhật UI
+            launch(Dispatchers.Main) {
+                history.forEach { entity ->
+                    // Convert từ Entity (DB) -> ChatMessage (UI)
+                    messages.add(
+                        ChatMessage(
+                            user = entity.user,
+                            content = entity.content,
+                            image = entity.image,
+                            fileData = entity.fileData,
+                            fileName = entity.fileName,
+                            isMine = (entity.user == myName) // Check lại xem tin này có phải của mình với cái tên hiện tại ko
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    // 👇 Hàm mới: Lưu 1 tin nhắn vào DB
+    private fun saveMessageToDb(msg: ChatMessage) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val entity = MessageEntity(
+                user = msg.user,
+                content = msg.content,
+                image = msg.image,
+                fileData = msg.fileData,
+                fileName = msg.fileName,
+                isMine = msg.isMine
+            )
+            chatDao.insertMessage(entity)
+        }
     }
 
     private fun connectSocket() {
@@ -46,22 +96,22 @@ class ChatViewModel : ViewModel() {
             mSocket = IO.socket(SERVER_URL, options)
 
             mSocket?.on(Socket.EVENT_CONNECT) {
-                addMessage("System", "👋 Chào mừng $myName!", null, null, null, false)
+                // Không lưu tin nhắn hệ thống vào DB cho đỡ rác
+                addMessageToUi("System", "👋 Chào mừng $myName!", null, null, null, false, saveToDb = false)
             }
 
-            // 2. Nhận tin nhắn (Cập nhật lấy thêm fileData, fileName)
             mSocket?.on("chat_message") { args ->
                 if (args.isNotEmpty()) {
                     val data = args[0] as JSONObject
                     val user = data.optString("user")
                     val content = data.optString("content")
-
                     val image = data.optString("image").takeIf { it.isNotEmpty() }
                     val fileData = data.optString("fileData").takeIf { it.isNotEmpty() }
                     val fileName = data.optString("fileName").takeIf { it.isNotEmpty() }
-
                     val isMine = (user == myName)
-                    addMessage(user, content, image, fileData, fileName, isMine)
+
+                    // Khi nhận tin nhắn -> Thêm vào list VÀ Lưu vào DB
+                    addMessageToUi(user, content, image, fileData, fileName, isMine, saveToDb = true)
                 }
             }
             mSocket?.connect()
@@ -88,38 +138,43 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    // 3. HÀM MỚI: Gửi File
     fun sendFile(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val fileName = getFileName(context, uri) ?: "file_unknown"
             val base64File = encodeFileToBase64(context, uri)
-
             if (base64File != null) {
                 val json = JSONObject()
                 json.put("user", myName)
                 json.put("content", "Đã gửi file: $fileName")
                 json.put("fileData", base64File)
                 json.put("fileName", fileName)
-
                 mSocket?.emit("chat_message", json)
             }
         }
     }
 
-    // Hàm mã hóa File -> Base64
+    // Hàm helper để thêm tin nhắn vào UI và gọi lưu DB
+    private fun addMessageToUi(user: String, content: String, image: String?, fileData: String?, fileName: String?, isMine: Boolean, saveToDb: Boolean) {
+        viewModelScope.launch {
+            val msg = ChatMessage(user, content, image, fileData, fileName, isMine)
+            messages.add(msg)
+
+            if (saveToDb) {
+                saveMessageToDb(msg)
+            }
+        }
+    }
+
+    // --- CÁC HÀM XỬ LÝ FILE/BASE64 GIỮ NGUYÊN ---
     private fun encodeFileToBase64(context: Context, uri: Uri): String? {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri)
             val bytes = inputStream?.readBytes()
             inputStream?.close()
-            if (bytes != null) {
-                // Không nén như ảnh, giữ nguyên chất lượng
-                Base64.encodeToString(bytes, Base64.NO_WRAP)
-            } else null
+            if (bytes != null) Base64.encodeToString(bytes, Base64.NO_WRAP) else null
         } catch (e: Exception) { e.printStackTrace(); null }
     }
 
-    // Hàm lấy tên file
     private fun getFileName(context: Context, uri: Uri): String? {
         var result: String? = null
         if (uri.scheme == "content") {
@@ -145,12 +200,6 @@ class ChatViewModel : ViewModel() {
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
         return "data:image/jpeg;base64," + Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
-    }
-
-    private fun addMessage(user: String, content: String, image: String?, fileData: String?, fileName: String?, isMine: Boolean) {
-        viewModelScope.launch {
-            messages.add(ChatMessage(user, content, image, fileData, fileName, isMine))
-        }
     }
 
     override fun onCleared() {

@@ -11,7 +11,7 @@ const io = new Server(server, {
         origin: "*", 
         methods: ["GET", "POST"]
     },
-    // 👇 QUAN TRỌNG: Cho phép gói tin lên tới 50MB (để gửi ảnh/video)
+    // QUAN TRỌNG: Cho phép gói tin lên tới 50MB (để gửi ảnh/video)
     maxHttpBufferSize: 50 * 1024 * 1024 
 });
 

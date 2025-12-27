@@ -45,9 +45,24 @@
         .attach-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 0 10px; color: #6200EE; }
         .attach-btn:hover { color: #3700b3; }
         
-        /* Nút xóa lịch sử (Mới) */
-        .clear-btn { font-size: 12px; color: white; cursor: pointer; opacity: 0.8; border: 1px solid white; padding: 2px 8px; border-radius: 4px; background: none;}
+        /* Buttons Header */
+        .clear-btn { font-size: 12px; color: white; cursor: pointer; opacity: 0.8; border: 1px solid white; padding: 2px 8px; border-radius: 4px; background: none; margin-left: 5px;}
         .clear-btn:hover { opacity: 1; background: rgba(255,255,255,0.2); }
+
+        /* --- VIDEO SCREEN (MỚI) --- */
+        #video-screen {
+            display: none; /* Mặc định ẩn */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        #local-video {
+            width: 400px; height: 300px;
+            background: black;
+            border: 2px solid #6200EE; border-radius: 10px;
+            transform: scaleX(-1); /* Lật ngược video cho giống soi gương */
+        }
     </style>
 </head>
 <body>
@@ -64,7 +79,10 @@
                 <span>💬 Phòng Chat Chung</span>
                 <span id="display-name" style="font-weight: normal; font-size: 14px; opacity: 0.9;"></span>
             </div>
-            <button class="clear-btn" onclick="clearHistory()">🗑️ Xóa</button>
+            <div>
+                <button class="clear-btn" onclick="startLocalVideo()">📹 Video</button>
+                <button class="clear-btn" onclick="clearHistory()">🗑️ Xóa</button>
+            </div>
         </div>
         
         <div id="chat-box"></div>
@@ -77,11 +95,44 @@
         </div>
     </div>
 
+    <div id="video-screen">
+        <h3 style="color: white; margin-bottom: 20px;">🎥 Camera của bạn</h3>
+        <video id="local-video" autoplay playsinline muted></video>
+        <button onclick="closeVideo()" style="margin-top: 20px; padding: 10px 30px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Đóng Camera</button>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         let myName = ""; 
-        const STORAGE_KEY = "chat_history"; // Tên kho lưu trữ trong trình duyệt
+        const STORAGE_KEY = "chat_history"; 
+
+        // --- PHẦN VIDEO CALL (MỚI THÊM) ---
+        let localStream; 
+
+        async function startLocalVideo() {
+            try {
+                document.getElementById('video-screen').style.display = 'flex';
+                
+                // Xin quyền Camera & Mic
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+                const videoTag = document.getElementById('local-video');
+                videoTag.srcObject = localStream;
+            } catch (err) {
+                alert("Không thể truy cập Camera: " + err.message);
+                closeVideo();
+            }
+        }
+
+        function closeVideo() {
+            document.getElementById('video-screen').style.display = 'none';
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop()); // Tắt đèn camera
+                localStream = null;
+            }
+        }
+        // ----------------------------------
 
         // 1. LOGIN
         function joinChat() {
@@ -91,37 +142,28 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-screen').style.display = 'flex';
                 document.getElementById('display-name').innerText = "👤 " + myName;
-
-                // 👇 LOAD LẠI TIN NHẮN CŨ NGAY KHI VÀO
                 loadHistory();
             } else { alert("Vui lòng nhập tên!"); }
         }
 
         // 2. NHẬN TIN NHẮN
         socket.on('chat_message', (data) => {
-            // 👇 LƯU TIN NHẮN VÀO LOCALSTORAGE
             saveMessageToLocal(data);
-
             const isMine = (data.user === myName);
             displayMessage(data, isMine); 
         });
 
-        // --- CÁC HÀM XỬ LÝ LƯU TRỮ (LOCALSTORAGE) ---
-        
+        // 3. CÁC HÀM XỬ LÝ LƯU TRỮ
         function saveMessageToLocal(data) {
-            // Lấy danh sách cũ ra
             let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            // Thêm tin mới vào
             history.push(data);
-            // Lưu ngược lại vào kho
             localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
         }
 
         function loadHistory() {
             let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = ""; // Xóa trắng trước khi load để tránh trùng lặp
-
+            chatBox.innerHTML = ""; 
             history.forEach(data => {
                 const isMine = (data.user === myName);
                 displayMessage(data, isMine);
@@ -136,9 +178,7 @@
             }
         }
 
-        // ---------------------------------------------
-
-        // 3. GỬI TEXT
+        // 4. GỬI TIN NHẮN & FILE
         function sendMessage() {
             const input = document.getElementById('msg-input');
             const msg = input.value.trim();
@@ -148,7 +188,6 @@
             }
         }
 
-        // 4. GỬI FILE/ẢNH
         function handleFileSelect() {
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
@@ -166,7 +205,6 @@
                         fileData: isImage ? null : base64Data,
                         fileName: isImage ? null : file.name
                     };
-
                     socket.emit('chat_message', messageData);
                 };
                 reader.readAsDataURL(file);

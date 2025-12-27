@@ -75,4 +75,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version") // Hỗ trợ Coroutines
     kapt("androidx.room:room-compiler:$room_version")
+
+    //  THÊM DÒNG NÀY (Thư viện WebRTC của GetStream - nằm trên Maven Central)
+    implementation("io.getstream:stream-webrtc-android:1.0.3")
 }

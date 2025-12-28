@@ -7,61 +7,55 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
-        /* --- LOGIN SCREEN --- */
+        /* --- LOGIN & CHAT STYLES (Giữ nguyên) --- */
         #login-screen { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
         #login-input { padding: 10px; width: 200px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; display: block; margin: 0 auto 15px auto; }
         #btn-join { background: #6200EE; color: white; border: none; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: 0.3s; }
         #btn-join:hover { background: #3700b3; }
 
-        /* --- CHAT SCREEN --- */
         #chat-screen { width: 450px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; display: none; flex-direction: column; height: 85vh; }
         .chat-header { background: #6200EE; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         #chat-box { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
         
-        /* BUBBLES */
         .message-container { display: flex; flex-direction: column; margin-bottom: 15px; }
         .sender-name { font-size: 11px; color: #888; margin-bottom: 4px; margin-left: 10px; }
         .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 15px; font-size: 15px; line-height: 1.4; position: relative; word-wrap: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .my-message { align-self: flex-end; background-color: #6200EE; color: white; border-bottom-right-radius: 2px; }
         .other-message { align-self: flex-start; background-color: #E0E0E0; color: #333; border-bottom-left-radius: 2px; }
 
-        /* CONTENT TYPES */
         .msg-image { max-width: 100%; border-radius: 10px; margin-top: 5px; cursor: pointer; display: block; }
-        
-        .msg-file { 
-            display: flex; align-items: center; background: rgba(0,0,0,0.1); 
-            padding: 8px; border-radius: 8px; margin-top: 5px; text-decoration: none; color: inherit; 
-            transition: 0.2s;
-        }
+        .msg-file { display: flex; align-items: center; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 8px; margin-top: 5px; text-decoration: none; color: inherit; transition: 0.2s; }
         .msg-file:hover { background: rgba(0,0,0,0.2); }
         .file-icon { font-size: 20px; margin-right: 8px; }
         .file-name { font-weight: bold; font-size: 13px; }
         .file-download { font-size: 10px; opacity: 0.7; display: block; }
 
-        /* INPUT AREA */
         .input-area { padding: 10px; border-top: 1px solid #eee; display: flex; align-items: center; background: white; }
         #msg-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; background: #f0f2f5; }
         #btn-send { margin-left: 10px; background: #6200EE; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
         .attach-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 0 10px; color: #6200EE; }
-        .attach-btn:hover { color: #3700b3; }
-        
-        /* Buttons Header */
         .clear-btn { font-size: 12px; color: white; cursor: pointer; opacity: 0.8; border: 1px solid white; padding: 2px 8px; border-radius: 4px; background: none; margin-left: 5px;}
         .clear-btn:hover { opacity: 1; background: rgba(255,255,255,0.2); }
 
-        /* --- VIDEO SCREEN (MỚI) --- */
+        /* --- VIDEO SCREEN (CẬP NHẬT) --- */
         #video-screen {
-            display: none; /* Mặc định ẩn */
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
             flex-direction: column; align-items: center; justify-content: center;
             z-index: 1000;
         }
+        /* Container chứa 2 video */
+        .video-container {
+            display: flex; gap: 20px; justify-content: center; align-items: center; flex-wrap: wrap;
+        }
         #local-video {
-            width: 400px; height: 300px;
-            background: black;
+            width: 200px; height: 150px; background: black;
             border: 2px solid #6200EE; border-radius: 10px;
-            transform: scaleX(-1); /* Lật ngược video cho giống soi gương */
+            transform: scaleX(-1);
+        }
+        #remote-video {
+            width: 400px; height: 300px; background: #333;
+            border: 2px solid white; border-radius: 10px;
         }
     </style>
 </head>
@@ -96,9 +90,17 @@
     </div>
 
     <div id="video-screen">
-        <h3 style="color: white; margin-bottom: 20px;">🎥 Camera của bạn</h3>
-        <video id="local-video" autoplay playsinline muted></video>
-        <button onclick="closeVideo()" style="margin-top: 20px; padding: 10px 30px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Đóng Camera</button>
+        <h3 style="color: white; margin-bottom: 20px;">🎥 Video Call</h3>
+        
+        <div class="video-container">
+            <video id="local-video" autoplay playsinline muted></video>
+            <video id="remote-video" autoplay playsinline></video>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button onclick="startCall()" style="padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; font-weight: bold;">📞 Gọi Ngay</button>
+            <button onclick="closeVideo()" style="padding: 10px 20px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">❌ Tắt</button>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -107,34 +109,122 @@
         let myName = ""; 
         const STORAGE_KEY = "chat_history"; 
 
-        // --- PHẦN VIDEO CALL (MỚI THÊM) ---
-        let localStream; 
+        // --- CẤU HÌNH WEBRTC ---
+        let localStream;
+        let remoteStream;
+        let peerConnection;
+        
+        // Máy chủ STUN của Google (Giúp tìm IP public)
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
+
+        // 1. KHỞI TẠO PEER CONNECTION
+        async function createPeerConnection() {
+            peerConnection = new RTCPeerConnection(rtcConfig);
+
+            // Khi tìm thấy đường đi (Candidate) -> Gửi cho đối phương qua Server
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('candidate', event.candidate);
+                }
+            };
+
+            // Khi nhận được Video của đối phương -> Hiện lên màn hình
+            peerConnection.ontrack = (event) => {
+                const remoteVideo = document.getElementById('remote-video');
+                if (!remoteStream) {
+                    remoteStream = new MediaStream();
+                    remoteVideo.srcObject = remoteStream;
+                }
+                remoteStream.addTrack(event.track);
+            };
+
+            // Thêm Video/Mic của mình vào kết nối
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+            }
+        }
+
+        // 2. BẮT ĐẦU GỌI (Tạo Offer)
+        async function startCall() {
+            // Đảm bảo đã bật cam và tạo kết nối
+            if (!localStream) await startLocalVideo(); 
+            if (!peerConnection) await createPeerConnection();
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            
+            // Gửi lời mời đi
+            socket.emit('offer', offer);
+            console.log("Đã gửi Offer!");
+        }
+
+        // 3. XỬ LÝ TÍN HIỆU TỪ SERVER (Signaling)
+        
+        // A. Nhận Lời mời (Offer) -> Trả lời (Answer)
+        socket.on('offer', async (offer) => {
+            if (!localStream) await startLocalVideo(); // Tự bật cam nếu chưa bật
+            if (!peerConnection) await createPeerConnection();
+
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            socket.emit('answer', answer);
+            console.log("Đã nhận Offer & Gửi Answer!");
+        });
+
+        // B. Nhận Trả lời (Answer)
+        socket.on('answer', async (answer) => {
+            if (!peerConnection) return;
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+            console.log("Đã kết nối thành công!");
+        });
+
+        // C. Nhận Đường đi (Candidate)
+        socket.on('candidate', async (candidate) => {
+            if (peerConnection) {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+        });
+
+        // --- CÁC HÀM CŨ (VIDEO LOCAL & CHAT) ---
 
         async function startLocalVideo() {
             try {
                 document.getElementById('video-screen').style.display = 'flex';
-                
-                // Xin quyền Camera & Mic
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-
-                const videoTag = document.getElementById('local-video');
-                videoTag.srcObject = localStream;
+                document.getElementById('local-video').srcObject = localStream;
             } catch (err) {
-                alert("Không thể truy cập Camera: " + err.message);
+                alert("Lỗi Camera: " + err.message);
                 closeVideo();
             }
         }
 
         function closeVideo() {
             document.getElementById('video-screen').style.display = 'none';
+            // Tắt Cam
             if (localStream) {
-                localStream.getTracks().forEach(track => track.stop()); // Tắt đèn camera
+                localStream.getTracks().forEach(track => track.stop());
                 localStream = null;
             }
+            // Đóng kết nối
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            // Reload trang để reset sạch sẽ
+            location.reload(); 
         }
-        // ----------------------------------
 
-        // 1. LOGIN
+        // --- (Logic Chat, File, Login cũ giữ nguyên) ---
         function joinChat() {
             const inputName = document.getElementById('login-input').value.trim();
             if (inputName) {
@@ -146,14 +236,12 @@
             } else { alert("Vui lòng nhập tên!"); }
         }
 
-        // 2. NHẬN TIN NHẮN
         socket.on('chat_message', (data) => {
             saveMessageToLocal(data);
             const isMine = (data.user === myName);
             displayMessage(data, isMine); 
         });
 
-        // 3. CÁC HÀM XỬ LÝ LƯU TRỮ
         function saveMessageToLocal(data) {
             let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             history.push(data);
@@ -171,14 +259,12 @@
         }
 
         function clearHistory() {
-            if(confirm("Bạn có chắc muốn xóa toàn bộ lịch sử chat trên máy này không?")) {
+            if(confirm("Xóa lịch sử?")) {
                 localStorage.removeItem(STORAGE_KEY);
                 document.getElementById('chat-box').innerHTML = "";
-                alert("Đã xóa sạch!");
             }
         }
 
-        // 4. GỬI TIN NHẮN & FILE
         function sendMessage() {
             const input = document.getElementById('msg-input');
             const msg = input.value.trim();
@@ -191,13 +277,11 @@
         function handleFileSelect() {
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
-            
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Data = e.target.result;
                     const isImage = file.type.startsWith('image/');
-                    
                     const messageData = {
                         user: myName,
                         content: isImage ? "Đã gửi một ảnh" : `Đã gửi file: ${file.name}`,
@@ -212,43 +296,25 @@
             }
         }
 
-        // 5. HIỂN THỊ UI
         function displayMessage(data, isMine) {
             const chatBox = document.getElementById('chat-box');
             const container = document.createElement('div');
             container.className = "message-container";
             container.style.alignItems = isMine ? "flex-end" : "flex-start";
-
             if (!isMine) {
                 const nameTag = document.createElement('div');
                 nameTag.className = "sender-name";
                 nameTag.innerText = data.user;
                 container.appendChild(nameTag);
             }
-
             const bubble = document.createElement('div');
             bubble.className = "message-bubble " + (isMine ? "my-message" : "other-message");
-            
             let htmlContent = "";
-
-            if (data.image) {
-                htmlContent += `<img src="${data.image}" class="msg-image">`;
-            }
+            if (data.image) htmlContent += `<img src="${data.image}" class="msg-image">`;
             if (data.fileData && data.fileName) {
-                htmlContent += `
-                    <a href="${data.fileData}" download="${data.fileName}" class="msg-file">
-                        <span class="file-icon">📄</span>
-                        <div>
-                            <div class="file-name">${data.fileName}</div>
-                            <span class="file-download">Nhấn để tải về</span>
-                        </div>
-                    </a>
-                `;
+                htmlContent += `<a href="${data.fileData}" download="${data.fileName}" class="msg-file">📄 ${data.fileName}</a>`;
             }
-            if (data.content) {
-                htmlContent += `<div>${data.content}</div>`;
-            }
-
+            if (data.content) htmlContent += `<div>${data.content}</div>`;
             bubble.innerHTML = htmlContent;
             container.appendChild(bubble);
             chatBox.appendChild(container);

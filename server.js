@@ -15,21 +15,37 @@ const io = new Server(server, {
     maxHttpBufferSize: 50 * 1024 * 1024 
 });
 
-// Cho phép truy cập thư mục public (nơi chứa file html, css)
+// Cho phép truy cập thư mục public
 app.use(express.static('public'));
 
 // Lắng nghe kết nối
 io.on('connection', (socket) => {
     console.log('⚡ Có người kết nối: ' + socket.id);
 
-    // Lắng nghe sự kiện gửi tin nhắn (Gồm cả chữ và ảnh)
+    // 1. CHAT & FILE
     socket.on('chat_message', (data) => {
-        // data là object: { user: "Ten", content: "Noi dung", image: "base64..." }
-        console.log(`📩 Tin nhắn từ ${data.user}`);
-        
-        // Gửi lại cho TẤT CẢ mọi người (Broadcast)
+        // Gửi lại cho TẤT CẢ mọi người
         io.emit('chat_message', data);
     });
+
+    // 👇 2. SIGNALING CHO VIDEO CALL (PHẦN MỚI THÊM) 👇
+    
+    // Khi ai đó gửi "Lời mời" (Offer)
+    socket.on('offer', (data) => {
+        // Gửi cho người khác (trừ người gửi)
+        socket.broadcast.emit('offer', data);
+    });
+
+    // Khi ai đó gửi "Đồng ý" (Answer)
+    socket.on('answer', (data) => {
+        socket.broadcast.emit('answer', data);
+    });
+
+    // Khi ai đó gửi "Đường đi" (ICE Candidate)
+    socket.on('candidate', (data) => {
+        socket.broadcast.emit('candidate', data);
+    });
+    // --------------------------------------------------
 
     socket.on('disconnect', () => {
         console.log('❌ Một user đã thoát');

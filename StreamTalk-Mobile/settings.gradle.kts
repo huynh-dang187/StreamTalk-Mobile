@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        mavenCentral() // 👈 Đưa lên đầu
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -7,17 +8,16 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
-        mavenCentral()
         gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        mavenCentral() // 👈 Đưa lên đầu (Quan trọng nhất)
         google()
-        mavenCentral()
-        jcenter()
-        maven { url = uri("https://www.jitpack.io") }
+        maven { url = uri("https://jitpack.io") }
+        jcenter() // Giữ lại để dự phòng
     }
 }
 

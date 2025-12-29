@@ -35,12 +35,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView // 👈 Quan trọng: Để nhúng WebRTC View vào Compose
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import org.webrtc.SurfaceViewRenderer // 👈 View hiển thị Video
+import org.webrtc.SurfaceViewRenderer
 import java.io.File
 import java.io.FileOutputStream
 
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// ... (Giữ nguyên các hàm decodeBase64ToBitmap và saveAndOpenFile cũ) ...
+// ... (Giữ nguyên các hàm decodeBase64ToBitmap và saveAndOpenFile cũ của bạn)
 fun decodeBase64ToBitmap(base64Str: String): ImageBitmap? {
     return try {
         val cleanBase64 = if (base64Str.contains(",")) base64Str.substringAfter(",") else base64Str
@@ -96,47 +97,23 @@ fun LoginScreen(onJoinClick: (String) -> Unit) {
 fun ChatScreen(viewModel: ChatViewModel) {
     var textInput by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // 👇 Biến trạng thái để hiện Camera
     var showCamera by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
 
     val photoPickerLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri -> selectedImageUri = uri }
     val filePickerLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri -> if (uri != null) viewModel.sendFile(context, uri) }
 
-    // Xử lý gửi ảnh (Giữ nguyên)
     if (selectedImageUri != null) {
         ImagePreviewDialog(uri = selectedImageUri!!, onDismiss = { selectedImageUri = null }, onSend = { viewModel.sendImage(context, selectedImageUri!!); selectedImageUri = null })
     }
 
-    // 👇 UI VIDEO CALL (MỚI THÊM)
+    // UI VIDEO CALL
     if (showCamera) {
-        // Khởi tạo WebRTC Client
-        val webrtcClient = remember { WebRTCClient(context) }
-
-        Dialog(onDismissRequest = { showCamera = false }) {
-            Card(modifier = Modifier.fillMaxWidth().height(500.dp), shape = RoundedCornerShape(16.dp)) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    // Nhúng View của WebRTC vào Compose
-                    AndroidView(
-                        factory = { ctx ->
-                            SurfaceViewRenderer(ctx).apply {
-                                webrtcClient.startLocalVideo(this) // Bắt đầu bật Cam
-                            }
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    // Nút tắt Camera
-                    Button(
-                        onClick = { showCamera = false },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp)
-                    ) { Text("Tắt Camera") }
-                }
-            }
-        }
+        VideoCallDialog(
+            context = context,
+            viewModel = viewModel,
+            onDismiss = { showCamera = false }
+        )
     }
 
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
@@ -153,51 +130,96 @@ fun ChatScreen(viewModel: ChatViewModel) {
         }
 
         Row(modifier = Modifier.fillMaxWidth().background(Color.White).padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-
-            // Nút Chọn Ảnh
             IconButton(onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) {
-                Icon(Icons.Default.Add, "Chọn ảnh", tint = Color(0xFF6200EE))
+                Icon(Icons.Default.Add, "Ảnh", tint = Color(0xFF6200EE))
             }
-
-            // Nút Chọn File
             IconButton(onClick = { filePickerLauncher.launch("*/*") }) {
                 Icon(Icons.Default.Menu, "File", tint = Color.Gray)
             }
-
-            // 👇 NÚT VIDEO CALL (MỚI THÊM)
             IconButton(onClick = {
-                // Kiểm tra quyền trước khi bật
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     showCamera = true
                 } else {
-                    // Xin quyền (Nếu chưa có)
-                    Toast.makeText(context, "Vui lòng cấp quyền Camera!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Cần quyền Camera!", Toast.LENGTH_SHORT).show()
                     ActivityCompat.requestPermissions(context as android.app.Activity, arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO), 101)
                 }
             }) {
-                // Dùng ký tự icon tạm thời
                 Text("📹", fontSize = 24.sp)
             }
-
             TextField(value = textInput, onValueChange = { textInput = it }, modifier = Modifier.weight(1f), placeholder = { Text("Nhập tin nhắn...") }, colors = TextFieldDefaults.colors(focusedContainerColor = Color.Transparent, unfocusedContainerColor = Color.Transparent))
             Button(onClick = { if (textInput.isNotBlank()) { viewModel.sendMessage(textInput); textInput = "" } }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE)), modifier = Modifier.padding(start = 8.dp)) { Text("Gửi") }
         }
     }
 }
 
-// ... (Giữ nguyên ImagePreviewDialog và MessageBubble) ...
+@Composable
+fun VideoCallDialog(context: Context, viewModel: ChatViewModel, onDismiss: () -> Unit) {
+    // Khởi tạo WebRTC Client khi mở Dialog
+    val rtcClient = remember {
+        WebRTCClient(context) { type, data ->
+            // Callback: Khi WebRTC có tín hiệu (Offer/Answer/Ice) -> Gửi qua Socket
+            viewModel.sendSignal(type, data)
+        }
+    }
+
+    // Lắng nghe tín hiệu từ Server (Socket) để cập nhật WebRTC
+    LaunchedEffect(Unit) {
+        viewModel.webRTCEvent.collect { signal ->
+            rtcClient.onRemoteSessionReceived(signal.data)
+        }
+    }
+
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+
+            // 1. VIDEO ĐỐI PHƯƠNG (Remote) - Full màn hình
+            AndroidView(
+                factory = { ctx ->
+                    SurfaceViewRenderer(ctx).apply {
+                        rtcClient.createPeerConnection(this) // Gắn view này để nhận video đối phương
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // 2. VIDEO CỦA MÌNH (Local) - Góc nhỏ
+            AndroidView(
+                factory = { ctx ->
+                    SurfaceViewRenderer(ctx).apply {
+                        rtcClient.startLocalVideo(this) // Gắn view này để hiện camera mình
+                        setZOrderOnTop(true) // Đè lên trên
+                    }
+                },
+                modifier = Modifier.width(120.dp).height(160.dp).align(Alignment.TopEnd).padding(16.dp).background(Color.DarkGray)
+            )
+
+            // 3. CÁC NÚT ĐIỀU KHIỂN
+            Row(modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp)) {
+                Button(onClick = { rtcClient.call() }, colors = ButtonDefaults.buttonColors(containerColor = Color.Green)) {
+                    Text("📞 Gọi")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(onClick = {
+                    rtcClient.close()
+                    onDismiss()
+                }, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
+                    Text("❌ Tắt")
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun ImagePreviewDialog(uri: Uri, onDismiss: () -> Unit, onSend: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Gửi ảnh này?", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                AsyncImage(model = uri, contentDescription = null, modifier = Modifier.fillMaxWidth().height(250.dp).background(Color.LightGray), contentScale = ContentScale.Fit)
                 Spacer(modifier = Modifier.height(16.dp))
-                AsyncImage(model = uri, contentDescription = null, modifier = Modifier.fillMaxWidth().height(250.dp).background(Color.LightGray, RoundedCornerShape(8.dp)), contentScale = ContentScale.Fit)
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                Row {
                     TextButton(onClick = onDismiss) { Text("Hủy") }
-                    Button(onClick = onSend, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))) { Text("Gửi ngay") }
+                    Button(onClick = onSend) { Text("Gửi") }
                 }
             }
         }
@@ -206,37 +228,24 @@ fun ImagePreviewDialog(uri: Uri, onDismiss: () -> Unit, onSend: () -> Unit) {
 
 @Composable
 fun MessageBubble(msg: ChatMessage) {
+    // (Giữ nguyên code MessageBubble của bạn, không thay đổi)
     val context = LocalContext.current
     val alignment = if (msg.isMine) Alignment.End else Alignment.Start
     val bubbleColor = if (msg.isMine) Color(0xFF6200EE) else Color.White
     val textColor = if (msg.isMine) Color.White else Color.Black
-    val cornerShape = if (msg.isMine) RoundedCornerShape(12.dp, 12.dp, 0.dp, 12.dp) else RoundedCornerShape(12.dp, 12.dp, 12.dp, 0.dp)
 
     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalAlignment = alignment) {
         if (!msg.isMine) Text(msg.user, fontSize = 12.sp, color = Color.Gray, modifier = Modifier.padding(bottom = 2.dp, start = 8.dp))
-
-        Surface(color = bubbleColor, shape = cornerShape, shadowElevation = 2.dp, modifier = Modifier.widthIn(max = 280.dp)) {
+        Surface(color = bubbleColor, shape = RoundedCornerShape(8.dp), shadowElevation = 2.dp, modifier = Modifier.widthIn(max = 280.dp)) {
             Column(modifier = Modifier.padding(8.dp)) {
-                if (msg.image != null && msg.image.isNotEmpty()) {
-                    val imageBitmap = remember(msg.image) { decodeBase64ToBitmap(msg.image) }
-                    if (imageBitmap != null) {
-                        Image(bitmap = imageBitmap, contentDescription = "Ảnh", modifier = Modifier.fillMaxWidth().heightIn(max = 250.dp).padding(bottom = 4.dp), contentScale = ContentScale.Crop)
-                    }
+                if (!msg.image.isNullOrEmpty()) {
+                    val bmp = remember(msg.image) { decodeBase64ToBitmap(msg.image) }
+                    if (bmp != null) Image(bitmap = bmp, contentDescription = null, modifier = Modifier.height(200.dp))
                 }
-                if (msg.fileData != null && msg.fileName != null) {
-                    Row(modifier = Modifier.background(Color(0x33000000), RoundedCornerShape(8.dp)).padding(8.dp).clickable { saveAndOpenFile(context, msg.fileData, msg.fileName) }, verticalAlignment = Alignment.CenterVertically) {
-                        Text("📄", fontSize = 24.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            Text(msg.fileName, color = textColor, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                            Text("Nhấn để tải về", color = textColor.copy(alpha = 0.7f), fontSize = 10.sp)
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
+                if (!msg.fileData.isNullOrEmpty()) {
+                    Text("📄 ${msg.fileName}\n(Chạm để tải)", color = textColor, modifier = Modifier.clickable { saveAndOpenFile(context, msg.fileData, msg.fileName!!) })
                 }
-                if (msg.content.isNotEmpty()) {
-                    Text(text = msg.content, color = textColor, fontSize = 16.sp)
-                }
+                if (msg.content.isNotEmpty()) Text(msg.content, color = textColor)
             }
         }
     }

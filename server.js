@@ -1,58 +1,57 @@
 const express = require('express');
 const http = require('http');
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 
-// Cấu hình Socket.io
+// Cấu hình CORS để Mobile và Web khác IP vẫn gọi được nhau
 const io = new Server(server, {
     cors: {
         origin: "*", 
         methods: ["GET", "POST"]
-    },
-    // QUAN TRỌNG: Cho phép gói tin lên tới 50MB (để gửi ảnh/video)
-    maxHttpBufferSize: 50 * 1024 * 1024 
+    }
 });
 
-// Cho phép truy cập thư mục public
-app.use(express.static('public'));
+// Trả về file giao diện Web khi truy cập vào IP máy tính
+app.get('/', (req, res) => {
+    // Đảm bảo bạn đã để file index.html cùng thư mục với server.js
+   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-// Lắng nghe kết nối
 io.on('connection', (socket) => {
-    console.log('⚡ Có người kết nối: ' + socket.id);
+    console.log('⚡ User connected:', socket.id);
 
-    // 1. CHAT & FILE
+    // 1. Chát
     socket.on('chat_message', (data) => {
-        // Gửi lại cho TẤT CẢ mọi người
         io.emit('chat_message', data);
     });
 
-    // 👇 2. SIGNALING CHO VIDEO CALL (PHẦN MỚI THÊM) 👇
-    
-    // Khi ai đó gửi "Lời mời" (Offer)
+    // 2. WebRTC Signaling (Chuyển tiếp tín hiệu Video)
     socket.on('offer', (data) => {
-        // Gửi cho người khác (trừ người gửi)
+        console.log("📡 Relaying Offer");
         socket.broadcast.emit('offer', data);
     });
 
-    // Khi ai đó gửi "Đồng ý" (Answer)
     socket.on('answer', (data) => {
+        console.log("📡 Relaying Answer");
         socket.broadcast.emit('answer', data);
     });
 
-    // Khi ai đó gửi "Đường đi" (ICE Candidate)
     socket.on('candidate', (data) => {
+        // console.log("📡 Relaying Candidate");
+        console.log("📡 Relaying Candidate:", data.candidate ? data.candidate.substring(0, 50) : 'null');
         socket.broadcast.emit('candidate', data);
     });
-    // --------------------------------------------------
 
     socket.on('disconnect', () => {
-        console.log('❌ Một user đã thoát');
+        console.log('❌ User disconnected:', socket.id);
     });
 });
 
-// Chạy Server tại port 3000
-server.listen(3000, () => {
-    console.log('🚀 Server đang chạy tại http://localhost:3000');
+// Lắng nghe trên tất cả các IP của máy (0.0.0.0)
+server.listen(3000, '0.0.0.0', () => {
+    console.log('🚀 Server is running on port 3000');
+    console.log('👉 Mobile App should connect to: http://YOUR_PC_IP:3000');
 });

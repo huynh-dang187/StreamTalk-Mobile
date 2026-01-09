@@ -16,7 +16,8 @@ const io = new Server(server, {
 
 // Trả về file giao diện Web khi truy cập vào IP máy tính
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    // Thêm chữ 'public' vào đường dẫn
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 io.on('connection', (socket) => {
     console.log('⚡ User connected:', socket.id);

@@ -16,10 +16,8 @@ const io = new Server(server, {
 
 // Trả về file giao diện Web khi truy cập vào IP máy tính
 app.get('/', (req, res) => {
-    // Đảm bảo bạn đã để file index.html cùng thư mục với server.js
-   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(__dirname + '/index.html');
 });
-
 io.on('connection', (socket) => {
     console.log('⚡ User connected:', socket.id);
 
@@ -50,8 +48,8 @@ io.on('connection', (socket) => {
     });
 });
 
-// Lắng nghe trên tất cả các IP của máy (0.0.0.0)
-server.listen(3000, '0.0.0.0', () => {
-    console.log('🚀 Server is running on port 3000');
-    console.log('👉 Mobile App should connect to: http://YOUR_PC_IP:3000');
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+    console.log(`🚀 Server đang chạy tại port ${PORT}`);
 });

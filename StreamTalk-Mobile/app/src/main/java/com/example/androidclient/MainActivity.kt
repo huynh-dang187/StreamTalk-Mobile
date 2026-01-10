@@ -21,7 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 // 👇 Đảm bảo link Ngrok này là mới nhất nhé!
-const val WEB_URL = "https://retrobulbar-nonextinguishable-elane.ngrok-free.dev"
+const val WEB_URL = "https://streamtalk-mobile.onrender.com"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

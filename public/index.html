@@ -2,238 +2,985 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Web Chat (Robust)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StreamTalk Mobile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #login-screen { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        #chat-screen { width: 450px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; display: none; flex-direction: column; height: 85vh; }
-        .chat-header { background: #6200EE; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
-        #chat-box { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
-        .message-bubble { max-width: 75%; padding: 10px; border-radius: 10px; margin-bottom: 10px; word-wrap: break-word; }
-        .my-message { align-self: flex-end; background-color: #6200EE; color: white; margin-left: auto; }
-        .other-message { align-self: flex-start; background-color: #E0E0E0; color: #333; }
-        .input-area { padding: 10px; display: flex; border-top: 1px solid #eee; }
+        /* 1. CẤU HÌNH CHUNG */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
-        /* Video Call UI */
-        #video-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
-        .video-container { display: flex; gap: 20px; justify-content: center; align-items: center; flex-wrap: wrap; }
-        #local-video { width: 150px; height: 100px; background: #333; border: 2px solid #6200EE; transform: scaleX(-1); object-fit: cover; }
-        #remote-video { width: 100%; max-width: 500px; height: auto; background: black; border: 2px solid white; }
-        .status-text { color: white; margin-bottom: 10px; font-weight: bold; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
 
-        /* Incoming Call Popup */
-        #incoming-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
-        .incoming-content { background: white; padding: 30px; border-radius: 15px; text-align: center; }
+        /* 2. MÀN HÌNH LOGIN - ĐÃ CẢI TIẾN */
+        #login-screen {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 1000; 
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .app-logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 82, 204, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-title {
+            color: #1a1a1a;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 18px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            font-size: 16px;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #339af0;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(51, 154, 240, 0.1);
+        }
+
+        .login-input::placeholder {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(51, 154, 240, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(51, 154, 240, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* 3. MÀN HÌNH CHAT CHÍNH - ĐÃ CẢI TIẾN */
+        #chat-screen { 
+            display: none; 
+            flex-direction: column; 
+            height: 100%; 
+            width: 100%; 
+            margin: 0 auto; 
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        /* Header mới */
+        .chat-header {
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0, 82, 204, 0.08);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .room-indicator {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .room-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.2;
+        }
+
+        .room-status {
+            font-size: 12px;
+            color: #339af0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #51cf66;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            padding: 10px 16px;
+            background: #f1f3f5;
+            border: none;
+            border-radius: 12px;
+            color: #339af0;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-btn:hover {
+            background: #339af0;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Vùng tin nhắn mới */
+        #messages { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            scroll-behavior: smooth;
+            background: #f8f9fa;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+
+        .message-sender {
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+            margin: 0 12px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .message-bubble.mine {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+            color: white;
+            border-bottom-right-radius: 8px;
+        }
+
+        .message-bubble.theirs {
+            align-self: flex-start;
+            background: white;
+            color: #1a1a1a;
+            border-bottom-left-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .message-bubble.theirs .message-time {
+            color: #999;
+        }
+
+        /* Thanh nhập tin nhắn mới */
+        .input-container {
+            padding: 16px 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 -2px 15px rgba(0, 82, 204, 0.05);
+        }
+
+        .message-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #msg-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 24px;
+            font-size: 15px;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            padding-right: 50px;
+        }
+
+        #msg-input:focus {
+            outline: none;
+            border-color: #339af0;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(51, 154, 240, 0.1);
+        }
+
+        .send-button {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(51, 154, 240, 0.3);
+        }
+
+        .send-button:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        /* 4. MÀN HÌNH GỌI VIDEO - ĐÃ CẢI TIẾN */
+        #video-modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #1a1a1a;
+            z-index: 2000; 
+            flex-direction: column;
+        }
+
+        .video-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2002;
+        }
+
+        .call-info {
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .call-duration {
+            color: #999;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .video-wrapper { 
+            position: relative; 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+        }
+
+        #remote-video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        #local-video { 
+            position: absolute; 
+            top: 80px; 
+            right: 20px; 
+            width: 100px; 
+            height: 150px; 
+            background: #333; 
+            border-radius: 16px; 
+            border: 3px solid white;
+            object-fit: cover; 
+            z-index: 2001; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            z-index: 2002;
+        }
+
+        .control-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-mic {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-hangup {
+            background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+        }
+
+        /* 5. POPUP CUỘC GỌI ĐẾN - ĐÃ CẢI TIẾN */
+        #incoming-call { 
+            display: none; 
+            position: fixed; 
+            top: 20px; 
+            left: 5%; 
+            width: 90%; 
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 60px rgba(0, 82, 204, 0.3);
+            z-index: 3000; 
+            animation: slideDown 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .caller-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .caller-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .caller-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .call-status {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .call-actions { 
+            display: flex; 
+            gap: 16px; 
+        }
+
+        .call-action-btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-reject { 
+            background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(250, 82, 82, 0.3);
+        }
+
+        .btn-accept { 
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(64, 192, 87, 0.3);
+        }
+
+        .call-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 6. ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown { 
+            from { 
+                transform: translateY(-100%); 
+                opacity: 0;
+            } 
+            to { 
+                transform: translateY(0); 
+                opacity: 1;
+            } 
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 7. SCROLLBAR STYLING */
+        #messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #messages::-webkit-scrollbar-thumb {
+            background: rgba(51, 154, 240, 0.3);
+            border-radius: 3px;
+        }
+
+        #messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(51, 154, 240, 0.5);
+        }
+
+        /* 8. UTILITY CLASSES */
+        .timestamp {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .timestamp::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: 50%;
+            height: 1px;
+            background: #e9ecef;
+            z-index: -1;
+        }
+
+        .timestamp span {
+            background: #f8f9fa;
+            padding: 0 12px;
+        }
+
+        .online-count {
+            background: #f1f3f5;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* 9. RESPONSIVE ADJUSTMENTS */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .chat-header {
+                padding: 14px 16px;
+            }
+            
+            .header-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+                padding: 12px 16px;
+            }
+            
+            .input-container {
+                padding: 14px 16px;
+            }
+            
+            #local-video {
+                width: 90px;
+                height: 135px;
+                top: 70px;
+                right: 16px;
+            }
+            
+            .video-controls {
+                bottom: 30px;
+                gap: 20px;
+            }
+            
+            .control-btn {
+                width: 56px;
+                height: 56px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h2 style="color: #6200EE;">👋 Web Client</h2>
-        <input type="text" id="login-input" placeholder="Nhập tên..." style="padding: 10px; margin-bottom: 10px; width: 200px;">
-        <br>
-        <button onclick="joinChat()" style="padding: 10px 20px; background: #6200EE; color: white; border: none; cursor: pointer;">Tham Gia</button>
+        <div class="login-container">
+            <div class="app-logo">StreamTalk</div>
+            <div class="login-card">
+                <h1 class="login-title">Chào mừng!</h1>
+                <p class="login-subtitle">Kết nối và trò chuyện với mọi người</p>
+                <div class="input-group">
+                    <input type="text" id="username" class="login-input" placeholder="Tên của bạn" autocomplete="off">
+                </div>
+                <button class="btn-primary" onclick="joinChat()">Bắt đầu trò chuyện</button>
+            </div>
+        </div>
     </div>
 
     <div id="chat-screen">
         <div class="chat-header">
-            <span>💬 Phòng Chat</span>
-            <button onclick="startCall()" style="background: none; border: 1px solid white; color: white; cursor: pointer;">📹 Gọi Video</button>
+            <div class="header-left">
+                <div class="room-indicator">
+                    <div class="room-name">Nhóm 13</div>
+                    <div class="room-status">
+                        <span class="status-dot"></span>
+                        <span>Đang hoạt động</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="online-count">12 người online</div>
+                <button class="header-btn" onclick="startCall()">Gọi video</button>
+            </div>
         </div>
-        <div id="chat-box"></div>
-        <div class="input-area">
-            <input type="text" id="msg-input" placeholder="Tin nhắn..." style="flex: 1; padding: 10px;">
-            <button onclick="sendMessage()" style="padding: 10px; background: #6200EE; color: white; border: none;">Gửi</button>
+        
+        <div id="messages">
+            <div class="timestamp"><span>Hôm nay</span></div>
+        </div>
+        
+        <div class="input-container">
+            <div class="message-input-wrapper">
+                <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." autocomplete="off">
+                <button class="send-button" onclick="sendMessage()">Gửi</button>
+            </div>
         </div>
     </div>
 
-    <div id="incoming-modal">
-        <div class="incoming-content">
-            <h3>📞 Có cuộc gọi đến!</h3>
-            <button onclick="rejectCall()" style="background: red; color: white; padding: 10px 20px; border: none; margin: 5px;">Từ chối</button>
-            <button onclick="acceptCall()" style="background: green; color: white; padding: 10px 20px; border: none; margin: 5px;">Trả lời</button>
+    <div id="incoming-call">
+        <div class="caller-info">
+            <div class="caller-avatar">NT</div>
+            <div class="caller-name">Người gọi</div>
+            <div class="call-status">Đang gọi video...</div>
+        </div>
+        <div class="call-actions">
+            <button class="call-action-btn btn-reject" onclick="rejectCall()">Từ chối</button>
+            <button class="call-action-btn btn-accept" onclick="acceptCall()">Trả lời</button>
         </div>
     </div>
 
-    <div id="video-screen">
-        <div class="status-text" id="call-status">Đang kết nối...</div>
-        <div class="video-container">
-            <video id="local-video" autoplay playsinline muted></video>
+    <div id="video-modal">
+        <div class="video-header">
+            <div class="call-info">
+                <div>Cuộc gọi video</div>
+                <div class="call-duration" id="call-timer">00:00</div>
+            </div>
+        </div>
+        <div class="video-wrapper">
             <video id="remote-video" autoplay playsinline></video>
+            <video id="local-video" autoplay playsinline muted></video>
+            
+            <div class="video-controls">
+                <button class="control-btn btn-mic" onclick="toggleMic()">Mic</button>
+                <button class="control-btn btn-hangup" onclick="endCall()">Kết thúc</button>
+            </div>
         </div>
-        <button onclick="closeVideo()" style="background: red; color: white; padding: 10px 30px; border: none; margin-top: 20px; border-radius: 20px; cursor: pointer;">❌ Kết thúc</button>
     </div>
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        let myName = ""; 
-        let localStream = null;
-        let peerConnection = null;
-        let pendingOffer = null;
-        let iceCandidateQueue = []; 
+        let myName = localStorage.getItem('chat_username') || "";
+        
+        if(myName) document.getElementById('username').value = myName;
 
+        // WebRTC Variables
+        let localStream;
+        let peerConnection;
+        let pendingOffer;
+        let callTimer;
+        let callStartTime;
         const rtcConfig = { 
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
+                { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
             ] 
         };
 
-        // --- 1. XỬ LÝ MEDIA (Camera/Mic) ---
-        async function getMediaStream() {
-            try {
-                // Thử lấy cả Video và Audio
-                console.log("📹 Đang thử mở Camera & Mic...");
-                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            } catch (err) {
-                console.warn("⚠️ Không tìm thấy Camera hoặc bị từ chối:", err);
-                try {
-                    // Nếu lỗi, thử chỉ lấy Audio (Mic)
-                    console.log("🎤 Đang thử mở Mic (Chế độ Audio-Only)...");
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                } catch (err2) {
-                    console.error("❌ Không có thiết bị nào (Mic/Cam). Chế độ Chỉ Xem.", err2);
-                    localStream = null; // Vẫn tiếp tục chạy để xem hình bên kia
-                }
-            }
+        // --- 1. CHAT LOGIC ---
+        function joinChat() {
+            const nameInput = document.getElementById('username').value.trim();
+            if (!nameInput) return alert("Vui lòng nhập tên!");
+            
+            myName = nameInput;
+            localStorage.setItem('chat_username', myName);
+            
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('chat-screen').style.display = 'flex';
+            }, 300);
+            
+            // Add welcome message
+            addMessage("Hệ thống", `Chào mừng ${myName} đã tham gia phòng chat!`, "system");
+        }
 
-            if (localStream) {
-                document.getElementById('local-video').srcObject = localStream;
+        function sendMessage() {
+            const input = document.getElementById('msg-input');
+            const content = input.value.trim();
+            if(content) {
+                socket.emit('chat_message', { user: myName, content: content });
+                input.value = "";
             }
         }
 
-        // --- 2. WEBRTC CORE ---
-        async function createPeerConnection() {
-            peerConnection = new RTCPeerConnection(rtcConfig);
+        socket.on('chat_message', (data) => {
+            addMessage(data.user, data.content, data.user === myName ? "mine" : "theirs");
+        });
 
-            // Gửi Candidate sang Mobile
+        function addMessage(sender, content, type) {
+            const msgArea = document.getElementById('messages');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-bubble ${type}`;
+            messageDiv.innerHTML = `
+                ${content}
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            // Group messages by sender
+            const lastGroup = msgArea.lastElementChild;
+            if (lastGroup && lastGroup.classList.contains('message-group')) {
+                const lastSender = lastGroup.querySelector('.message-sender');
+                if (lastSender && lastSender.textContent.includes(sender) && type !== "mine") {
+                    lastGroup.appendChild(messageDiv);
+                } else {
+                    createNewMessageGroup(sender, messageDiv, type);
+                }
+            } else {
+                createNewMessageGroup(sender, messageDiv, type);
+            }
+            
+            msgArea.scrollTop = msgArea.scrollHeight;
+        }
+
+        function createNewMessageGroup(sender, messageDiv, type) {
+            const msgArea = document.getElementById('messages');
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'message-group';
+            
+            if (type !== "mine") {
+                const senderDiv = document.createElement('div');
+                senderDiv.className = 'message-sender';
+                senderDiv.textContent = sender;
+                groupDiv.appendChild(senderDiv);
+            }
+            
+            groupDiv.appendChild(messageDiv);
+            msgArea.appendChild(groupDiv);
+        }
+
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        // --- 2. WEBRTC LOGIC ---
+        async function startCall() {
+            document.getElementById('video-modal').style.display = 'flex';
+            await setupMedia();
+            createPeerConnection();
+            
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            socket.emit('offer', offer);
+            
+            startCallTimer();
+        }
+
+        async function setupMedia() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 1280, height: 720 },
+                    audio: true 
+                });
+                document.getElementById('local-video').srcObject = localStream;
+            } catch(e) {
+                console.error("Lỗi Camera:", e);
+                alert("Không thể mở Camera/Mic. Vui lòng kiểm tra quyền truy cập!");
+            }
+        }
+
+        function createPeerConnection() {
+            peerConnection = new RTCPeerConnection(rtcConfig);
+            
+            if(localStream) {
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            }
+
+            peerConnection.ontrack = (event) => {
+                document.getElementById('remote-video').srcObject = event.streams[0];
+            };
+
             peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    console.log("📤 Gửi Candidate:", event.candidate.candidate);
-                    socket.emit("candidate", {
+                if(event.candidate) {
+                    socket.emit('candidate', {
                         sdpMid: event.candidate.sdpMid,
                         sdpMLineIndex: event.candidate.sdpMLineIndex,
                         candidate: event.candidate.candidate
                     });
                 }
             };
-
-            peerConnection.oniceconnectionstatechange = () => {
-                const status = document.getElementById('call-status');
-                status.innerText = `Trạng thái: ${peerConnection.iceConnectionState}`;
-                console.log("❄️ ICE State:", peerConnection.iceConnectionState);
-            };
-
-            // Nhận Video từ Mobile
-            peerConnection.ontrack = (event) => {
-                console.log("🌊 Nhận được Stream từ Mobile!");
-                const remoteVideo = document.getElementById('remote-video');
-                if (remoteVideo.srcObject !== event.streams[0]) {
-                    remoteVideo.srcObject = event.streams[0];
-                }
-            };
-
-            // Add luồng của mình vào (nếu có)
-            if (localStream) {
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-            } else {
-                // Nếu PC không có cam/mic, ta tạo một "Offer" chỉ nhận (recvonly) để báo Mobile gửi hình sang
-                if (peerConnection.addTransceiver) {
-                    peerConnection.addTransceiver('video', { direction: 'recvonly' });
-                    peerConnection.addTransceiver('audio', { direction: 'recvonly' });
-                }
-            }
         }
 
-        // --- 3. QUY TRÌNH GỌI ---
-        
-        // A. Gọi đi (Từ Web)
-        async function startCall() {
-            document.getElementById('video-screen').style.display = 'flex';
-            await getMediaStream();
-            await createPeerConnection();
-
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            socket.emit('offer', offer);
-        }
-
-        // B. Nhận cuộc gọi (Từ Mobile)
         socket.on('offer', (offer) => {
-            console.log("🔔 Có cuộc gọi đến...");
             pendingOffer = offer;
-            document.getElementById('incoming-modal').style.display = 'flex';
+            document.getElementById('incoming-call').style.display = 'block';
         });
 
         async function acceptCall() {
-            document.getElementById('incoming-modal').style.display = 'none';
-            document.getElementById('video-screen').style.display = 'flex';
+            document.getElementById('incoming-call').style.display = 'none';
+            document.getElementById('video-modal').style.display = 'flex';
             
-            await getMediaStream();
-            await createPeerConnection();
-
+            await setupMedia();
+            createPeerConnection();
             await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
-            processIceQueue(); // Nạp candidate đã chờ
-
+            
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
             socket.emit('answer', answer);
-            pendingOffer = null;
+            
+            startCallTimer();
         }
 
-        // C. Xử lý tín hiệu
-        socket.on('answer', async (answer) => {
-            if (!peerConnection) return;
-            console.log("📥 Nhận Answer");
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-            processIceQueue();
-        });
+        function rejectCall() {
+            document.getElementById('incoming-call').style.display = 'none';
+            socket.emit('call_rejected');
+        }
 
-        socket.on('candidate', async (candidateData) => {
-            const candidate = new RTCIceCandidate(candidateData);
-            if (peerConnection && peerConnection.remoteDescription) {
-                try { await peerConnection.addIceCandidate(candidate); } catch(e){}
-            } else {
-                iceCandidateQueue.push(candidate);
+        socket.on('answer', (answer) => {
+            if(peerConnection) {
+                peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
             }
         });
 
-        async function processIceQueue() {
-            while (iceCandidateQueue.length > 0) {
-                try { await peerConnection.addIceCandidate(iceCandidateQueue.shift()); } catch(e){}
+        socket.on('candidate', (candidate) => {
+            if(peerConnection) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+        });
+
+        socket.on('call_rejected', () => {
+            endCall();
+            alert("Cuộc gọi bị từ chối");
+        });
+
+        function startCallTimer() {
+            callStartTime = new Date();
+            clearInterval(callTimer);
+            callTimer = setInterval(() => {
+                const elapsed = Math.floor((new Date() - callStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('call-timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function endCall() {
+            document.getElementById('video-modal').style.display = 'none';
+            clearInterval(callTimer);
+            if(localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            if(peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            document.getElementById('call-timer').textContent = "00:00";
+        }
+
+        function toggleMic() {
+            if(localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if(audioTrack) {
+                    audioTrack.enabled = !audioTrack.enabled;
+                    const btn = document.querySelector('.btn-mic');
+                    btn.textContent = audioTrack.enabled ? 'Mic' : 'Tắt mic';
+                    btn.style.background = audioTrack.enabled ? 
+                        'rgba(255, 255, 255, 0.15)' : 'rgba(255, 107, 107, 0.8)';
+                }
             }
         }
 
-        function rejectCall() { document.getElementById('incoming-modal').style.display = 'none'; }
-        
-        function closeVideo() {
-            document.getElementById('video-screen').style.display = 'none';
-            if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-            if (peerConnection) { peerConnection.close(); peerConnection = null; }
-            location.reload();
-        }
-
-        // --- 4. CHAT CƠ BẢN ---
-        function joinChat() {
-            myName = document.getElementById('login-input').value.trim() || "WebUser";
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('chat-screen').style.display = 'flex';
-        }
-        function sendMessage() {
-            const input = document.getElementById('msg-input');
-            if (input.value) {
-                socket.emit('chat_message', { user: myName, content: input.value });
-                input.value = "";
+        // Enter key support
+        document.getElementById('msg-input').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                sendMessage();
             }
-        }
-        socket.on('chat_message', (data) => {
-            const div = document.createElement('div');
-            div.className = "message-bubble " + (data.user === myName ? "my-message" : "other-message");
-            div.innerText = (data.user === myName ? "" : data.user + ": ") + data.content;
-            document.getElementById('chat-box').appendChild(div);
+        });
+
+        document.getElementById('username').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                joinChat();
+            }
         });
     </script>
 </body>

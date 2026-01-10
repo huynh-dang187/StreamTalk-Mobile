@@ -6,42 +6,50 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 
-// Cấu hình CORS để Mobile và Web khác IP vẫn gọi được nhau
 const io = new Server(server, {
-    cors: {
-        origin: "*", 
-        methods: ["GET", "POST"]
-    }
+    cors: { origin: "*", methods: ["GET", "POST"] },
+    maxHttpBufferSize: 1e8 // Tăng giới hạn gửi file lên 100MB (đề phòng ảnh lớn)
 });
 
-// Trả về file giao diện Web khi truy cập vào IP máy tính
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
-    // Thêm chữ 'public' vào đường dẫn
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 io.on('connection', (socket) => {
     console.log('⚡ User connected:', socket.id);
 
-    // 1. Chát
+    // 1. CHAT (Hỗ trợ cả Text, Ảnh, File)
     socket.on('chat_message', (data) => {
+        // data bao gồm: { user, content, type: 'text'|'image'|'file', fileName, fileData }
         io.emit('chat_message', data);
     });
 
-    // 2. WebRTC Signaling (Chuyển tiếp tín hiệu Video)
+    // 2. HIỆU ỨNG TYPING (SOẠN TIN)
+    socket.on('typing', (data) => {
+        socket.broadcast.emit('typing', data); // Gửi cho người khác (trừ mình)
+    });
+
+    socket.on('stop_typing', () => {
+        socket.broadcast.emit('stop_typing');
+    });
+
+    // 3. WEBRTC SIGNALING
     socket.on('offer', (data) => {
-        console.log("📡 Relaying Offer");
         socket.broadcast.emit('offer', data);
     });
 
     socket.on('answer', (data) => {
-        console.log("📡 Relaying Answer");
         socket.broadcast.emit('answer', data);
     });
 
     socket.on('candidate', (data) => {
-        // console.log("📡 Relaying Candidate");
-        console.log("📡 Relaying Candidate:", data.candidate ? data.candidate.substring(0, 50) : 'null');
         socket.broadcast.emit('candidate', data);
+    });
+
+    socket.on('call_rejected', () => {
+        socket.broadcast.emit('call_rejected');
     });
 
     socket.on('disconnect', () => {
@@ -50,7 +58,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
 server.listen(PORT, () => {
     console.log(`🚀 Server đang chạy tại port ${PORT}`);
 });

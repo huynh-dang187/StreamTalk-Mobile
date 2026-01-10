@@ -8,45 +8,40 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN CÁC CSS CŨ VÀ THÊM CÁI MỚI */
+        /* 1. CẤU HÌNH CHUNG */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* Login Screen (Giữ nguyên) */
+        /* 2. LOGIN SCREEN (Có ô Password) */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; transition: opacity 0.3s ease; }
-        .login-card { background: rgba(255, 255, 255, 0.95); padding: 40px 30px; border-radius: 24px; text-align: center; width: 100%; max-width: 400px; }
-        .login-input { width: 100%; padding: 15px; margin: 20px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; }
-        .btn-primary { width: 100%; padding: 15px; background: #339af0; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .login-card { background: rgba(255, 255, 255, 0.95); padding: 40px 30px; border-radius: 24px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .login-card h2 { margin-bottom: 20px; color: #333; }
+        .login-input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
+        .btn-primary { width: 100%; padding: 15px; background: #339af0; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-primary:active { transform: scale(0.98); }
 
-        /* Chat Screen */
+        /* 3. CHAT SCREEN */
         #chat-screen { display: none; flex-direction: column; height: 100%; background: #f0f2f5; }
-        
         .chat-header { padding: 15px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .room-name { font-weight: bold; font-size: 18px; }
         
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        
         .message-bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 15px; position: relative; word-wrap: break-word; }
         .message-bubble.mine { align-self: flex-end; background: #0084ff; color: white; border-bottom-right-radius: 4px; }
         .message-bubble.theirs { align-self: flex-start; background: white; color: black; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .message-sender { font-size: 11px; margin-bottom: 4px; font-weight: bold; opacity: 0.7; }
         
-        /* Hình ảnh trong chat */
+        /* Media trong chat */
         .chat-image { max-width: 100%; border-radius: 10px; margin-top: 5px; cursor: pointer; }
-        /* File trong chat */
         .chat-file { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 10px; text-decoration: none; color: inherit; margin-top: 5px; }
-        .file-icon { font-size: 24px; }
 
-        /* Typing Indicator */
+        /* Typing & Input */
         #typing-indicator { font-size: 12px; color: #888; padding: 0 20px 10px; font-style: italic; display: none; }
-
-        /* Input Area (Cải tiến) */
         .input-container { padding: 10px 15px; background: white; display: flex; gap: 10px; align-items: center; border-top: 1px solid #ddd; }
-        .btn-attach { background: none; border: none; color: #0084ff; cursor: pointer; padding: 5px; display: flex; align-items: center; }
+        .btn-attach, .btn-send { background: none; border: none; color: #0084ff; cursor: pointer; padding: 5px; }
         #msg-input { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #ddd; background: #f0f2f5; outline: none; }
-        .btn-send { background: none; border: none; color: #0084ff; cursor: pointer; padding: 5px; }
 
-        /* Popup Incoming Call */
+        /* Call UI */
         #incoming-call { display: none; position: fixed; top: 20px; left: 5%; width: 90%; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 2000; animation: slideDown 0.5s; }
         @keyframes slideDown { from {transform: translateY(-100%);} to {transform: translateY(0);} }
         .call-actions { display: flex; gap: 10px; margin-top: 15px; }
@@ -69,16 +64,22 @@
 
     <div id="login-screen">
         <div class="login-card">
-            <h2>StreamTalk Pro</h2>
-            <input type="text" id="username" class="login-input" placeholder="Nhập tên của bạn...">
-            <button class="btn-primary" onclick="joinChat()">Vào Chat</button>
+            <h2>StreamTalk Cloud</h2>
+            <input type="text" id="username" class="login-input" placeholder="Tên đăng nhập">
+            <input type="password" id="password" class="login-input" placeholder="Mật khẩu">
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" onclick="handleLogin()" style="flex: 1;">Đăng Nhập</button>
+                <button class="btn-primary" onclick="handleRegister()" style="flex: 1; background: #6c757d;">Đăng Ký</button>
+            </div>
+            <p id="login-msg" style="color: red; margin-top: 10px; font-size: 13px;"></p>
         </div>
     </div>
 
     <div id="chat-screen">
         <div class="chat-header">
             <span class="room-name">Nhóm 13</span>
-            <button onclick="startCall()" style="background:none; border:none; color:#0084ff; font-weight:bold;">
+            <button onclick="startCall()" style="background:none; border:none; color:#0084ff;">
                 <span class="material-icons-round" style="font-size: 28px;">videocam</span>
             </button>
         </div>
@@ -88,11 +89,9 @@
 
         <div class="input-container">
             <input type="file" id="file-input" hidden onchange="handleFileUpload(this)">
-            
             <button class="btn-attach" onclick="document.getElementById('file-input').click()">
                 <span class="material-icons-round">attach_file</span>
             </button>
-            
             <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." autocomplete="off">
             <button class="btn-send" onclick="sendMessage()">
                 <span class="material-icons-round">send</span>
@@ -102,7 +101,6 @@
 
     <div id="incoming-call">
         <h3>📞 Có cuộc gọi video...</h3>
-        <p>Ai đó đang gọi cho bạn</p>
         <div class="call-actions">
             <button class="call-btn btn-reject" onclick="rejectCall()">Từ chối</button>
             <button class="call-btn btn-accept" onclick="acceptCall()">Trả lời</button>
@@ -124,31 +122,53 @@
     <script>
         const socket = io();
         let myName = localStorage.getItem('chat_username') || "";
-        if(myName) document.getElementById('username').value = myName;
 
-        // --- 1. LOGIC ÂM THANH ---
-        function playMsgSound() {
-            document.getElementById('sound-msg').play().catch(e=>{});
-        }
-        function playCallSound() {
-            document.getElementById('sound-call').play().catch(e=>{});
-        }
-        function stopCallSound() {
-            const audio = document.getElementById('sound-call');
-            audio.pause();
-            audio.currentTime = 0;
+        // --- 1. LOGIC LOGIN / REGISTER (MỚI) ---
+        async function handleLogin() {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            const msg = document.getElementById('login-msg');
+            if(!u || !p) { msg.innerText = "Thiếu thông tin!"; return; }
+
+            msg.innerText = "Đang kiểm tra...";
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({username: u, password: p})
+                });
+                const data = await res.json();
+                if(data.success) enterChatRoom(data.username);
+                else msg.innerText = data.message;
+            } catch(e) { msg.innerText = "Lỗi kết nối!"; }
         }
 
-        // --- 2. LOGIC CHAT & FILE ---
-        function joinChat() {
-            const name = document.getElementById('username').value.trim();
-            if(!name) return alert("Nhập tên đi bạn ơi!");
+        async function handleRegister() {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            const msg = document.getElementById('login-msg');
+            if(!u || !p) { msg.innerText = "Thiếu thông tin!"; return; }
+
+            msg.innerText = "Đang đăng ký...";
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({username: u, password: p})
+                });
+                const data = await res.json();
+                msg.innerText = data.message;
+                if(data.success) msg.style.color = "green";
+                else msg.style.color = "red";
+            } catch(e) { msg.innerText = "Lỗi kết nối!"; }
+        }
+
+        function enterChatRoom(name) {
             myName = name;
             localStorage.setItem('chat_username', myName);
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('chat-screen').style.display = 'flex';
         }
 
+        // --- 2. LOGIC CHAT & FILE ---
         function sendMessage() {
             const input = document.getElementById('msg-input');
             const content = input.value.trim();
@@ -159,80 +179,47 @@
             }
         }
 
-        // Xử lý gửi File/Ảnh
         function handleFileUpload(input) {
             const file = input.files[0];
-            if (!file) return;
-
-            // Giới hạn 5MB cho nhẹ server
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File lớn quá! Gửi file < 5MB thôi.");
-                return;
-            }
-
+            if (!file || file.size > 5*1024*1024) { alert("File > 5MB!"); return; }
             const reader = new FileReader();
             reader.onload = function(e) {
                 const type = file.type.startsWith('image/') ? 'image' : 'file';
-                socket.emit('chat_message', {
-                    user: myName,
-                    type: type,
-                    fileData: e.target.result, // Base64 string
-                    fileName: file.name
-                });
+                socket.emit('chat_message', { user: myName, type, fileData: e.target.result, fileName: file.name });
             };
             reader.readAsDataURL(file);
-            input.value = ""; // Reset input
+            input.value = "";
         }
 
-        // Hiển thị tin nhắn
         socket.on('chat_message', (data) => {
             const msgArea = document.getElementById('messages');
             const div = document.createElement('div');
             const isMine = data.user === myName;
-            
             div.className = `message-bubble ${isMine ? 'mine' : 'theirs'}`;
             
-            let contentHtml = '';
-            if (data.type === 'image') {
-                contentHtml = `<div class="message-sender">${data.user}</div>
-                               <img src="${data.fileData}" class="chat-image" onclick="window.open(this.src)">`;
-            } else if (data.type === 'file') {
-                contentHtml = `<div class="message-sender">${data.user}</div>
-                               <a href="${data.fileData}" download="${data.fileName}" class="chat-file">
-                                   <span class="material-icons-round file-icon">description</span>
-                                   <span>${data.fileName}</span>
-                               </a>`;
-            } else {
-                contentHtml = `${isMine ? '' : `<div class="message-sender">${data.user}</div>`} ${data.content}`;
-            }
+            let html = '';
+            if(data.type === 'image') html = `<div class="message-sender">${data.user}</div><img src="${data.fileData}" class="chat-image" onclick="window.open(this.src)">`;
+            else if(data.type === 'file') html = `<div class="message-sender">${data.user}</div><a href="${data.fileData}" download="${data.fileName}" class="chat-file"><span class="material-icons-round">description</span>${data.fileName}</a>`;
+            else html = `${isMine ? '' : `<div class="message-sender">${data.user}</div>`} ${data.content}`;
 
-            div.innerHTML = contentHtml;
+            div.innerHTML = html;
             msgArea.appendChild(div);
             msgArea.scrollTop = msgArea.scrollHeight;
-
-            if (!isMine) playMsgSound();
+            if (!isMine) document.getElementById('sound-msg').play().catch(()=>{});
         });
 
-        // --- 3. LOGIC TYPING ---
-        const msgInput = document.getElementById('msg-input');
+        // --- 3. TYPING INDICATOR ---
         let typingTimeout;
-
-        msgInput.addEventListener('input', () => {
+        document.getElementById('msg-input').addEventListener('input', () => {
             socket.emit('typing', { user: myName });
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(() => socket.emit('stop_typing'), 1000);
         });
-
-        socket.on('typing', (data) => {
-            const indicator = document.getElementById('typing-indicator');
-            indicator.innerText = `${data.user} đang soạn tin...`;
-            indicator.style.display = 'block';
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        socket.on('typing', data => {
+            const ind = document.getElementById('typing-indicator');
+            ind.innerText = `${data.user} đang soạn tin...`; ind.style.display = 'block';
         });
-
-        socket.on('stop_typing', () => {
-            document.getElementById('typing-indicator').style.display = 'none';
-        });
+        socket.on('stop_typing', () => document.getElementById('typing-indicator').style.display = 'none');
 
         // --- 4. WEBRTC (VIDEO CALL) ---
         const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }] };
@@ -240,8 +227,7 @@
 
         async function startCall() {
             document.getElementById('video-modal').style.display = 'flex';
-            await setupMedia();
-            createPeerConnection();
+            await setupMedia(); createPeerConnection();
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
             socket.emit('offer', offer);
@@ -256,7 +242,7 @@
 
         function createPeerConnection() {
             peerConnection = new RTCPeerConnection(rtcConfig);
-            if(localStream) localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            if(localStream) localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
             peerConnection.ontrack = e => document.getElementById('remote-video').srcObject = e.streams[0];
             peerConnection.onicecandidate = e => { if(e.candidate) socket.emit('candidate', e.candidate); };
         }
@@ -264,46 +250,36 @@
         socket.on('offer', (offer) => {
             pendingOffer = offer;
             document.getElementById('incoming-call').style.display = 'block';
-            playCallSound(); // Đổ chuông
+            document.getElementById('sound-call').play().catch(()=>{});
         });
 
         async function acceptCall() {
-            stopCallSound();
+            stopSoundCall();
             document.getElementById('incoming-call').style.display = 'none';
             document.getElementById('video-modal').style.display = 'flex';
-            await setupMedia();
-            createPeerConnection();
+            await setupMedia(); createPeerConnection();
             await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            socket.emit('answer', answer);
+            const ans = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(ans);
+            socket.emit('answer', ans);
         }
 
-        function rejectCall() {
-            stopCallSound();
-            document.getElementById('incoming-call').style.display = 'none';
-            socket.emit('call_rejected');
-        }
-
+        function rejectCall() { stopSoundCall(); document.getElementById('incoming-call').style.display = 'none'; socket.emit('call_rejected'); }
+        
         socket.on('answer', ans => peerConnection.setRemoteDescription(new RTCSessionDescription(ans)));
         socket.on('candidate', cand => peerConnection.addIceCandidate(new RTCIceCandidate(cand)));
-        socket.on('call_rejected', () => { alert("Người kia đang bận!"); endCall(); });
+        socket.on('call_rejected', () => { alert("Người kia từ chối!"); endCall(); });
 
         function endCall() {
             document.getElementById('video-modal').style.display = 'none';
             if(localStream) localStream.getTracks().forEach(t => t.stop());
             if(peerConnection) peerConnection.close();
-            stopCallSound();
-            window.location.reload(); // Reload nhẹ để reset
+            stopSoundCall();
+            window.location.reload();
         }
-
-        function toggleMic() {
-            const track = localStream.getAudioTracks()[0];
-            track.enabled = !track.enabled;
-        }
-
-        // Hỗ trợ Enter
-        document.getElementById('msg-input').addEventListener('keypress', e => { if(e.key === 'Enter') sendMessage(); });
+        function toggleMic() { const track = localStream.getAudioTracks()[0]; track.enabled = !track.enabled; }
+        function stopSoundCall() { const s = document.getElementById('sound-call'); s.pause(); s.currentTime = 0; }
+        document.getElementById('msg-input').addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
     </script>
 </body>
 </html>

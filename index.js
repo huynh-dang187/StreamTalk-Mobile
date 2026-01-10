@@ -9,7 +9,7 @@ const server = http.createServer(app);
 
 // 👇 QUAN TRỌNG: Thay chuỗi kết nối MongoDB của bạn vào đây
 // Ví dụ: "mongodb+srv://admin:matkhau123@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority"
-const MONGO_URI = "mongodb+srv://admin:huynhdang123@admin.gxovlx7.mongodb.net/?appName=admin";
+const MONGO_URI = "mongodb+srv://admin:huynhdang187@admin.gxovlx7.mongodb.net/?appName=admin";
 
 // Kết nối MongoDB
 mongoose.connect(MONGO_URI)

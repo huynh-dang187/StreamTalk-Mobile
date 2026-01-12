@@ -12,7 +12,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* 2. LOGIN SCREEN (Có ô Password) */
+        /* 2. LOGIN SCREEN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; transition: opacity 0.3s ease; }
         .login-card { background: rgba(255, 255, 255, 0.95); padding: 40px 30px; border-radius: 24px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .login-card h2 { margin-bottom: 20px; color: #333; }
@@ -123,7 +123,7 @@
         const socket = io();
         let myName = localStorage.getItem('chat_username') || "";
 
-        // --- 1. LOGIC LOGIN / REGISTER (MỚI) ---
+        // --- 1. LOGIC LOGIN / REGISTER ---
         async function handleLogin() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
@@ -222,7 +222,13 @@
         socket.on('stop_typing', () => document.getElementById('typing-indicator').style.display = 'none');
 
         // --- 4. WEBRTC (VIDEO CALL) ---
-        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }] };
+        // Cấu hình STUN/TURN Server để xuyên tường lửa
+        const rtcConfig = { 
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }, 
+                { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
+            ] 
+        };
         let localStream, peerConnection, pendingOffer;
 
         async function startCall() {
@@ -237,14 +243,19 @@
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('local-video').srcObject = localStream;
-            } catch(e) { alert("Lỗi Camera/Mic!"); }
+            } catch(e) { alert("Lỗi Camera/Mic! Hãy kiểm tra quyền truy cập."); }
         }
 
         function createPeerConnection() {
             peerConnection = new RTCPeerConnection(rtcConfig);
             if(localStream) localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
+            
             peerConnection.ontrack = e => document.getElementById('remote-video').srcObject = e.streams[0];
-            peerConnection.onicecandidate = e => { if(e.candidate) socket.emit('candidate', e.candidate); };
+            
+            // Fix lỗi undefined addIceCandidate
+            peerConnection.onicecandidate = e => { 
+                if(e.candidate) socket.emit('candidate', e.candidate); 
+            };
         }
 
         socket.on('offer', (offer) => {
@@ -266,14 +277,26 @@
 
         function rejectCall() { stopSoundCall(); document.getElementById('incoming-call').style.display = 'none'; socket.emit('call_rejected'); }
         
-        socket.on('answer', ans => peerConnection.setRemoteDescription(new RTCSessionDescription(ans)));
-        socket.on('candidate', cand => peerConnection.addIceCandidate(new RTCIceCandidate(cand)));
+        socket.on('answer', ans => {
+            if (peerConnection) peerConnection.setRemoteDescription(new RTCSessionDescription(ans));
+        });
+        
+        // --- ĐOẠN CODE ĐƯỢC SỬA LỖI (FIX CRASH) ---
+        socket.on('candidate', (candidate) => {
+            // Kiểm tra xem peerConnection đã được tạo chưa trước khi add
+            if (peerConnection) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                    .catch(e => console.log("Lỗi thêm candidate (có thể bỏ qua):", e));
+            }
+        });
+
         socket.on('call_rejected', () => { alert("Người kia từ chối!"); endCall(); });
 
         function endCall() {
             document.getElementById('video-modal').style.display = 'none';
             if(localStream) localStream.getTracks().forEach(t => t.stop());
             if(peerConnection) peerConnection.close();
+            peerConnection = null; // Reset biến
             stopSoundCall();
             window.location.reload();
         }

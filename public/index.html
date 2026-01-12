@@ -224,32 +224,33 @@
         // --- 4. WEBRTC (VIDEO CALL) ---
         // Cấu hình STUN/TURN Server để xuyên tường lửa
         // Thay thế đoạn rtcConfig cũ bằng đoạn này
-const rtcConfig = { 
+const rtcConfig = {
     iceServers: [
+        // 1. Giữ lại STUN của Google cho nhanh (khi cùng mạng)
         { 
-            urls: "stun:stun.relay.metered.ca:80"
+            urls: "stun:stun.l.google.com:19302" 
         },
-        { 
-            urls: "turn:a.relay.metered.ca:80",
-            username: "c25227d632c0276d3345b640",
-            credential: "8+6J/Jt1a/00k5+c"
-        },
-        { 
-            urls: "turn:a.relay.metered.ca:80?transport=tcp",
-            username: "c25227d632c0276d3345b640",
-            credential: "8+6J/Jt1a/00k5+c"
-        },
-        { 
-            urls: "turn:a.relay.metered.ca:443",
-            username: "c25227d632c0276d3345b640",
-            credential: "8+6J/Jt1a/00k5+c"
-        },
-        { 
-            urls: "turn:a.relay.metered.ca:443?transport=tcp",
-            username: "c25227d632c0276d3345b640",
-            credential: "8+6J/Jt1a/00k5+c"
-        }
-    ] 
+      {
+        urls: "turn:global.relay.metered.ca:80",
+        username: "c6a7fe020cb38d3823a09173",
+        credential: "vKt+DGKLZ6//Thnv",
+      },
+      {
+        urls: "turn:global.relay.metered.ca:80?transport=tcp",
+        username: "c6a7fe020cb38d3823a09173",
+        credential: "vKt+DGKLZ6//Thnv",
+      },
+      {
+        urls: "turn:global.relay.metered.ca:443",
+        username: "c6a7fe020cb38d3823a09173",
+        credential: "vKt+DGKLZ6//Thnv",
+      },
+      {
+        urls: "turns:global.relay.metered.ca:443?transport=tcp",
+        username: "c6a7fe020cb38d3823a09173",
+        credential: "vKt+DGKLZ6//Thnv",
+      },
+  ],
 };
         let localStream, peerConnection, pendingOffer;
 

@@ -223,12 +223,34 @@
 
         // --- 4. WEBRTC (VIDEO CALL) ---
         // Cấu hình STUN/TURN Server để xuyên tường lửa
-        const rtcConfig = { 
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' }, 
-                { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
-            ] 
-        };
+        // Thay thế đoạn rtcConfig cũ bằng đoạn này
+const rtcConfig = { 
+    iceServers: [
+        { 
+            urls: "stun:stun.relay.metered.ca:80"
+        },
+        { 
+            urls: "turn:a.relay.metered.ca:80",
+            username: "c25227d632c0276d3345b640",
+            credential: "8+6J/Jt1a/00k5+c"
+        },
+        { 
+            urls: "turn:a.relay.metered.ca:80?transport=tcp",
+            username: "c25227d632c0276d3345b640",
+            credential: "8+6J/Jt1a/00k5+c"
+        },
+        { 
+            urls: "turn:a.relay.metered.ca:443",
+            username: "c25227d632c0276d3345b640",
+            credential: "8+6J/Jt1a/00k5+c"
+        },
+        { 
+            urls: "turn:a.relay.metered.ca:443?transport=tcp",
+            username: "c25227d632c0276d3345b640",
+            credential: "8+6J/Jt1a/00k5+c"
+        }
+    ] 
+};
         let localStream, peerConnection, pendingOffer;
 
         async function startCall() {
@@ -253,9 +275,19 @@
             peerConnection.ontrack = e => document.getElementById('remote-video').srcObject = e.streams[0];
             
             // Fix lỗi undefined addIceCandidate
-            peerConnection.onicecandidate = e => { 
-                if(e.candidate) socket.emit('candidate', e.candidate); 
-            };
+            // Tìm đoạn này trong hàm createPeerConnection()
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                // 👇 Thêm dòng này để soi log
+                console.log("📡 Tìm thấy đường đi loại:", event.candidate.type); 
+                
+                socket.emit('candidate', {
+                    sdpMid: event.candidate.sdpMid,
+                    sdpMLineIndex: event.candidate.sdpMLineIndex,
+                    candidate: event.candidate.candidate
+                });
+            }
+        };
         }
 
         socket.on('offer', (offer) => {

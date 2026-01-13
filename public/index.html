@@ -15,7 +15,6 @@
             --white: #ffffff;
             --msg-blue: #0084FF;
             --text-dark: #2d3436;
-            --danger-red: #FF4757;
         }
         * { box-sizing: border-box; }
         body { background-color: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -32,72 +31,79 @@
         .nav-item.active { opacity: 1; font-weight: bold; color: var(--primary-color); }
         #toast-box { visibility: hidden; min-width: 200px; background-color: rgba(0,0,0,0.8); color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; font-weight: 600; }
         #toast-box.show { visibility: visible; opacity: 1; }
+
+        /* --- ADD FRIEND MODAL (MỚI) --- */
+        #add-friend-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); z-index: 2000; display: none;
+            align-items: center; justify-content: center;
+        }
+        .modal-card {
+            background: white; width: 85%; padding: 25px; border-radius: 20px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
         
-        /* --- LOGIN --- */
+        /* --- TOPICS --- */
+        .search-bar-container { padding: 0 20px 15px; }
+        .search-bar { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
+        .section-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; margin-top: 10px;}
+        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 10px; }
+        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .icon-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+        /* Màu icon mới */
+        .icon-blue { color: #4facfe; background: #e0f2ff; } 
+        .icon-orange { color: #ff9a9e; background: #fff0f0; } 
+        .icon-red { color: #ff0844; background: #ffeaef; } 
+        .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
+        .icon-purple { color: #a18cd1; background: #f3f0ff; }
+        .icon-green { color: #43e97b; background: #eafff0; }
+
+        /* --- BUDDIES --- */
+        .buddy-header-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .add-friend-btn { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+        /* --- PROFILE --- */
+        .profile-header { background: white; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .id-card { background: var(--primary-color); color: white; padding: 15px 20px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin: 20px; }
+        .menu-list { background: white; border-radius: 20px; margin: 0 20px 20px; padding: 10px 0; }
+        .menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 600; }
+        .logout-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: #FF4757; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        /* --- OTHER CSS (HOME, LOGIN, CHAT...) --- */
         #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
         .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
-        .login-form-container { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 15px; }
-        .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .btn-orange-login:active { transform: scale(0.98); }
-        .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; font-size: 14px; }
-        .custom-input:focus { border-color: var(--primary-color); background: white; }
-
-        /* --- HOME WIDGETS --- */
+        .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
+        .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; font-size: 14px; margin-bottom: 15px; }
         .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
         .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
         .task-btn { background: var(--accent-orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none; }
-        .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; cursor: pointer;}
+        .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
         .avatar-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
         .info-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
         .stat-box { flex: 1; background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; }
         .rank-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
-
-        /* --- TOPICS (CẢI TIẾN) --- */
-        .search-bar-container { padding: 0 20px 15px; }
-        .search-bar { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; font-family: inherit; }
-        .section-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px;}
-        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; }
-        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-        .icon-bg { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
-        .icon-blue { color: #4facfe; background: #e0f2ff; } .icon-orange { color: #ff9a9e; background: #fff0f0; } .icon-red { color: #ff0844; background: #ffeaef; } .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
-        #matching-screen { background: var(--primary-color); align-items: center; justify-content: center; color: white; text-align: center; }
-        .radar-circle { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; }
-        .radar-core { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 40px; box-shadow: 0 0 20px rgba(255,255,255,0.5); z-index: 2; }
-        .ripple { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); opacity: 0; animation: ripple 2s infinite linear; }
-        .ripple:nth-child(2) { animation-delay: 0.6s; } .ripple:nth-child(3) { animation-delay: 1.2s; }
-        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
-
-        /* --- PROFILE SCREEN (MỚI) --- */
-        .profile-header { background: white; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .id-card { background: var(--primary-color); color: white; padding: 15px 20px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin: 20px; box-shadow: 0 10px 25px rgba(0, 194, 255, 0.3); }
-        .menu-list { background: white; border-radius: 20px; margin: 0 20px 20px; padding: 10px 0; }
-        .menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; color: var(--text-dark); font-weight: 600; }
-        .menu-item:last-child { border-bottom: none; }
-        .menu-item .material-icons-round { margin-right: 15px; color: #888; }
-        .logout-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: var(--danger-red); border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-
-        /* --- BUDDIES & CHAT --- */
-        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
         #chat-screen-ui { background: white; }
         .chat-header-ui { padding: 15px; display: flex; align-items: center; gap: 10px; background: white; border-bottom: 1px solid #f0f0f0; z-index: 10; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #FAFAFA; }
         .msg { padding: 10px 16px; border-radius: 18px; max-width: 75%; font-size: 15px; word-wrap: break-word; }
         .msg.mine { align-self: flex-end; background: var(--msg-blue); color: white; border-bottom-right-radius: 4px; }
         .msg.theirs { align-self: flex-start; background: #E4E6EB; color: black; border-bottom-left-radius: 4px; }
-        .msg-img { max-width: 100%; border-radius: 15px; margin-top: 5px; border: 1px solid rgba(0,0,0,0.1); }
-        .file-card { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,0.2); border-radius: 10px; text-decoration: none; color: inherit; font-weight: 600; font-size: 13px; }
-        .theirs .file-card { background: white; border: 1px solid #ddd; color: #333; }
         .input-area { background: white; padding: 10px 15px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #eee; }
-        .tool-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: #F0F2F5; color: #0084FF; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .chat-input-wrapper { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #msg-input { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
         #video-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
         #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
         #summary-screen { background: white; align-items: center; }
+        #matching-screen { background: var(--primary-color); align-items: center; justify-content: center; color: white; text-align: center; }
+        .radar-circle { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; }
+        .radar-core { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 40px; }
+        .ripple { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); opacity: 0; animation: ripple 2s infinite linear; }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -106,10 +112,10 @@
     <div id="toast-box">Thông báo</div>
 
     <div id="login-screen" class="screen active">
-        <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img" alt="Login">
+        <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img">
         <h2 id="form-title" style="margin-bottom: 5px; font-size: 26px; color: var(--primary-color);">BuddySpeak</h2>
         <p style="color: #888; margin-bottom: 30px; font-size: 14px;">Kết nối và luyện tập tiếng Anh</p>
-        <div class="login-form-container">
+        <div style="width: 100%; max-width: 300px;">
             <input type="text" id="username" class="custom-input" placeholder="Tên đăng nhập">
             <input type="password" id="password" class="custom-input" placeholder="Mật khẩu">
             <button id="auth-btn" onclick="handleLogin()" class="btn-orange-login">Đăng nhập</button>
@@ -139,10 +145,6 @@
                     <div style="background: #FFF4E6; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FF9F43; font-weight: 800; font-size: 18px;">W</div>
                     <div style="flex: 1;"><div style="font-size: 10px; color: #888; font-weight: 700;">WORD OF THE DAY</div><div style="font-size: 15px; font-weight: 800; color: #333;">Serendipity</div><div style="font-size: 12px; color: #555;">Sự tình cờ may mắn</div></div><span class="material-icons-outlined" style="color: #ccc;">volume_up</span>
                 </div>
-                <div style="display: flex; gap: 10px;">
-                    <div class="stat-box"><span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span><div style="font-size: 18px; font-weight: 800; color: #333;">12</div><div style="font-size: 11px; color: #888;">Ngày liên tiếp</div></div>
-                    <div class="stat-box"><span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span><div style="font-size: 18px; font-weight: 800; color: #333;">45m</div><div style="font-size: 11px; color: #888;">Hôm nay</div></div>
-                </div>
             </div>
         </div> 
         <div class="bottom-nav">
@@ -155,11 +157,9 @@
 
     <div id="topic-screen" class="screen">
         <div class="content-scroll-area">
-            <div style="padding:20px 20px 10px; display:flex; align-items:center; gap:10px;">
+            <div style="padding:20px 20px 10px;">
                 <h2 style="margin:0; font-size: 22px;">Khám phá</h2>
-            </div>
-            <div class="search-bar-container">
-                <input type="text" class="search-bar" placeholder="Tìm chủ đề (VD: IELTS, Giao tiếp...)">
+                <div class="search-bar-container" style="padding: 10px 0 0;"><input type="text" class="search-bar" placeholder="Tìm chủ đề (VD: IELTS, Mua sắm...)"></div>
             </div>
 
             <div class="section-title"><span class="material-icons-round" style="color:#FF6B6B;">local_fire_department</span> Phổ biến nhất</div>
@@ -168,7 +168,13 @@
                 <div class="topic-card" onclick="selectTopic('Coffee')"><div class="icon-bg icon-orange"><span class="material-icons-round" style="font-size:32px; color:#FF9F43;">local_cafe</span></div><b>Gọi món Cafe</b></div>
             </div>
 
-            <div class="section-title" style="margin-top: 10px;"><span class="material-icons-round" style="color:#00C2FF;">work</span> Công việc & Đời sống</div>
+            <div class="section-title"><span class="material-icons-round" style="color:#a18cd1;">movie</span> Đời sống & Giải trí</div>
+            <div class="topic-grid">
+                <div class="topic-card" onclick="selectTopic('Shopping')"><div class="icon-bg icon-purple"><span class="material-icons-round" style="font-size:32px;">shopping_bag</span></div><b>Mua sắm</b></div>
+                <div class="topic-card" onclick="selectTopic('Health')"><div class="icon-bg icon-green"><span class="material-icons-round" style="font-size:32px;">local_hospital</span></div><b>Khám bệnh</b></div>
+            </div>
+
+            <div class="section-title"><span class="material-icons-round" style="color:#00C2FF;">work</span> Công việc</div>
             <div class="topic-grid">
                 <div class="topic-card" onclick="selectTopic('Job')"><div class="icon-bg icon-red"><span class="material-icons-round" style="font-size:32px;">work</span></div><b>Phỏng vấn</b></div>
                 <div class="topic-card" onclick="selectTopic('Travel')"><div class="icon-bg icon-yellow"><span class="material-icons-round" style="font-size:32px; color:#FDCB6E;">explore</span></div><b>Du lịch</b></div>
@@ -184,19 +190,38 @@
 
     <div id="matching-screen" class="screen">
         <div class="radar-circle"><div class="ripple"></div><div class="ripple"></div><div class="ripple"></div><div class="radar-core"><span class="material-icons-round">search</span></div></div>
-        <h3>Đang tìm Buddy phù hợp...</h3><p style="opacity:0.8; margin-top:10px;" id="matching-topic-text">Chủ đề: ...</p>
+        <h3>Đang tìm Buddy...</h3><p style="opacity:0.8; margin-top:10px;" id="matching-topic-text">Chủ đề: ...</p>
     </div>
 
     <div id="buddy-screen" class="screen">
         <div class="content-scroll-area">
-            <div style="padding:20px; text-align:center;"><h2>Buddies ✨</h2></div>
-            <div style="padding:0 20px;" id="buddy-list-container"></div>
+            <div class="buddy-header-bar">
+                <h2 style="margin:0;">Buddies ✨</h2>
+                <button class="add-friend-btn" onclick="showAddFriendModal()">
+                    <span class="material-icons-round">person_add</span> Thêm bạn
+                </button>
+            </div>
+            
+            <div style="padding:0 20px;" id="buddy-list-container">
+                </div>
         </div>
         <div class="bottom-nav">
             <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
             <div class="nav-item" onclick="goToTab('topics')"><span class="material-icons-outlined">grid_view</span></div>
             <div class="nav-item active" onclick="goToTab('buddies')"><span class="material-icons-outlined">people</span></div>
             <div class="nav-item" onclick="goToTab('profile')"><span class="material-icons-outlined">person</span></div>
+        </div>
+    </div>
+
+    <div id="add-friend-modal">
+        <div class="modal-card">
+            <h3 style="margin-top:0;">Thêm bạn mới</h3>
+            <p style="font-size:13px; color:#666;">Nhập Buddy ID của bạn bè để kết nối.</p>
+            <input type="number" id="friend-id-input" class="custom-input" placeholder="Nhập ID (VD: 987654)" style="text-align:center; letter-spacing: 2px;">
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('add-friend-modal').style.display='none'" style="flex:1; padding:10px; border:1px solid #ddd; background:white; border-radius:10px;">Hủy</button>
+                <button onclick="handleAddFriendSubmit()" style="flex:1; padding:10px; background:var(--primary-color); color:white; border:none; border-radius:10px; font-weight:700;">Kết bạn</button>
+            </div>
         </div>
     </div>
 
@@ -207,26 +232,17 @@
                 <h2 style="margin: 0;" class="display-name">Dang</h2>
                 <p style="color: var(--primary-color); font-weight: 600; margin: 5px 0;">Học viên tích cực 🌟</p>
             </div>
-
             <div class="id-card">
-                <div>
-                    <div style="font-size: 12px; opacity: 0.8;">BUDDY ID CỦA TÔI</div>
-                    <div style="font-size: 24px; font-weight: 800; letter-spacing: 2px;" id="my-buddy-id">---</div>
-                </div>
+                <div><div style="font-size: 12px; opacity: 0.8;">BUDDY ID CỦA TÔI</div><div style="font-size: 24px; font-weight: 800; letter-spacing: 2px;" id="my-buddy-id">---</div></div>
                 <span class="material-icons-round" style="cursor: pointer; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%;" onclick="copyMyID()">content_copy</span>
             </div>
-
             <div class="menu-list">
-                <div class="menu-item"><span class="material-icons-round">settings</span> Cài đặt ứng dụng</div>
-                <div class="menu-item"><span class="material-icons-round">notifications</span> Thông báo</div>
-                <div class="menu-item"><span class="material-icons-round">help_outline</span> Trợ giúp & Hỗ trợ</div>
+                <div class="menu-item"><span class="material-icons-round" style="margin-right:15px; color:#888;">settings</span> Cài đặt ứng dụng</div>
+                <div class="menu-item"><span class="material-icons-round" style="margin-right:15px; color:#888;">history</span> Lịch sử cuộc gọi</div>
+                <div class="menu-item"><span class="material-icons-round" style="margin-right:15px; color:#888;">help_outline</span> Trợ giúp</div>
             </div>
-
-            <button class="logout-btn" onclick="handleLogout()">
-                <span class="material-icons-round">logout</span> Đăng xuất
-            </button>
+            <button class="logout-btn" onclick="handleLogout()"><span class="material-icons-round">logout</span> Đăng xuất</button>
         </div>
-
         <div class="bottom-nav">
             <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
             <div class="nav-item" onclick="goToTab('topics')"><span class="material-icons-outlined">grid_view</span></div>
@@ -245,12 +261,8 @@
         <div id="messages"></div>
         <div class="input-area">
             <button class="tool-btn" onclick="document.getElementById('file-input').click()"><span class="material-icons-outlined">attach_file</span></button>
-            <button class="tool-btn" onclick="document.getElementById('file-input').click()"><span class="material-icons-outlined">image</span></button>
             <input type="file" id="file-input" hidden onchange="handleFileUpload(this)">
-            <div class="chat-input-wrapper">
-                <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." autocomplete="off">
-                <span class="material-icons-round" onclick="sendMessage()" style="color:#0084FF; cursor:pointer;">send</span>
-            </div>
+            <div class="chat-input-wrapper"><input type="text" id="msg-input" placeholder="Nhập tin nhắn..." autocomplete="off"><span class="material-icons-round" onclick="sendMessage()" style="color:#0084FF; cursor:pointer;">send</span></div>
         </div>
     </div>
 
@@ -258,8 +270,7 @@
         <video id="remote-video" autoplay playsinline></video>
         <video id="local-video" autoplay playsinline muted></video>
         <div style="position:absolute; top:40px; left:20px; background:rgba(255,255,255,0.9); padding:15px; border-radius:12px;">
-            <small style="color:#888;">GỢI Ý:</small>
-            <div id="topic-hint-text" style="font-weight:700;">Hello! Nice to meet you.</div>
+            <small style="color:#888;">GỢI Ý:</small><div id="topic-hint-text" style="font-weight:700;">Hello! Nice to meet you.</div>
         </div>
         <div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center;">
             <button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white; cursor:pointer;"><span class="material-icons-round">call_end</span></button>
@@ -267,39 +278,114 @@
     </div>
 
     <div id="summary-screen" class="screen" style="background:white; align-items:center;">
-        <div style="width:100%; height:200px; background:#00C2FF; border-radius:0 0 30px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;">
-            <span class="material-icons-round" style="font-size:50px;">thumb_up</span>
-            <h2>Tuyệt vời!</h2>
-        </div>
-        <div style="width:80%; background:white; padding:20px; margin-top:-50px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;">
-            <h3>Kết quả</h3>
-            <p>Bạn đã luyện tập rất tốt.</p>
-            <button onclick="goToTab('topics')" style="padding:12px 20px; background:var(--accent-orange); color:white; border:none; border-radius:20px; cursor:pointer;">Chọn bài khác</button>
-        </div>
+        <div style="width:100%; height:200px; background:#00C2FF; border-radius:0 0 30px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;"><span class="material-icons-round" style="font-size:50px;">thumb_up</span><h2>Tuyệt vời!</h2></div>
+        <div style="width:80%; background:white; padding:20px; margin-top:-50px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;"><h3>Kết quả</h3><p>Bạn đã luyện tập rất tốt.</p><button onclick="goToTab('topics')" style="padding:12px 20px; background:var(--accent-orange); color:white; border:none; border-radius:20px; cursor:pointer;">Chọn bài khác</button></div>
     </div>
 
     <div id="incoming-call" style="display:none; position:absolute; top:20px; left:20px; right:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.3); z-index:2000; text-align:center;">
-        <h3>📞 Cuộc gọi đến...</h3>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px; cursor:pointer;">Từ chối</button>
-            <button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px; cursor:pointer;">Nghe</button>
-        </div>
+        <h3>📞 Cuộc gọi đến...</h3><div style="display:flex; gap:10px; margin-top:20px;"><button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px; cursor:pointer;">Từ chối</button><button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px; cursor:pointer;">Nghe</button></div>
     </div>
-
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    // --- DỮ LIỆU MOCK ---
-    const buddiesData = [
-        { id: 1, name: 'Huỳnh Nguyễn Đăng', tags: ['Coffee', 'Travel'], status: '⚡ Đang hoạt động', avatar: 5 },
-        { id: 2, name: 'Phương Thảo', tags: ['Presentation', 'Job'], status: '2 phút trước', avatar: 9 },
-        { id: 3, name: 'Vương Ức Long', tags: ['Presentation', 'Coffee'], status: '⚡ Đang hoạt động', avatar: 12 },
-        { id: 4, name: 'Nguyễn Hoài Đạt', tags: ['Job', 'Travel'], status: '5 phút trước', avatar: 3 },
-        { id: 5, name: 'Mr. David (Mentor)', tags: ['all'], status: '⚡ Đang hoạt động', avatar: 11 }
+    // --- 1. DỮ LIỆU CỘNG ĐỒNG (MOCK) ---
+    const communityBuddies = [
+        { id: 1, name: 'Mr. David (Mentor)', tags: ['all'], status: '⚡ Đang hoạt động', avatar: 11 },
+        { id: 2, name: 'Cô Sarah (Teacher)', tags: ['Presentation'], status: '15 phút trước', avatar: 5 }
     ];
 
-    // --- NAV LOGIC (CẬP NHẬT CHO PROFILE) ---
+    // --- 2. QUẢN LÝ BẠN BÈ (LOCAL STORAGE) ---
+    function getMyFriends() {
+        return JSON.parse(localStorage.getItem('my_friends')) || [];
+    }
+
+    function addFriend(id, name, avatar) {
+        const friends = getMyFriends();
+        // Check trùng
+        if (friends.some(f => f.id === id)) {
+            showToast("Đã là bạn bè rồi!");
+            return;
+        }
+        const newFriend = {
+            id: id,
+            name: name,
+            tags: ['New Friend'], // Tag mặc định
+            status: '⚡ Đang hoạt động',
+            avatar: avatar
+        };
+        friends.push(newFriend);
+        localStorage.setItem('my_friends', JSON.stringify(friends));
+        showToast(`Đã thêm ${name} vào danh sách!`);
+        renderBuddyList('all'); // Refresh list
+    }
+
+    // --- 3. UI ADD FRIEND MODAL ---
+    function showAddFriendModal() {
+        document.getElementById('add-friend-modal').style.display = 'flex';
+        document.getElementById('friend-id-input').value = '';
+    }
+
+    function handleAddFriendSubmit() {
+        const id = document.getElementById('friend-id-input').value.trim();
+        if (id.length < 4) { showToast("ID không hợp lệ!"); return; }
+        
+        // GIẢ LẬP TÌM THẤY USER TỪ SERVER
+        const randomName = "Buddy " + id.slice(-3); // Tạo tên giả từ ID
+        const randomAvatar = Math.floor(Math.random() * 10) + 1; // Avatar ngẫu nhiên
+        
+        document.getElementById('add-friend-modal').style.display = 'none';
+        
+        // Thực hiện thêm
+        addFriend(id, randomName, randomAvatar);
+    }
+
+    // --- 4. RENDER DANH SÁCH BUDDY ---
+    function renderBuddyList(filterTopic) {
+        const container = document.getElementById('buddy-list-container');
+        container.innerHTML = '';
+        
+        // Gộp danh sách: Bạn của tôi + Cộng đồng
+        const myFriends = getMyFriends();
+        const allBuddies = [...myFriends, ...communityBuddies];
+
+        // Lọc theo chủ đề
+        const filtered = allBuddies.filter(b => 
+            filterTopic === 'all' || b.tags.includes(filterTopic) || b.tags.includes('all')
+        );
+
+        // Render "Bạn bè của tôi" trước
+        const friendsOnly = filtered.filter(b => myFriends.some(mf => mf.id == b.id));
+        if (friendsOnly.length > 0) {
+            container.insertAdjacentHTML('beforeend', `<p style="font-size:13px; color:#888; margin-bottom:10px;">Bạn bè của tôi (${friendsOnly.length})</p>`);
+            friendsOnly.forEach(b => container.insertAdjacentHTML('beforeend', createBuddyHTML(b)));
+        }
+
+        // Render "Gợi ý Cộng đồng"
+        const communityOnly = filtered.filter(b => !myFriends.some(mf => mf.id == b.id));
+        if (communityOnly.length > 0) {
+            container.insertAdjacentHTML('beforeend', `<p style="font-size:13px; color:#888; margin-top:20px; margin-bottom:10px;">Gợi ý từ cộng đồng</p>`);
+            communityOnly.forEach(b => container.insertAdjacentHTML('beforeend', createBuddyHTML(b)));
+        }
+
+        if(filtered.length === 0) container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Chưa có Buddy phù hợp.</p>';
+    }
+
+    function createBuddyHTML(b) {
+        return `
+        <div class="buddy-card">
+            <img src="https://i.pravatar.cc/150?img=${b.avatar}" class="b-avatar">
+            <div style="flex:1;">
+                <b style="font-size:15px;">${b.name}</b><br>
+                <small style="color:${b.status.includes('Đang')?'green':'#aaa'}">${b.status}</small>
+                <div style="margin-top:4px;">${b.tags.map(t=>`<span style="font-size:10px; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:4px;">${t}</span>`).join('')}</div>
+            </div>
+            <span class="material-icons-outlined" onclick="openChat('${b.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span>
+            <span class="material-icons-outlined" onclick="startCall()" style="padding:10px; cursor:pointer; color:var(--primary-color);">videocam</span>
+        </div>`;
+    }
+
+    // --- NAV LOGIC ---
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
@@ -308,7 +394,7 @@
         if(screenId === 'home-screen') idx = 1;
         if(screenId === 'topic-screen') idx = 2;
         if(screenId === 'buddy-screen') idx = 3;
-        if(screenId === 'profile-screen') idx = 4; // Thêm index cho profile
+        if(screenId === 'profile-screen') idx = 4;
         if(idx > 0) document.querySelectorAll(`.bottom-nav .nav-item:nth-child(${idx})`).forEach(n => n.classList.add('active'));
     }
 
@@ -316,7 +402,7 @@
         if(tab === 'home') switchScreen('home-screen');
         if(tab === 'topics') switchScreen('topic-screen');
         if(tab === 'buddies') { renderBuddyList('all'); switchScreen('buddy-screen'); }
-        if(tab === 'profile') switchScreen('profile-screen'); // Thêm điều hướng profile
+        if(tab === 'profile') switchScreen('profile-screen');
     }
     
     function openChat(name) {
@@ -330,7 +416,7 @@
         setTimeout(() => t.classList.remove("show"), 2000);
     }
 
-    // --- LOGIC ĐĂNG KÝ/ĐĂNG NHẬP & ID ---
+    // --- LOGIC ĐĂNG KÝ/ĐĂNG NHẬP ---
     let isRegisterMode = false;
     function toggleRegisterMode() {
         isRegisterMode = !isRegisterMode;
@@ -346,37 +432,21 @@
         const p = document.getElementById('password').value.trim();
         const msg = document.getElementById('login-msg');
         if(!u || !p) { msg.innerText = "Vui lòng nhập đủ thông tin!"; return; }
-        
-        // GIẢ LẬP ĐĂNG NHẬP THÀNH CÔNG ĐỂ TEST PROFILE
-        // (Trong thực tế bạn sẽ gọi API ở đây)
-        msg.style.color = "blue";
-        msg.innerText = "Đang xử lý...";
-
+        msg.style.color = "blue"; msg.innerText = "Đang xử lý...";
         setTimeout(() => {
             if(isRegisterMode) {
                  msg.style.color = "green"; msg.innerText = "Đăng ký thành công! Hãy đăng nhập."; setTimeout(() => toggleRegisterMode(), 1500);
             } else {
-                // Đăng nhập thành công
-                myName = u; // Dùng tên đăng nhập làm tên hiển thị
-                localStorage.setItem('chat_username', myName);
-                
-                // Tạo ID giả lập nếu chưa có
+                myName = u; localStorage.setItem('chat_username', myName);
                 let buddyID = localStorage.getItem('buddy_id');
-                if(!buddyID) {
-                    buddyID = Math.floor(100000 + Math.random() * 900000); // Tạo số ngẫu nhiên 6 chữ số
-                    localStorage.setItem('buddy_id', buddyID);
-                }
-                
-                // Cập nhật giao diện
+                if(!buddyID) { buddyID = Math.floor(100000 + Math.random() * 900000); localStorage.setItem('buddy_id', buddyID); }
                 document.querySelectorAll('.display-name').forEach(el => el.innerText = myName);
                 document.getElementById('my-buddy-id').innerText = buddyID;
-                
                 switchScreen('home-screen');
             }
         }, 1000);
     }
 
-    // --- LOGIC PROFILE (MỚI) ---
     function copyMyID() {
         const id = document.getElementById('my-buddy-id').innerText;
         navigator.clipboard.writeText(id);
@@ -385,50 +455,83 @@
 
     function handleLogout() {
         localStorage.removeItem('chat_username');
-        // localStorage.removeItem('buddy_id'); // Có thể giữ lại ID nếu muốn
-        document.getElementById('username').value = "";
-        document.getElementById('password').value = "";
-        document.getElementById('login-msg').innerText = "";
+        document.getElementById('username').value = ""; document.getElementById('password').value = "";
         switchScreen('login-screen');
-        showToast("Đã đăng xuất!");
     }
 
-    // --- LOGIC KHÁC (TOPIC, CHAT...) GIỮ NGUYÊN ---
     function selectTopic(topic) {
-        const hint = { 'Presentation':'Good morning everyone...', 'Coffee':'Can I get a Latte?', 'Job':'My strength is...', 'Travel':'Where is the station?' }[topic] || "Hello!";
+        const hint = { 'Presentation':'Good morning everyone...', 'Shopping':'How much is this?', 'Health':'I have a headache.', 'Coffee':'Can I get a Latte?', 'Job':'My strength is...', 'Travel':'Where is the station?' }[topic] || "Hello!";
         document.getElementById('topic-hint-text').innerText = hint;
         document.getElementById('matching-topic-text').innerText = "Chủ đề: " + topic;
         switchScreen('matching-screen');
         setTimeout(() => { renderBuddyList(topic); switchScreen('buddy-screen'); }, 2000);
     }
 
-    function renderBuddyList(filterTopic) {
-        const container = document.getElementById('buddy-list-container');
-        container.innerHTML = '';
-        const filtered = buddiesData.filter(b => filterTopic === 'all' || b.tags.includes(filterTopic) || b.tags.includes('all'));
-        if(filtered.length === 0) { container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Chưa tìm thấy Buddy phù hợp :(</p>'; return; }
-        const title = filterTopic === 'all' ? 'Tất cả Buddy' : `Kết quả cho: ${filterTopic}`;
-        container.insertAdjacentHTML('beforeend', `<p style="font-size:13px; color:#888; margin-bottom:10px;">${title}</p>`);
-        filtered.forEach(b => {
-            const html = `<div class="buddy-card"><img src="https://i.pravatar.cc/150?img=${b.avatar}" class="b-avatar"><div style="flex:1;"><b style="font-size:15px;">${b.name}</b><br><small style="color:${b.status.includes('Đang')?'green':'#aaa'}">${b.status}</small><div style="margin-top:4px;">${b.tags.map(t=>`<span style="font-size:10px; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:4px;">${t}</span>`).join('')}</div></div><span class="material-icons-outlined" onclick="openChat('${b.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span><span class="material-icons-outlined" onclick="startCall()" style="padding:10px; cursor:pointer; color:var(--primary-color);">videocam</span></div>`;
-            container.insertAdjacentHTML('beforeend', html);
-        });
-    }
-
-    // SOCKET & WEBRTC (GIỮ NGUYÊN)
+    // --- CORE LOGIC ---
     const socket = io();
     let myName = localStorage.getItem('chat_username') || "";
-    // ... (Phần code socket và webrtc giữ nguyên như cũ, không thay đổi để tiết kiệm không gian) ...
-    // Bạn hãy đảm bảo copy phần code socket/webrtc từ phiên bản trước vào đây nếu nó bị thiếu.
-    // Để demo login/profile hoạt động thì không cần phần đó.
+    let localStream, peerConnection, pendingOffer, candidateQueue = [];
 
-    // --- KHỞI TẠO ---
-    // Kiểm tra nếu đã đăng nhập trước đó
+    function sendMessage() {
+        const input = document.getElementById('msg-input');
+        if(input.value.trim()) { socket.emit('chat_message', { user: myName, content: input.value.trim(), type: 'text' }); input.value = ""; }
+    }
+    function handleFileUpload(input) {
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) { socket.emit('chat_message', { user: myName, type, fileData: e.target.result, fileName: file.name }); };
+        reader.readAsDataURL(file); input.value = "";
+    }
+    socket.on('chat_message', (data) => {
+        const div = document.createElement('div');
+        div.className = `msg ${data.user === myName ? 'mine' : 'theirs'}`;
+        if(data.type === 'image') div.innerHTML = `<img src="${data.fileData}" class="msg-img">`;
+        else if(data.type === 'file') div.innerHTML = `<a href="${data.fileData}" download="${data.fileName}" class="file-card"><span class="material-icons-round">description</span> ${data.fileName}</a>`;
+        else div.innerText = data.content;
+        const area = document.getElementById('messages'); area.appendChild(div); area.scrollTop = area.scrollHeight;
+    });
+
+    const rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "turn:global.relay.metered.ca:80", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }, { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }, { urls: "turn:global.relay.metered.ca:443", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }] };
+
+    async function startCall() {
+        document.getElementById('video-modal').style.display = 'block';
+        await setupMedia(); createPeerConnection();
+        const offer = await peerConnection.createOffer(); await peerConnection.setLocalDescription(offer);
+        socket.emit('offer', offer);
+    }
+    async function setupMedia() {
+        try { localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); document.getElementById('local-video').srcObject = localStream; } catch(e) { alert("Lỗi Camera!"); }
+    }
+    function createPeerConnection() {
+        peerConnection = new RTCPeerConnection(rtcConfig);
+        if(localStream) localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
+        peerConnection.ontrack = e => document.getElementById('remote-video').srcObject = e.streams[0];
+        peerConnection.onicecandidate = e => { if(e.candidate && peerConnection.remoteDescription) socket.emit('candidate', e.candidate); };
+    }
+    socket.on('offer', (offer) => { pendingOffer = offer; document.getElementById('incoming-call').style.display = 'block'; });
+    async function acceptCall() {
+        document.getElementById('incoming-call').style.display = 'none'; document.getElementById('video-modal').style.display = 'block';
+        await setupMedia(); createPeerConnection(); await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
+        const ans = await peerConnection.createAnswer(); await peerConnection.setLocalDescription(ans);
+        socket.emit('answer', ans);
+        if(candidateQueue.length > 0) { candidateQueue.forEach(c => peerConnection.addIceCandidate(new RTCIceCandidate(c)).catch(e=>{})); candidateQueue=[]; }
+    }
+    function rejectCall() { document.getElementById('incoming-call').style.display = 'none'; socket.emit('call_rejected'); }
+    socket.on('answer', ans => { if(peerConnection) peerConnection.setRemoteDescription(new RTCSessionDescription(ans)); });
+    socket.on('candidate', cand => { if(peerConnection && peerConnection.remoteDescription) peerConnection.addIceCandidate(new RTCIceCandidate(cand)).catch(e=>{}); else candidateQueue.push(cand); });
+    socket.on('call_rejected', () => { endCall(); });
+    function endCall() {
+        document.getElementById('video-modal').style.display = 'none';
+        if(localStream) localStream.getTracks().forEach(t => t.stop());
+        if(peerConnection) peerConnection.close(); peerConnection = null;
+        switchScreen('summary-screen');
+    }
+
+    // INIT
     if(myName) {
         document.querySelectorAll('.display-name').forEach(el => el.innerText = myName);
         const savedID = localStorage.getItem('buddy_id');
         if(savedID) document.getElementById('my-buddy-id').innerText = savedID;
-        // switchScreen('home-screen'); // Bỏ comment dòng này để tự động vào home nếu đã login
     }
 </script>
 </body>

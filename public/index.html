@@ -8,223 +8,273 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* --- 1. THEME VARIABLES (BuddySpeak Style) --- */
         :root {
             --primary-orange: #FF8c00;
             --primary-blue: #00A8FF;
             --text-dark: #2d3436;
             --text-gray: #636e72;
-            --bg-gray: #F7F7F7;
+            --bg-app: #F7F7F7;
             --white: #ffffff;
-            --shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        /* --- 2. GLOBAL RESET --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Nunito', sans-serif; background-color: var(--bg-gray); color: var(--text-dark); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        
-        .screen { display: none; height: 100%; flex-direction: column; overflow-y: auto; background: var(--white); }
-        .screen.active { display: flex; }
+        /* 1. KHUNG GIẢ LẬP MOBILE (FIX LỖI GIAO DIỆN TRÊN MÁY TÍNH) */
+        body { 
+            background-color: #e0e0e0; /* Nền xám của trình duyệt */
+            font-family: 'Nunito', sans-serif; 
+            height: 100vh; margin: 0; 
+            display: flex; align-items: center; justify-content: center;
+        }
 
-        /* --- 3. LOGIN SCREEN --- */
+        #mobile-frame {
+            width: 375px; /* Chiều rộng chuẩn iPhone */
+            height: 812px; /* Chiều cao chuẩn iPhone */
+            background-color: var(--bg-app);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden; /* Cắt những gì thừa ra ngoài */
+            display: flex; flex-direction: column;
+        }
+
+        /* 2. CÁC MÀN HÌNH (SCREENS) */
+        .screen { 
+            display: none; /* Ẩn mặc định */
+            flex-direction: column; 
+            height: 100%; 
+            width: 100%;
+            background: var(--white); 
+            overflow-y: auto;
+        }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- UI COMPONENTS --- */
+        .btn-orange { 
+            width: 100%; padding: 15px; background: var(--primary-orange); 
+            color: white; border: none; border-radius: 30px; 
+            font-weight: 800; cursor: pointer; font-size: 16px;
+            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+        }
+        .custom-input { 
+            width: 100%; padding: 14px; border: 1px solid #eee; 
+            border-radius: 12px; background: #FAFAFA; outline: none; margin-bottom: 15px;
+        }
+
+        /* --- LOGIN SCREEN --- */
         #login-screen { padding: 30px; align-items: center; justify-content: center; text-align: center; }
-        .login-illus { width: 80%; max-width: 250px; margin-bottom: 20px; }
-        .app-title { font-size: 24px; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
-        .app-subtitle { color: var(--text-gray); font-size: 14px; margin-bottom: 30px; }
-        .form-group { width: 100%; margin-bottom: 15px; text-align: left; }
-        .form-label { font-size: 13px; font-weight: 700; color: var(--text-gray); margin-bottom: 5px; display: block; }
-        .custom-input { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; background: #FAFAFA; font-size: 16px; outline: none; transition: 0.3s; }
-        .custom-input:focus { border-color: var(--primary-orange); background: #fff; }
-        .btn-orange { width: 100%; padding: 16px; background: var(--primary-orange); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3); margin-top: 10px; }
-        .link-text { margin-top: 20px; font-size: 14px; color: var(--text-gray); }
-        .link-text span { color: var(--primary-orange); font-weight: 700; cursor: pointer; }
+        .login-illus { width: 80%; margin-bottom: 20px; }
 
-        /* --- 4. HOME SCREEN --- */
-        #home-screen { background: #f9f9f9; padding-bottom: 80px; }
-        .home-header { padding: 20px 24px; background: var(--white); display: flex; justify-content: space-between; align-items: center; }
-        .greeting h2 { font-size: 22px; font-weight: 800; }
-        .greeting p { color: var(--text-gray); font-size: 13px; }
-        
+        /* --- HOME SCREEN --- */
+        .home-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .blue-card { 
-            margin: 20px; background: linear-gradient(135deg, #00C6FF, #0072FF); 
-            border-radius: 20px; padding: 24px; color: white; position: relative; overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 114, 255, 0.25);
+            margin: 20px; padding: 25px; border-radius: 20px; color: white;
+            background: linear-gradient(135deg, #00C6FF, #0072FF);
+            position: relative; box-shadow: 0 10px 20px rgba(0, 114, 255, 0.25);
         }
-        .blue-card h3 { font-size: 18px; margin-bottom: 8px; font-weight: 800; }
-        .blue-card p { font-size: 13px; opacity: 0.9; margin-bottom: 15px; max-width: 70%; }
-        .btn-small-orange { background: var(--primary-orange); border: none; padding: 8px 16px; border-radius: 20px; color: white; font-weight: 700; font-size: 12px; cursor: pointer; }
         
+        /* --- BOTTOM NAV --- */
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: var(--white);
-            display: flex; justify-content: space-around; padding: 15px 0;
-            border-top: 1px solid #eee; z-index: 100;
+            margin-top: auto; /* Đẩy xuống đáy */
+            padding: 15px 0; background: white; border-top: 1px solid #eee;
+            display: flex; justify-content: space-around;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #b2bec3; cursor: pointer; }
+        .nav-item { text-align: center; color: #b2bec3; cursor: pointer; }
         .nav-item.active { color: var(--text-dark); }
-        .nav-item span { font-size: 24px; margin-bottom: 4px; }
+        .nav-item span { font-size: 24px; display: block; }
         .nav-item label { font-size: 10px; font-weight: 700; }
 
-        /* --- 5. BUDDY LIST SCREEN --- */
-        .list-container { padding: 20px; }
+        /* --- BUDDY LIST --- */
         .buddy-item { 
-            background: var(--white); padding: 15px; border-radius: 16px; 
-            display: flex; align-items: center; margin-bottom: 15px; 
-            box-shadow: var(--shadow); cursor: pointer;
+            margin: 0 20px 15px; padding: 15px; background: white; 
+            border-radius: 16px; display: flex; align-items: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer;
         }
-        .avatar { width: 50px; height: 50px; border-radius: 50%; background: #ddd; margin-right: 15px; object-fit: cover; }
-        .buddy-info { flex: 1; }
-        .buddy-name { font-weight: 700; font-size: 16px; }
-        .buddy-status { font-size: 12px; color: #2ecc71; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-        .action-icon { padding: 8px; background: #F0F2F5; border-radius: 50%; color: var(--primary-blue); margin-left: 10px; }
 
-        /* --- 6. CHAT & CALL --- */
-        #chat-screen-ui { display: flex; flex-direction: column; height: 100%; padding-bottom: 0; }
-        .chat-header-ui { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
-        .btn-back { border: none; background: none; font-size: 24px; cursor: pointer; }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #F5F7FA; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        /* --- CHAT SCREEN --- */
+        #chat-screen-ui { background: #F5F7FA; }
+        .chat-header-ui { background: white; padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 14px; word-wrap: break-word; }
         .msg.mine { align-self: flex-end; background: var(--primary-blue); color: white; border-bottom-right-radius: 4px; }
-        .msg.theirs { align-self: flex-start; background: white; color: var(--text-dark); border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .input-area { padding: 10px; background: white; display: flex; gap: 10px; align-items: center; border-top: 1px solid #eee; }
-        .chat-input { flex: 1; padding: 12px; background: #f0f2f5; border: none; border-radius: 20px; outline: none; }
-        
-        #video-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; }
-        .video-wrapper { position: relative; width: 100%; height: 100%; }
+        .msg.theirs { align-self: flex-start; background: white; border-bottom-left-radius: 4px; }
+        .input-area { background: white; padding: 10px; display: flex; gap: 10px; align-items: center; }
+
+        /* --- VIDEO CALL --- */
+        #video-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: none; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
-        #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .topic-overlay { position: absolute; top: 40px; left: 20px; background: rgba(255,255,255,0.95); padding: 15px; border-radius: 12px; max-width: 60%; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .call-controls { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: center; gap: 20px; }
-        .ctrl-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-end { background: #FF4757; }
-        .btn-mute { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
+        #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
+        
+        /* --- SUMMARY SCREEN (MỚI - MÀN HÌNH TỔNG KẾT) --- */
+        #summary-screen { background: #f0f8ff; align-items: center; }
+        .summary-header { 
+            width: 100%; height: 200px; background: var(--primary-blue); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            color: white; padding-bottom: 40px;
+        }
+        .summary-card {
+            width: 85%; background: white; border-radius: 20px; padding: 20px;
+            margin-top: -50px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .stats-row { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat-box { background: #f9f9f9; padding: 10px; border-radius: 10px; flex: 1; margin: 0 5px; }
+        .stat-val { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+        .stat-label { font-size: 11px; color: var(--text-gray); }
+        .vocab-list { text-align: left; background: #fff8e1; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 1.6; margin-bottom: 20px;}
+
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="screen active">
-        <img src="https://cdni.iconscout.com/illustration/premium/thumb/students-talking-to-each-other-2949755-2453673.png" class="login-illus" alt="Illustration">
-        <h1 class="app-title">BuddySpeak</h1>
-        <p class="app-subtitle">Luyện nói tiếng Anh mỗi ngày</p>
-        <div class="form-group">
-            <label class="form-label">Tên đăng nhập</label>
-            <input type="text" id="username" class="custom-input" placeholder="Nhập tên của bạn...">
-        </div>
-        <div class="form-group">
-            <label class="form-label">Mật khẩu</label>
-            <input type="password" id="password" class="custom-input" placeholder="••••••">
-        </div>
-        <button class="btn-orange" onclick="handleLogin()">Đăng nhập</button>
-        <p class="link-text">Chưa có tài khoản? <span onclick="handleRegister()">Đăng ký ngay</span></p>
-        <p id="login-msg" style="color: red; margin-top: 10px; font-size: 12px;"></p>
-    </div>
+    <div id="mobile-frame">
 
-    <div id="home-screen" class="screen">
-        <div class="home-header">
-            <div class="greeting">
-                <h2 id="greeting-name">Chào Dang! 👋</h2>
-                <p>Hôm nay bạn muốn học gì?</p>
+        <div id="login-screen" class="screen active">
+            <img src="https://cdni.iconscout.com/illustration/premium/thumb/students-talking-to-each-other-2949755-2453673.png" class="login-illus">
+            <h2 style="margin-bottom: 5px;">BuddySpeak</h2>
+            <p style="color: #888; margin-bottom: 30px;">Luyện nói tiếng Anh mỗi ngày</p>
+            <input type="text" id="username" class="custom-input" placeholder="Tên đăng nhập">
+            <input type="password" id="password" class="custom-input" placeholder="Mật khẩu">
+            <button class="btn-orange" onclick="handleLogin()">Đăng nhập</button>
+            <p style="margin-top: 20px; font-size: 13px;">Chưa có tài khoản? <b style="color:var(--primary-orange); cursor: pointer;" onclick="handleRegister()">Đăng ký</b></p>
+            <p id="login-msg" style="color: red; font-size: 12px; margin-top: 10px;"></p>
+        </div>
+
+        <div id="home-screen" class="screen">
+            <div class="home-header">
+                <div><h2 id="greeting-name">Chào Dang! 👋</h2><p style="font-size:12px; color:#888;">Ready to learn?</p></div>
+                <img src="https://i.pravatar.cc/150?img=12" style="width:40px; height:40px; border-radius:50%;">
             </div>
-            <img src="https://i.pravatar.cc/150?img=12" style="width:40px; height:40px; border-radius:50%;">
+            <div class="blue-card">
+                <h3>Nhiệm vụ ưu tiên 🔥</h3>
+                <p>Thử thách: Gọi món ăn đường phố (Street Food).</p>
+                <button class="btn-orange" style="width: auto; padding: 8px 20px; font-size: 12px; margin-top: 10px; background: white; color: var(--primary-blue);" onclick="goToTab('buddies')">Tìm Buddy Ngay</button>
+            </div>
+            
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="goToTab('home')"><span class="material-icons-round">home</span><label>Trang chủ</label></div>
+                <div class="nav-item" onclick="goToTab('buddies')"><span class="material-icons-round">people</span><label>Bạn bè</label></div>
+            </div>
         </div>
-        <div class="blue-card">
-            <h3>Nhiệm vụ ưu tiên 🔥</h3>
-            <p>Chuẩn bị bài thuyết trình về sản phẩm công nghệ yêu thích.</p>
-            <button class="btn-small-orange" onclick="goToTab('buddies')">Tìm Buddy Ngay</button>
-        </div>
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="goToTab('home')"><span class="material-icons-round">home</span><label>Trang chủ</label></div>
-            <div class="nav-item" onclick="goToTab('buddies')"><span class="material-icons-round">people</span><label>Bạn bè</label></div>
-        </div>
-    </div>
 
-    <div id="buddy-screen" class="screen" style="padding-bottom: 80px;">
-        <div class="home-header"><h2>Tìm Buddy 🚀</h2></div>
-        <div class="list-container">
+        <div id="buddy-screen" class="screen">
+            <div class="home-header"><h2>Tìm Buddy 🚀</h2></div>
             <div class="buddy-item" onclick="openChat('Sarah Teacher')">
-                <img src="https://i.pravatar.cc/150?img=5" class="avatar">
-                <div class="buddy-info"><div class="buddy-name">Sarah Teacher</div><div class="buddy-status">🟢 Online</div></div>
-                <span class="material-icons-round action-icon">chat</span>
+                <img src="https://i.pravatar.cc/150?img=5" style="width:50px; height:50px; border-radius:50%; margin-right:15px;">
+                <div style="flex:1;"><b>Sarah Teacher</b><br><small style="color:green;">● Online</small></div>
+                <span class="material-icons-round" style="color:var(--primary-blue);">chat</span>
             </div>
             <div class="buddy-item" onclick="openChat('Mike Student')">
-                <img src="https://i.pravatar.cc/150?img=3" class="avatar">
-                <div class="buddy-info"><div class="buddy-name">Mike Student</div><div class="buddy-status">🟢 Online</div></div>
-                <span class="material-icons-round action-icon">chat</span>
+                <img src="https://i.pravatar.cc/150?img=3" style="width:50px; height:50px; border-radius:50%; margin-right:15px;">
+                <div style="flex:1;"><b>Mike Student</b><br><small style="color:green;">● Online</small></div>
+                <span class="material-icons-round" style="color:var(--primary-blue);">chat</span>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-round">home</span><label>Trang chủ</label></div>
+                <div class="nav-item active" onclick="goToTab('buddies')"><span class="material-icons-round">people</span><label>Bạn bè</label></div>
             </div>
         </div>
-        <div class="bottom-nav">
-            <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-round">home</span><label>Trang chủ</label></div>
-            <div class="nav-item active" onclick="goToTab('buddies')"><span class="material-icons-round">people</span><label>Bạn bè</label></div>
-        </div>
-    </div>
 
-    <div id="chat-screen-ui" class="screen">
-        <div class="chat-header-ui">
-            <button class="btn-back" onclick="goToTab('buddies')"><span class="material-icons-round">arrow_back</span></button>
-            <div style="flex:1;"><h3 id="chat-with-name">Buddy</h3></div>
-            <button class="action-icon" onclick="startCall()"><span class="material-icons-round">videocam</span></button>
+        <div id="chat-screen-ui" class="screen">
+            <div class="chat-header-ui">
+                <span class="material-icons-round" onclick="goToTab('buddies')" style="cursor:pointer;">arrow_back</span>
+                <b id="chat-with-name" style="flex:1; margin-left:10px;">Buddy</b>
+                <span class="material-icons-round" style="color:var(--primary-orange); cursor:pointer;" onclick="startCall()">videocam</span>
+            </div>
+            <div id="messages"></div>
+            <div class="input-area">
+                <input type="file" id="file-input" hidden onchange="handleFileUpload(this)">
+                <span class="material-icons-round" onclick="document.getElementById('file-input').click()" style="color:#aaa;">attach_file</span>
+                <input type="text" id="msg-input" style="flex:1; border:none; background:#f0f2f5; padding:10px; border-radius:20px; outline:none;" placeholder="Nhập tin nhắn...">
+                <span class="material-icons-round" onclick="sendMessage()" style="color:var(--primary-orange);">send</span>
+            </div>
         </div>
-        <div id="messages"></div>
-        <div class="input-area">
-            <span class="material-icons-round" style="color:#aaa; cursor:pointer;" onclick="document.getElementById('file-input').click()">attach_file</span>
-            <input type="file" id="file-input" hidden onchange="handleFileUpload(this)">
-            <input type="text" id="msg-input" class="chat-input" placeholder="Nhập tin nhắn...">
-            <span class="material-icons-round" style="color:var(--primary-orange); cursor:pointer;" onclick="sendMessage()">send</span>
-        </div>
-    </div>
 
-    <div id="incoming-call" style="display:none; position:fixed; top:20px; left:5%; width:90%; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); z-index:3000;">
-        <h3 style="text-align:center;">📞 Incoming Call...</h3>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px;">Decline</button>
-            <button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px;">Accept</button>
-        </div>
-    </div>
-
-    <div id="video-modal">
-        <div class="video-wrapper">
+        <div id="video-modal">
             <video id="remote-video" autoplay playsinline></video>
             <video id="local-video" autoplay playsinline muted></video>
-            <div class="topic-overlay">
-                <small style="color:#888; font-weight:700;">GỢI Ý CHỦ ĐỀ:</small>
-                <p style="font-weight:600; margin-top:5px;">"Describe your dream vacation."</p>
+            <div style="position:absolute; top:40px; left:20px; background:rgba(255,255,255,0.9); padding:10px; border-radius:10px; max-width:200px;">
+                <small style="color:#888; font-weight:bold;">💡 GỢI Ý:</small>
+                <div style="font-weight:bold; margin-top:5px;">"Delicious street food"</div>
             </div>
-            <div class="call-controls">
-                <button class="ctrl-btn btn-mute" onclick="toggleMic()"><span class="material-icons-round">mic</span></button>
-                <button class="ctrl-btn btn-end" onclick="endCall()"><span class="material-icons-round">call_end</span></button>
+            <div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center; gap:20px;">
+                <button onclick="toggleMic()" style="width:50px; height:50px; border-radius:50%; border:none; background:rgba(255,255,255,0.3); color:white;"><span class="material-icons-round">mic</span></button>
+                <button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; border:none; background:red; color:white; font-size:24px;"><span class="material-icons-round">call_end</span></button>
             </div>
         </div>
-    </div>
+        
+        <div id="summary-screen" class="screen">
+            <div class="summary-header">
+                <span class="material-icons-round" style="font-size: 60px; margin-bottom: 10px;">thumb_up</span>
+                <h2>Làm tốt lắm, Đăng!</h2>
+            </div>
+            <div class="summary-card">
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <span class="material-icons-round" style="color:#555;">schedule</span>
+                        <div class="stat-val">15:00</div>
+                        <div class="stat-label">Thời gian</div>
+                    </div>
+                    <div class="stat-box">
+                        <span class="material-icons-round" style="color:#FFD700;">star</span>
+                        <div class="stat-val">85/100</div>
+                        <div class="stat-label">Điểm số</div>
+                    </div>
+                </div>
+                
+                <h4 style="text-align:left; margin-bottom:10px;">Từ vựng đã dùng:</h4>
+                <div class="vocab-list">
+                    • Delicious (Ngon miệng)<br>
+                    • Vendor (Người bán hàng)<br>
+                    • Reasonable price (Giá hợp lý)
+                </div>
 
-    <audio id="sound-msg" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+                <button class="btn-orange" onclick="goToTab('buddies')">Tìm Buddy tiếp theo</button>
+                <br><br>
+                <small onclick="goToTab('home')" style="color:#888; cursor:pointer;">Quay về trang chủ</small>
+            </div>
+        </div>
+
+        <div id="incoming-call" style="display:none; position:absolute; top:20px; left:20px; right:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.3); z-index:200; text-align:center;">
+            <h3>📞 Cuộc gọi đến...</h3>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px;">Từ chối</button>
+                <button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px;">Nghe</button>
+            </div>
+        </div>
+
+    </div> <audio id="sound-msg" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
     <audio id="sound-call" src="https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3" loop></audio>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // --- QUẢN LÝ CHUYỂN MÀN HÌNH ---
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
         }
-        function goToTab(tabName) {
-            if (tabName === 'home') switchScreen('home-screen');
-            if (tabName === 'buddies') switchScreen('buddy-screen');
+        function goToTab(tab) {
+            if(tab === 'home') switchScreen('home-screen');
+            if(tab === 'buddies') switchScreen('buddy-screen');
         }
-        function openChat(buddyName) {
-            document.getElementById('chat-with-name').innerText = buddyName;
+        function openChat(name) {
+            document.getElementById('chat-with-name').innerText = name;
             switchScreen('chat-screen-ui');
         }
 
+        // --- LOGIC GỐC (SOCKET, WEBRTC) ---
         const socket = io();
         let myName = localStorage.getItem('chat_username') || "";
         let localStream, peerConnection, pendingOffer;
-        // 1. BIẾN HÀNG CHỜ (FIX MÀN HÌNH ĐEN)
         let candidateQueue = [];
 
+        // Login
         async function handleLogin() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
-            const msg = document.getElementById('login-msg');
-            if(!u || !p) { msg.innerText = "Vui lòng nhập đủ thông tin!"; return; }
-            msg.innerText = "Đang đăng nhập...";
+            if(!u || !p) return; 
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST', headers: {'Content-Type':'application/json'},
@@ -236,85 +286,45 @@
                     localStorage.setItem('chat_username', myName);
                     document.getElementById('greeting-name').innerText = `Chào ${myName}! 👋`;
                     switchScreen('home-screen');
-                } else msg.innerText = data.message;
-            } catch(e) { msg.innerText = "Lỗi kết nối server!"; }
+                } else document.getElementById('login-msg').innerText = data.message;
+            } catch(e) {}
         }
-        
         async function handleRegister() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
-            const msg = document.getElementById('login-msg');
-            if(!u || !p) { msg.innerText = "Vui lòng nhập đủ thông tin!"; return; }
-             msg.innerText = "Đang đăng ký...";
+            if(!u || !p) return;
             try {
                 const res = await fetch('/api/register', {
                      method: 'POST', headers: {'Content-Type':'application/json'},
                      body: JSON.stringify({username: u, password: p})
                  });
                  const data = await res.json();
-                 msg.innerText = data.message;
-                 msg.style.color = data.success ? "green" : "red";
-            } catch(e) { msg.innerText = "Lỗi kết nối!"; }
+                 document.getElementById('login-msg').innerText = data.message;
+            } catch(e) {}
         }
 
+        // Chat
         function sendMessage() {
             const input = document.getElementById('msg-input');
-            const content = input.value.trim();
-            if(content) {
-                socket.emit('chat_message', { user: myName, content: content, type: 'text' });
+            if(input.value.trim()) {
+                socket.emit('chat_message', { user: myName, content: input.value.trim(), type: 'text' });
                 input.value = "";
             }
         }
-        
-        function handleFileUpload(input) {
-             const file = input.files[0];
-             if (!file || file.size > 5*1024*1024) { alert("File > 5MB!"); return; }
-             const reader = new FileReader();
-             reader.onload = function(e) {
-                 const type = file.type.startsWith('image/') ? 'image' : 'file';
-                 socket.emit('chat_message', { user: myName, type, fileData: e.target.result, fileName: file.name });
-             };
-             reader.readAsDataURL(file);
-             input.value = "";
-         }
-
         socket.on('chat_message', (data) => {
-            const msgArea = document.getElementById('messages');
             const div = document.createElement('div');
-            const isMine = data.user === myName;
-            div.className = `msg ${isMine ? 'mine' : 'theirs'}`;
-            if(data.type === 'image') div.innerHTML = `<img src="${data.fileData}" style="max-width:100%; border-radius:10px;">`;
-            else if(data.type === 'file') div.innerHTML = `<a href="${data.fileData}" download="${data.fileName}" style="color:blue;">📎 ${data.fileName}</a>`;
-            else div.innerText = data.content;
-            msgArea.appendChild(div);
-            msgArea.scrollTop = msgArea.scrollHeight;
-            if(!isMine) document.getElementById('sound-msg').play().catch(()=>{});
+            div.className = `msg ${data.user === myName ? 'mine' : 'theirs'}`;
+            div.innerText = data.type === 'text' ? data.content : 'File/Image';
+            document.getElementById('messages').appendChild(div);
         });
 
-        // WEBRTC LOGIC (CẤU HÌNH ĐẦY ĐỦ + FIX)
+        // WebRTC
         const rtcConfig = {
             iceServers: [
                 { urls: "stun:stun.l.google.com:19302" },
-                {
-                    urls: "turn:global.relay.metered.ca:80",
-                    username: "c6a7fe020cb38d3823a09173",
-                    credential: "vKt+DGKLZ6//Thnv" // Đã tự điền password của bạn
-                },
-                {
-                    urls: "turn:global.relay.metered.ca:80?transport=tcp",
-                    username: "c6a7fe020cb38d3823a09173",
-                    credential: "vKt+DGKLZ6//Thnv"
-                },
-                 {
-                    urls: "turn:global.relay.metered.ca:443",
-                    username: "c6a7fe020cb38d3823a09173",
-                    credential: "vKt+DGKLZ6//Thnv"
-                },
-                 {
-                    urls: "turns:global.relay.metered.ca:443?transport=tcp",
-                    username: "c6a7fe020cb38d3823a09173",
-                    credential: "vKt+DGKLZ6//Thnv"
-                }
+                { urls: "turn:global.relay.metered.ca:80", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" },
+                { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" },
+                { urls: "turn:global.relay.metered.ca:443", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }
             ]
         };
 
@@ -330,7 +340,7 @@
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('local-video').srcObject = localStream;
-            } catch(e) { alert("Lỗi Camera/Mic!"); }
+            } catch(e) { alert("Lỗi Camera!"); }
         }
 
         function createPeerConnection() {
@@ -339,10 +349,8 @@
             peerConnection.ontrack = e => document.getElementById('remote-video').srcObject = e.streams[0];
             peerConnection.onicecandidate = e => { 
                 if(e.candidate) {
-                     if (peerConnection && peerConnection.remoteDescription) {
-                         socket.emit('candidate', e.candidate);
-                     } 
-                     // Không cần queue ở chiều gửi, chỉ cần queue ở chiều nhận
+                     if (peerConnection && peerConnection.remoteDescription) socket.emit('candidate', e.candidate);
+                     // else candidateQueue.push(e.candidate); // Sender side queue usually not needed
                 }
             };
         }
@@ -353,56 +361,54 @@
             document.getElementById('sound-call').play().catch(()=>{});
         });
 
-        // 2. HÀM TRẢ LỜI CÓ XẢ HÀNG CHỜ (FIX MÀN HÌNH ĐEN)
         async function acceptCall() {
             document.getElementById('sound-call').pause();
             document.getElementById('incoming-call').style.display = 'none';
             document.getElementById('video-modal').style.display = 'block';
-            
-            await setupMedia(); 
-            createPeerConnection();
-            
+            await setupMedia(); createPeerConnection();
             await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
             const ans = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(ans);
             socket.emit('answer', ans);
-
-            // XẢ HÀNG CHỜ
-            if (candidateQueue.length > 0) {
-                console.log("🚀 Nạp " + candidateQueue.length + " candidates từ hàng chờ...");
-                candidateQueue.forEach(cand => {
-                    peerConnection.addIceCandidate(new RTCIceCandidate(cand))
-                        .catch(e => console.log(e));
-                });
+            
+            // Xả hàng chờ
+            if(candidateQueue.length > 0) {
+                candidateQueue.forEach(c => peerConnection.addIceCandidate(new RTCIceCandidate(c)).catch(e=>{}));
                 candidateQueue = [];
             }
         }
 
-        function rejectCall() { 
+        function rejectCall() {
             document.getElementById('sound-call').pause();
-            document.getElementById('incoming-call').style.display = 'none'; 
-            socket.emit('call_rejected'); 
+            document.getElementById('incoming-call').style.display = 'none';
+            socket.emit('call_rejected');
         }
 
-        socket.on('answer', ans => {
-            if(peerConnection) peerConnection.setRemoteDescription(new RTCSessionDescription(ans));
-        });
-
-        // 3. LOGIC NHẬN CANDIDATE THÔNG MINH (CÓ QUEUE)
-        socket.on('candidate', cand => {
-            if(peerConnection && peerConnection.remoteDescription) {
-                peerConnection.addIceCandidate(new RTCIceCandidate(cand))
-                    .catch(e => console.log(e));
-            } else {
-                console.log("⏳ Đang đổ chuông, lưu candidate vào hàng chờ...");
-                candidateQueue.push(cand); 
-            }
-        });
+        socket.on('answer', ans => { if(peerConnection) peerConnection.setRemoteDescription(new RTCSessionDescription(ans)); });
         
+        socket.on('candidate', cand => {
+            if(peerConnection && peerConnection.remoteDescription) peerConnection.addIceCandidate(new RTCIceCandidate(cand)).catch(e=>{});
+            else candidateQueue.push(cand);
+        });
+
+        socket.on('call_rejected', () => { alert("Bị từ chối!"); endCall(); });
+
+        // --- HÀM KẾT THÚC CUỘC GỌI MỚI (CHUYỂN SANG MÀN TỔNG KẾT) ---
         function endCall() {
-            window.location.reload();
+            // Tắt video
+            document.getElementById('video-modal').style.display = 'none';
+            if(localStream) localStream.getTracks().forEach(t => t.stop());
+            if(peerConnection) peerConnection.close();
+            peerConnection = null;
+            
+            // CHUYỂN SANG MÀN TỔNG KẾT
+            switchScreen('summary-screen');
         }
-        function toggleMic() { const track = localStream.getAudioTracks()[0]; track.enabled = !track.enabled; }
+
+        function toggleMic() { 
+            const track = localStream.getAudioTracks()[0]; 
+            track.enabled = !track.enabled; 
+        }
     </script>
 </body>
 </html>

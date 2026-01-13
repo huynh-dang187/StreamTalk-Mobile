@@ -32,31 +32,27 @@
         #toast-box { visibility: hidden; min-width: 200px; background-color: rgba(0,0,0,0.8); color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; font-weight: 600; }
         #toast-box.show { visibility: visible; opacity: 1; }
 
-        /* --- ADD FRIEND MODAL (MỚI) --- */
-        #add-friend-modal {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.5); z-index: 2000; display: none;
-            align-items: center; justify-content: center;
-        }
-        .modal-card {
-            background: white; width: 85%; padding: 25px; border-radius: 20px;
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+        /* --- ADD FRIEND MODAL --- */
+        #add-friend-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-card { background: white; width: 85%; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
-        /* --- TOPICS --- */
+        /* --- TOPICS (CẬP NHẬT) --- */
         .search-bar-container { padding: 0 20px 15px; }
         .search-bar { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
-        .section-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; margin-top: 10px;}
+        .section-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; margin-top: 15px;}
         .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 10px; }
-        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
         .icon-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-        /* Màu icon mới */
+        
+        /* Màu icon đa dạng */
         .icon-blue { color: #4facfe; background: #e0f2ff; } 
         .icon-orange { color: #ff9a9e; background: #fff0f0; } 
         .icon-red { color: #ff0844; background: #ffeaef; } 
         .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
         .icon-purple { color: #a18cd1; background: #f3f0ff; }
         .icon-green { color: #43e97b; background: #eafff0; }
+        .icon-teal { color: #00b894; background: #e0f9f4; }
+        .icon-pink { color: #fd79a8; background: #ffe6f0; }
 
         /* --- BUDDIES --- */
         .buddy-header-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -72,7 +68,7 @@
         .menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 600; }
         .logout-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: #FF4757; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* --- OTHER CSS (HOME, LOGIN, CHAT...) --- */
+        /* --- OTHER CSS --- */
         #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
         .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
         .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
@@ -166,19 +162,31 @@
             <div class="topic-grid">
                 <div class="topic-card" onclick="selectTopic('Presentation')"><div class="icon-bg icon-blue"><span class="material-icons-round" style="font-size:32px;">school</span></div><b>Thuyết trình</b></div>
                 <div class="topic-card" onclick="selectTopic('Coffee')"><div class="icon-bg icon-orange"><span class="material-icons-round" style="font-size:32px; color:#FF9F43;">local_cafe</span></div><b>Gọi món Cafe</b></div>
+                <div class="topic-card" onclick="selectTopic('SmallTalk')"><div class="icon-bg icon-green"><span class="material-icons-round" style="font-size:32px;">forum</span></div><b>Tán gẫu</b></div>
+                <div class="topic-card" onclick="selectTopic('Pronunciation')"><div class="icon-bg icon-purple"><span class="material-icons-round" style="font-size:32px;">record_voice_over</span></div><b>Phát âm cơ bản</b></div>
             </div>
 
             <div class="section-title"><span class="material-icons-round" style="color:#a18cd1;">movie</span> Đời sống & Giải trí</div>
             <div class="topic-grid">
-                <div class="topic-card" onclick="selectTopic('Shopping')"><div class="icon-bg icon-purple"><span class="material-icons-round" style="font-size:32px;">shopping_bag</span></div><b>Mua sắm</b></div>
-                <div class="topic-card" onclick="selectTopic('Health')"><div class="icon-bg icon-green"><span class="material-icons-round" style="font-size:32px;">local_hospital</span></div><b>Khám bệnh</b></div>
+                <div class="topic-card" onclick="selectTopic('Shopping')"><div class="icon-bg icon-pink"><span class="material-icons-round" style="font-size:32px;">shopping_bag</span></div><b>Mua sắm</b></div>
+                <div class="topic-card" onclick="selectTopic('Health')"><div class="icon-bg icon-teal"><span class="material-icons-round" style="font-size:32px;">local_hospital</span></div><b>Khám bệnh</b></div>
+                <div class="topic-card" onclick="selectTopic('Airport')"><div class="icon-bg icon-blue"><span class="material-icons-round" style="font-size:32px;">flight_takeoff</span></div><b>Tại sân bay</b></div>
+                <div class="topic-card" onclick="selectTopic('Restaurant')"><div class="icon-bg icon-orange"><span class="material-icons-round" style="font-size:32px;">restaurant</span></div><b>Nhà hàng</b></div>
             </div>
 
             <div class="section-title"><span class="material-icons-round" style="color:#00C2FF;">work</span> Công việc</div>
             <div class="topic-grid">
                 <div class="topic-card" onclick="selectTopic('Job')"><div class="icon-bg icon-red"><span class="material-icons-round" style="font-size:32px;">work</span></div><b>Phỏng vấn</b></div>
-                <div class="topic-card" onclick="selectTopic('Travel')"><div class="icon-bg icon-yellow"><span class="material-icons-round" style="font-size:32px; color:#FDCB6E;">explore</span></div><b>Du lịch</b></div>
+                <div class="topic-card" onclick="selectTopic('Meeting')"><div class="icon-bg icon-blue"><span class="material-icons-round" style="font-size:32px;">groups</span></div><b>Họp hành</b></div>
+                <div class="topic-card" onclick="selectTopic('Email')"><div class="icon-bg icon-yellow"><span class="material-icons-round" style="font-size:32px;">email</span></div><b>Viết Email</b></div>
+                <div class="topic-card" onclick="selectTopic('Travel')"><div class="icon-bg icon-green"><span class="material-icons-round" style="font-size:32px; color:#FDCB6E;">explore</span></div><b>Du lịch</b></div>
             </div>
+
+             <div class="section-title"><span class="material-icons-round" style="color:#FF9F43;">school</span> Học tập (Mới)</div>
+             <div class="topic-grid">
+                 <div class="topic-card" onclick="selectTopic('IELTS')"><div class="icon-bg icon-red"><span class="material-icons-round" style="font-size:32px;">language</span></div><b>IELTS Speaking</b></div>
+                 <div class="topic-card" onclick="selectTopic('Vocabulary')"><div class="icon-bg icon-purple"><span class="material-icons-round" style="font-size:32px;">menu_book</span></div><b>Từ vựng</b></div>
+             </div>
         </div>
         <div class="bottom-nav">
             <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
@@ -291,8 +299,8 @@
 <script>
     // --- 1. DỮ LIỆU CỘNG ĐỒNG (MOCK) ---
     const communityBuddies = [
-        { id: 1, name: 'Mr. David (Mentor)', tags: ['all'], status: '⚡ Đang hoạt động', avatar: 11 },
-        { id: 2, name: 'Cô Sarah (Teacher)', tags: ['Presentation'], status: '15 phút trước', avatar: 5 }
+        { id: 1, name: 'Mr. David (Mentor)', tags: ['all', 'IELTS'], status: '⚡ Đang hoạt động', avatar: 11 },
+        { id: 2, name: 'Cô Sarah (Teacher)', tags: ['Presentation', 'Job'], status: '15 phút trước', avatar: 5 }
     ];
 
     // --- 2. QUẢN LÝ BẠN BÈ (LOCAL STORAGE) ---
@@ -460,7 +468,25 @@
     }
 
     function selectTopic(topic) {
-        const hint = { 'Presentation':'Good morning everyone...', 'Shopping':'How much is this?', 'Health':'I have a headache.', 'Coffee':'Can I get a Latte?', 'Job':'My strength is...', 'Travel':'Where is the station?' }[topic] || "Hello!";
+        // Map gợi ý mới
+        const hints = {
+            'Presentation': 'Good morning everyone...',
+            'Coffee': 'Can I get a Latte?',
+            'SmallTalk': 'Nice weather today, isnt it?',
+            'Pronunciation': 'Repeat after me: Th-ink',
+            'Shopping': 'How much is this?',
+            'Health': 'I have a headache.',
+            'Airport': 'Where is gate 5?',
+            'Restaurant': 'Table for two, please.',
+            'Job': 'My strength is teamwork.',
+            'Meeting': 'Lets wrap up this meeting.',
+            'Email': 'I look forward to hearing from you.',
+            'Travel': 'Where is the station?',
+            'IELTS': 'Describe a memorable trip.',
+            'Vocabulary': 'Today we learn about Family.'
+        };
+        
+        const hint = hints[topic] || "Hello!";
         document.getElementById('topic-hint-text').innerText = hint;
         document.getElementById('matching-topic-text').innerText = "Chủ đề: " + topic;
         switchScreen('matching-screen');

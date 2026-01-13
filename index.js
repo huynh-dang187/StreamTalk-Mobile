@@ -84,45 +84,55 @@ app.post('/api/login', async (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-// --- 4. SOCKET.IO (QUẢN LÝ ONLINE/OFFLINE) ---
-// Biến lưu danh sách người đang online trên RAM
-// Cấu trúc: { "socket_id_abc": { id: "123456", username: "Dang", avatar: 5 } }
-let onlineUsers = {}; 
+// --- 4. SOCKET.IO (CẬP NHẬT LOGIC KẾT BẠN) ---
+let onlineUsers = {}; // { socketId: { id, username, avatar, socketId } }
 
 io.on('connection', (socket) => {
     console.log('⚡ User connected:', socket.id);
 
-    // ➤ SỰ KIỆN MỚI: Người dùng báo danh "Tôi đã online"
+    // 1. Báo danh
     socket.on('register_user', (userData) => {
-        // userData gồm: { id, username, avatar } gửi từ Client
         onlineUsers[socket.id] = { ...userData, socketId: socket.id };
-        
-        console.log(`👤 ${userData.username} (ID: ${userData.id}) đã online`);
-        
-        // Phát loa cho TẤT CẢ mọi người biết danh sách mới
-        io.emit('online_users', Object.values(onlineUsers));
+        io.emit('online_users', Object.values(onlineUsers)); // Báo cho mọi người
     });
 
-    // Chat
+    // 2. Chat & Call
     socket.on('chat_message', (data) => { io.emit('chat_message', data); });
-
-    // WebRTC Signaling
     socket.on('offer', (data) => { socket.broadcast.emit('offer', data); });
     socket.on('answer', (data) => { socket.broadcast.emit('answer', data); });
     socket.on('candidate', (data) => { socket.broadcast.emit('candidate', data); });
-    socket.on('call_rejected', () => { socket.broadcast.emit('call_rejected'); });
 
-    // ➤ SỰ KIỆN: Ngắt kết nối
-    socket.on('disconnect', () => {
-        // Xóa user khỏi danh sách online
-        if (onlineUsers[socket.id]) {
-            console.log(`❌ ${onlineUsers[socket.id].username} đã offline`);
-            delete onlineUsers[socket.id];
-            
-            // Cập nhật lại danh sách cho mọi người
-            io.emit('online_users', Object.values(onlineUsers));
+    // --- 3. LOGIC KẾT BẠN (MỚI) ---
+    
+    // A gửi lời mời cho B
+    socket.on('send_friend_request', ({ toId, fromUser }) => {
+        // Tìm socket của người nhận (B) dựa trên ID
+        const receiverSocketId = Object.keys(onlineUsers).find(
+            key => onlineUsers[key].id === toId
+        );
+
+        if (receiverSocketId) {
+            // Gửi thông báo riêng cho B
+            io.to(receiverSocketId).emit('incoming_friend_request', fromUser);
         }
+    });
+
+    // B chấp nhận lời mời của A
+    socket.on('accept_friend_request', ({ toId, fromUser }) => {
+        const receiverSocketId = Object.keys(onlineUsers).find(
+            key => onlineUsers[key].id === toId
+        );
+
+        if (receiverSocketId) {
+            // Báo lại cho A biết là B đã đồng ý
+            io.to(receiverSocketId).emit('friend_request_accepted', fromUser);
+        }
+    });
+
+    // 4. Ngắt kết nối
+    socket.on('disconnect', () => {
+        delete onlineUsers[socket.id];
+        io.emit('online_users', Object.values(onlineUsers));
     });
 });
 

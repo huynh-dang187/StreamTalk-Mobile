@@ -16,6 +16,9 @@
             --msg-blue: #0084FF;
         }
 
+        /* RESET CSS QUAN TRỌNG ĐỂ KHÔNG BỊ LỆCH */
+        * { box-sizing: border-box; } 
+
         body { 
             background-color: #e0e0e0; font-family: 'Nunito', sans-serif; 
             height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center;
@@ -35,46 +38,64 @@
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- MATCHING SCREEN (MỚI - RADAR SCAN) --- */
-        #matching-screen {
-            background: #00C2FF; align-items: center; justify-content: center; color: white; text-align: center;
+        /* --- LOGIN SCREEN (ĐÃ SỬA CĂN CHỈNH) --- */
+        #login-screen {
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+            background: white;
         }
-        .radar-circle {
-            width: 150px; height: 150px; background: rgba(255,255,255,0.2);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            position: relative; margin-bottom: 30px;
+        .login-img {
+            width: 80%;
+            max-width: 250px;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto; margin-right: auto; /* Căn giữa ảnh */
         }
-        .radar-core {
-            width: 80px; height: 80px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #00C2FF; font-size: 40px; box-shadow: 0 0 20px rgba(255,255,255,0.5);
-            z-index: 2;
-        }
-        .ripple {
-            position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.5); opacity: 0;
-            animation: ripple 2s infinite linear;
-        }
-        .ripple:nth-child(2) { animation-delay: 0.6s; }
-        .ripple:nth-child(3) { animation-delay: 1.2s; }
-        
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.5); opacity: 0; }
+        /* Container giữ form thẳng hàng */
+        .login-form-container {
+            width: 100%;
+            max-width: 320px; /* Giới hạn chiều rộng để không bị bè */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Khoảng cách đều giữa các ô */
         }
 
-        /* --- CÁC PHẦN KHÁC (GIỮ NGUYÊN CSS CŨ) --- */
-        /* Login */
-        #login-screen { justify-content: center; align-items: center; padding: 40px; text-align: center; background: white; }
-        .login-img { width: 80%; max-width: 250px; margin-bottom: 30px; display: block; }
-        .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 16px;}
-        .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #FAFAFA; outline: none; margin-bottom: 15px; font-size: 14px; box-sizing: border-box; }
+        .btn-orange-login { 
+            width: 100%; padding: 15px; background: var(--accent-orange); 
+            color: white; border: none; border-radius: 12px; /* Bo góc ít hơn chút cho hiện đại */
+            font-weight: 800; cursor: pointer; font-size: 16px;
+            transition: 0.2s;
+        }
+        .btn-orange-login:active { transform: scale(0.98); }
 
-        /* Scroll Area */
+        .custom-input { 
+            width: 100%; padding: 15px; border: 1px solid #eee; 
+            border-radius: 12px; background: #F0F2F5; 
+            outline: none; font-size: 14px; 
+        }
+        .custom-input:focus { border-color: var(--primary-color); background: white; }
+
+        /* --- SCROLLABLE CONTENT AREA --- */
         .content-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
         .content-scroll-area::-webkit-scrollbar { display: none; }
 
-        /* Widgets & Home */
+        /* --- RADAR SCREEN --- */
+        #matching-screen { background: #00C2FF; align-items: center; justify-content: center; color: white; text-align: center; }
+        .radar-circle { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; }
+        .radar-core { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00C2FF; font-size: 40px; box-shadow: 0 0 20px rgba(255,255,255,0.5); z-index: 2; }
+        .ripple { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); opacity: 0; animation: ripple 2s infinite linear; }
+        .ripple:nth-child(2) { animation-delay: 0.6s; } .ripple:nth-child(3) { animation-delay: 1.2s; }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+
+        /* --- WIDGETS --- */
+        .info-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .stat-box { flex: 1; background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; }
+        .rank-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+        .rank-item:last-child { border-bottom: none; }
+
+        /* --- HOME & OTHERS --- */
         .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
         .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
         .task-btn { background: var(--accent-orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
@@ -82,26 +103,16 @@
         .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; cursor: pointer;}
         .avatar-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
         
-        .info-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
-        .stat-box { flex: 1; background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; }
-        .rank-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
-        
         /* Bottom Nav */
         .bottom-nav { flex-shrink: 0; padding: 15px 0; background: #FFF8F0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; }
         .nav-item.active { opacity: 1; font-weight: bold; }
 
-        /* Topics */
-        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; }
-        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-        .icon-bg { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
-        .icon-blue { color: #4facfe; background: #e0f2ff; } .icon-orange { color: #ff9a9e; background: #fff0f0; } .icon-red { color: #ff0844; background: #ffeaef; } .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
+        /* Toast */
+        #toast-box { visibility: hidden; min-width: 200px; background-color: rgba(0,0,0,0.8); color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; font-weight: 600; }
+        #toast-box.show { visibility: visible; opacity: 1; }
 
-        /* Buddy List */
-        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
-        
-        /* Chat */
+        /* Chat UI */
         #chat-screen-ui { background: white; }
         .chat-header-ui { padding: 15px; display: flex; align-items: center; gap: 10px; background: white; border-bottom: 1px solid #f0f0f0; z-index: 10; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #FAFAFA; }
@@ -116,6 +127,16 @@
         .chat-input-wrapper { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #msg-input { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
 
+        /* Topics */
+        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; }
+        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .icon-bg { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .icon-blue { color: #4facfe; background: #e0f2ff; } .icon-orange { color: #ff9a9e; background: #fff0f0; } .icon-red { color: #ff0844; background: #ffeaef; } .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
+
+        /* Buddy List */
+        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+
         /* Video & Summary */
         #video-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
@@ -127,17 +148,26 @@
 
 <div id="mobile-frame">
 
+    <div id="toast-box">Thông báo</div>
+
     <div id="login-screen" class="screen active">
-        <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg?w=740&t=st=1709999999~exp=1710000599~hmac=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" class="login-img" alt="Login">
-        <h2 style="margin-bottom: 10px; font-size: 28px; color: var(--primary-color);">BuddySpeak</h2>
-        <p style="color: #888; margin-bottom: 30px; font-size: 15px;">Kết nối và luyện tập tiếng Anh</p>
-        <div style="width: 100%;">
+        <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img" alt="Login">
+        
+        <h2 id="form-title" style="margin-bottom: 5px; font-size: 26px; color: var(--primary-color);">BuddySpeak</h2>
+        <p style="color: #888; margin-bottom: 30px; font-size: 14px;">Kết nối và luyện tập tiếng Anh</p>
+        
+        <div class="login-form-container">
             <input type="text" id="username" class="custom-input" placeholder="Tên đăng nhập">
             <input type="password" id="password" class="custom-input" placeholder="Mật khẩu">
-            <button onclick="handleLogin()" class="btn-orange-login">Đăng nhập</button>
+            <button id="auth-btn" onclick="handleLogin()" class="btn-orange-login">Đăng nhập</button>
         </div>
-        <p id="login-msg" style="color:red; font-size:12px; margin-top:15px;"></p>
-        <p style="font-size: 13px; margin-top: 20px; color: #888;">Chưa có tài khoản? <b style="color: var(--accent-orange); cursor: pointer;">Đăng ký ngay</b></p>
+        
+        <p id="login-msg" style="color:red; font-size:12px; margin-top:15px; min-height: 18px;"></p>
+        
+        <p style="font-size: 13px; margin-top: 20px; color: #888;">
+            <span id="toggle-text">Chưa có tài khoản?</span> 
+            <b id="toggle-btn" style="color: var(--accent-orange); cursor: pointer;" onclick="toggleRegisterMode()">Đăng ký ngay</b>
+        </p>
     </div>
 
     <div id="home-screen" class="screen">
@@ -284,7 +314,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    // --- DATABASE GIẢ LẬP (MOCK DATA) ---
+    // --- DỮ LIỆU BUDDY (MOCK) ---
     const buddiesData = [
         { id: 1, name: 'Huỳnh Nguyễn Đăng', tags: ['Coffee', 'Travel'], status: '⚡ Đang hoạt động', avatar: 5 },
         { id: 2, name: 'Phương Thảo', tags: ['Presentation', 'Job'], status: '2 phút trước', avatar: 9 },
@@ -298,7 +328,6 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        
         let idx = 0;
         if(screenId === 'home-screen') idx = 1;
         if(screenId === 'topic-screen') idx = 2;
@@ -309,10 +338,7 @@
     function goToTab(tab) {
         if(tab === 'home') switchScreen('home-screen');
         if(tab === 'topics') switchScreen('topic-screen');
-        if(tab === 'buddies') {
-            renderBuddyList('all'); // Hiện tất cả khi bấm tab
-            switchScreen('buddy-screen');
-        }
+        if(tab === 'buddies') { renderBuddyList('all'); switchScreen('buddy-screen'); }
     }
     
     function openChat(name) {
@@ -320,96 +346,119 @@
         switchScreen('chat-screen-ui');
     }
 
-    // --- LOGIC GHÉP ĐÔI THÔNG MINH (AI MATCHING) ---
+    // --- LOGIC ĐĂNG KÝ (TOGGLE) ---
+    let isRegisterMode = false;
+    function toggleRegisterMode() {
+        isRegisterMode = !isRegisterMode;
+        const title = document.getElementById('form-title');
+        const btn = document.getElementById('auth-btn');
+        const toggleText = document.getElementById('toggle-text');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const msg = document.getElementById('login-msg');
+
+        msg.innerText = ""; // Xóa lỗi cũ
+
+        if(isRegisterMode) {
+            title.innerText = "Đăng ký tài khoản";
+            btn.innerText = "Đăng ký";
+            toggleText.innerText = "Đã có tài khoản?";
+            toggleBtn.innerText = "Đăng nhập ngay";
+        } else {
+            title.innerText = "BuddySpeak";
+            btn.innerText = "Đăng nhập";
+            toggleText.innerText = "Chưa có tài khoản?";
+            toggleBtn.innerText = "Đăng ký ngay";
+        }
+    }
+
+    // --- LOGIC AUTHENTICATION ---
+    async function handleLogin() {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value.trim();
+        const msg = document.getElementById('login-msg');
+        
+        if(!u || !p) { msg.innerText = "Vui lòng nhập đủ thông tin!"; return; }
+
+        const endpoint = isRegisterMode ? '/api/register' : '/api/login';
+        const actionText = isRegisterMode ? "Đang đăng ký..." : "Đang đăng nhập...";
+        
+        msg.innerText = actionText;
+        msg.style.color = "blue";
+
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({username: u, password: p})
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                if(isRegisterMode) {
+                    msg.style.color = "green";
+                    msg.innerText = "Đăng ký thành công! Hãy đăng nhập.";
+                    setTimeout(() => toggleRegisterMode(), 1500);
+                } else {
+                    myName = data.username;
+                    localStorage.setItem('chat_username', myName);
+                    switchScreen('home-screen');
+                }
+            } else {
+                msg.style.color = "red";
+                msg.innerText = data.message;
+            }
+        } catch(e) {
+            msg.style.color = "red";
+            msg.innerText = "Lỗi kết nối server!";
+        }
+    }
+
+    // --- AI MATCHING & BUDDY LIST ---
     function selectTopic(topic) {
-        // 1. Lưu gợi ý
-        const hint = {
-            'Presentation': 'Good morning everyone...',
-            'Coffee': 'Can I get a Latte?',
-            'Job': 'My strength is...',
-            'Travel': 'Where is the station?'
-        }[topic] || "Hello!";
+        const hint = { 'Presentation':'Good morning everyone...', 'Coffee':'Can I get a Latte?', 'Job':'My strength is...', 'Travel':'Where is the station?' }[topic] || "Hello!";
         document.getElementById('topic-hint-text').innerText = hint;
         document.getElementById('matching-topic-text').innerText = "Chủ đề: " + topic;
-
-        // 2. Chuyển sang màn hình Radar
         switchScreen('matching-screen');
-
-        // 3. Đợi 2 giây (Giả lập AI đang tìm)
-        setTimeout(() => {
-            renderBuddyList(topic);
-            switchScreen('buddy-screen');
-        }, 2000);
+        setTimeout(() => { renderBuddyList(topic); switchScreen('buddy-screen'); }, 2000);
     }
 
-    // --- HÀM RENDER BUDDY LIST (QUAN TRỌNG) ---
     function renderBuddyList(filterTopic) {
-        const listContainer = document.getElementById('buddy-list-container');
-        listContainer.innerHTML = ''; // Xóa list cũ
+        const container = document.getElementById('buddy-list-container');
+        container.innerHTML = '';
+        const filtered = buddiesData.filter(b => filterTopic === 'all' || b.tags.includes(filterTopic) || b.tags.includes('all'));
+        
+        if(filtered.length === 0) { container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Chưa tìm thấy Buddy phù hợp :(</p>'; return; }
 
-        // Lọc danh sách
-        const filtered = buddiesData.filter(b => 
-            filterTopic === 'all' || b.tags.includes(filterTopic) || b.tags.includes('all')
-        );
+        const title = filterTopic === 'all' ? 'Tất cả Buddy' : `Kết quả cho: ${filterTopic}`;
+        container.insertAdjacentHTML('beforeend', `<p style="font-size:13px; color:#888; margin-bottom:10px;">${title}</p>`);
 
-        if(filtered.length === 0) {
-            listContainer.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Không tìm thấy Buddy phù hợp :(</p>';
-            return;
-        }
-
-        // Tạo HTML cho từng Buddy
-        filtered.forEach(buddy => {
+        filtered.forEach(b => {
             const html = `
             <div class="buddy-card">
-                <img src="https://i.pravatar.cc/150?img=${buddy.avatar}" class="b-avatar">
+                <img src="https://i.pravatar.cc/150?img=${b.avatar}" class="b-avatar">
                 <div style="flex:1;">
-                    <b style="font-size:15px;">${buddy.name}</b><br>
-                    <small style="color:${buddy.status.includes('Đang') ? 'green' : '#aaa'};">${buddy.status}</small>
-                    <div style="margin-top:4px;">${buddy.tags.map(t => `<span style="font-size:10px; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:4px;">${t}</span>`).join('')}</div>
+                    <b style="font-size:15px;">${b.name}</b><br>
+                    <small style="color:${b.status.includes('Đang')?'green':'#aaa'}">${b.status}</small>
+                    <div style="margin-top:4px;">${b.tags.map(t=>`<span style="font-size:10px; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:4px;">${t}</span>`).join('')}</div>
                 </div>
-                <span class="material-icons-outlined" onclick="openChat('${buddy.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span>
+                <span class="material-icons-outlined" onclick="openChat('${b.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span>
                 <span class="material-icons-outlined" onclick="startCall()" style="padding:10px; cursor:pointer; color:var(--primary-color);">videocam</span>
             </div>`;
-            listContainer.innerHTML += html;
+            container.insertAdjacentHTML('beforeend', html);
         });
-        
-        // Thêm tiêu đề danh sách
-        const title = filterTopic === 'all' ? 'Tất cả Buddy' : `Kết quả cho: ${filterTopic}`;
-        listContainer.insertAdjacentHTML('afterbegin', `<p style="font-size:13px; color:#888; margin-bottom:10px;">${title}</p>`);
     }
 
-    // --- LOGIC CŨ (LOGIN, CHAT, SOCKET) ---
+    // --- CORE LOGIC (CHAT, SOCKET, WEBRTC) ---
     const socket = io();
     let myName = localStorage.getItem('chat_username') || "";
     let localStream, peerConnection, pendingOffer, candidateQueue = [];
 
-    async function handleLogin() {
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value.trim();
-        if(!u || !p) return;
-        try {
-            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username: u, password: p}) });
-            const data = await res.json();
-            if(data.success) {
-                myName = data.username;
-                localStorage.setItem('chat_username', myName);
-                switchScreen('home-screen');
-            } else document.getElementById('login-msg').innerText = data.message;
-        } catch(e) {}
-    }
-    async function handleRegister() { /*...*/ }
-
     function sendMessage() {
         const input = document.getElementById('msg-input');
-        if(input.value.trim()) {
-            socket.emit('chat_message', { user: myName, content: input.value.trim(), type: 'text' });
-            input.value = "";
-        }
+        if(input.value.trim()) { socket.emit('chat_message', { user: myName, content: input.value.trim(), type: 'text' }); input.value = ""; }
     }
-
     function handleFileUpload(input) {
         const file = input.files[0];
-        if (!file) return;
+        if(!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
             const type = file.type.startsWith('image/') ? 'image' : 'file';
@@ -418,25 +467,17 @@
         reader.readAsDataURL(file);
         input.value = "";
     }
-
     socket.on('chat_message', (data) => {
         const div = document.createElement('div');
         div.className = `msg ${data.user === myName ? 'mine' : 'theirs'}`;
         if(data.type === 'image') div.innerHTML = `<img src="${data.fileData}" class="msg-img">`;
         else if(data.type === 'file') div.innerHTML = `<a href="${data.fileData}" download="${data.fileName}" class="file-card"><span class="material-icons-round">description</span> ${data.fileName}</a>`;
         else div.innerText = data.content;
-        document.getElementById('messages').appendChild(div);
-        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        const area = document.getElementById('messages');
+        area.appendChild(div); area.scrollTop = area.scrollHeight;
     });
 
-    const rtcConfig = {
-        iceServers: [
-            { urls: "stun:stun.l.google.com:19302" },
-            { urls: "turn:global.relay.metered.ca:80", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" },
-            { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" },
-            { urls: "turn:global.relay.metered.ca:443", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }
-        ]
-    };
+    const rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "turn:global.relay.metered.ca:80", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }, { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }, { urls: "turn:global.relay.metered.ca:443", username: "c6a7fe020cb38d3823a09173", credential: "vKt+DGKLZ6//Thnv" }] };
 
     async function startCall() {
         document.getElementById('video-modal').style.display = 'block';
@@ -446,10 +487,7 @@
         socket.emit('offer', offer);
     }
     async function setupMedia() {
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            document.getElementById('local-video').srcObject = localStream;
-        } catch(e) { alert("Lỗi Camera!"); }
+        try { localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); document.getElementById('local-video').srcObject = localStream; } catch(e) { alert("Lỗi Camera!"); }
     }
     function createPeerConnection() {
         peerConnection = new RTCPeerConnection(rtcConfig);
@@ -459,12 +497,10 @@
     }
     socket.on('offer', (offer) => { pendingOffer = offer; document.getElementById('incoming-call').style.display = 'block'; });
     async function acceptCall() {
-        document.getElementById('incoming-call').style.display = 'none';
-        document.getElementById('video-modal').style.display = 'block';
+        document.getElementById('incoming-call').style.display = 'none'; document.getElementById('video-modal').style.display = 'block';
         await setupMedia(); createPeerConnection();
         await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
-        const ans = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(ans);
+        const ans = await peerConnection.createAnswer(); await peerConnection.setLocalDescription(ans);
         socket.emit('answer', ans);
         if(candidateQueue.length > 0) { candidateQueue.forEach(c => peerConnection.addIceCandidate(new RTCIceCandidate(c)).catch(e=>{})); candidateQueue=[]; }
     }
@@ -475,8 +511,7 @@
     function endCall() {
         document.getElementById('video-modal').style.display = 'none';
         if(localStream) localStream.getTracks().forEach(t => t.stop());
-        if(peerConnection) peerConnection.close();
-        peerConnection = null;
+        if(peerConnection) peerConnection.close(); peerConnection = null;
         switchScreen('summary-screen');
     }
 </script>

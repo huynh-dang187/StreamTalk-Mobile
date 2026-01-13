@@ -35,45 +35,73 @@
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- SCROLLABLE CONTENT AREA (FIX LỖI CHỒNG LẤN) --- */
-        /* Đây là lớp bao bọc nội dung để nó cuộn riêng, không đè lên menu */
-        .content-scroll-area {
-            flex: 1; /* Chiếm hết khoảng trống còn lại */
-            overflow-y: auto; /* Cho phép cuộn dọc */
-            padding-bottom: 20px; /* Khoảng hở dưới cùng */
-            scrollbar-width: none; /* Ẩn thanh cuộn */
+        /* --- MATCHING SCREEN (MỚI - RADAR SCAN) --- */
+        #matching-screen {
+            background: #00C2FF; align-items: center; justify-content: center; color: white; text-align: center;
         }
+        .radar-circle {
+            width: 150px; height: 150px; background: rgba(255,255,255,0.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            position: relative; margin-bottom: 30px;
+        }
+        .radar-core {
+            width: 80px; height: 80px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #00C2FF; font-size: 40px; box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            z-index: 2;
+        }
+        .ripple {
+            position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.5); opacity: 0;
+            animation: ripple 2s infinite linear;
+        }
+        .ripple:nth-child(2) { animation-delay: 0.6s; }
+        .ripple:nth-child(3) { animation-delay: 1.2s; }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* --- CÁC PHẦN KHÁC (GIỮ NGUYÊN CSS CŨ) --- */
+        /* Login */
+        #login-screen { justify-content: center; align-items: center; padding: 40px; text-align: center; background: white; }
+        .login-img { width: 80%; max-width: 250px; margin-bottom: 30px; display: block; }
+        .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 16px;}
+        .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #FAFAFA; outline: none; margin-bottom: 15px; font-size: 14px; box-sizing: border-box; }
+
+        /* Scroll Area */
+        .content-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
         .content-scroll-area::-webkit-scrollbar { display: none; }
 
-        /* --- WIDGETS TRANG CHỦ --- */
-        .info-card {
-            background: white; border-radius: 16px; padding: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px;
-            display: flex; align-items: center; gap: 15px;
-        }
-        .stat-box {
-            flex: 1; background: white; border-radius: 16px; padding: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center;
-        }
-        .rank-item {
-            display: flex; align-items: center; padding: 10px 0; 
-            border-bottom: 1px solid #f9f9f9;
-        }
-        .rank-item:last-child { border-bottom: none; }
-
-        /* --- UI CHUNG --- */
-        .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; }
-        .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #FAFAFA; outline: none; margin-bottom: 15px; }
+        /* Widgets & Home */
+        .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
+        .task-btn { background: var(--accent-orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none; }
+        .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; cursor: pointer;}
+        .avatar-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
         
-        /* Toast */
-        #toast-box {
-            visibility: hidden; min-width: 200px; background-color: rgba(0,0,0,0.8); color: #fff;
-            text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000;
-            left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; font-weight: 600;
-        }
-        #toast-box.show { visibility: visible; opacity: 1; }
+        .info-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .stat-box { flex: 1; background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; }
+        .rank-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+        
+        /* Bottom Nav */
+        .bottom-nav { flex-shrink: 0; padding: 15px 0; background: #FFF8F0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
+        .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; }
+        .nav-item.active { opacity: 1; font-weight: bold; }
 
-        /* --- CHAT UI --- */
+        /* Topics */
+        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; }
+        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .icon-bg { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .icon-blue { color: #4facfe; background: #e0f2ff; } .icon-orange { color: #ff9a9e; background: #fff0f0; } .icon-red { color: #ff0844; background: #ffeaef; } .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
+
+        /* Buddy List */
+        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        
+        /* Chat */
         #chat-screen-ui { background: white; }
         .chat-header-ui { padding: 15px; display: flex; align-items: center; gap: 10px; background: white; border-bottom: 1px solid #f0f0f0; z-index: 10; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #FAFAFA; }
@@ -88,50 +116,28 @@
         .chat-input-wrapper { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #msg-input { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
 
-        /* --- HOME & OTHERS --- */
-        .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
-        .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
-        .task-btn { background: var(--accent-orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; cursor: pointer;}
-        .avatar-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
-        .horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none; }
-        
-        /* BOTTOM NAV CỐ ĐỊNH */
-        .bottom-nav { 
-            flex-shrink: 0; /* Không bị co lại */
-            padding: 15px 0; background: #FFF8F0; 
-            display: flex; justify-content: space-around; 
-            border-top: 1px solid rgba(0,0,0,0.05); 
-            z-index: 100;
-        }
-        .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; }
-        .nav-item.active { opacity: 1; font-weight: bold; }
-        
-        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; }
-        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-        .icon-bg { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
-        .icon-blue { color: #4facfe; background: #e0f2ff; } .icon-orange { color: #ff9a9e; background: #fff0f0; } .icon-red { color: #ff0844; background: #ffeaef; } .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
-        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
-        
+        /* Video & Summary */
         #video-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
         #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
+        #summary-screen { background: white; align-items: center; }
     </style>
 </head>
 <body>
 
 <div id="mobile-frame">
 
-    <div id="toast-box">Thông báo</div>
-
-    <div id="login-screen" class="screen active" style="justify-content:center; align-items:center; padding:30px; text-align:center; background:white;">
-        <img src="https://cdni.iconscout.com/illustration/premium/thumb/students-talking-to-each-other-2949755-2453673.png" style="width:200px; margin-bottom:20px;">
-        <h2>BuddySpeak</h2>
-        <input type="text" id="username" class="custom-input" placeholder="Tên đăng nhập">
-        <input type="password" id="password" class="custom-input" placeholder="Mật khẩu">
-        <button onclick="handleLogin()" class="btn-orange-login">Đăng nhập</button>
-        <p id="login-msg" style="color:red; font-size:12px; margin-top:10px;"></p>
+    <div id="login-screen" class="screen active">
+        <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg?w=740&t=st=1709999999~exp=1710000599~hmac=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" class="login-img" alt="Login">
+        <h2 style="margin-bottom: 10px; font-size: 28px; color: var(--primary-color);">BuddySpeak</h2>
+        <p style="color: #888; margin-bottom: 30px; font-size: 15px;">Kết nối và luyện tập tiếng Anh</p>
+        <div style="width: 100%;">
+            <input type="text" id="username" class="custom-input" placeholder="Tên đăng nhập">
+            <input type="password" id="password" class="custom-input" placeholder="Mật khẩu">
+            <button onclick="handleLogin()" class="btn-orange-login">Đăng nhập</button>
+        </div>
+        <p id="login-msg" style="color:red; font-size:12px; margin-top:15px;"></p>
+        <p style="font-size: 13px; margin-top: 20px; color: #888;">Chưa có tài khoản? <b style="color: var(--accent-orange); cursor: pointer;">Đăng ký ngay</b></p>
     </div>
 
     <div id="home-screen" class="screen">
@@ -147,10 +153,7 @@
                 <button class="task-btn" onclick="goToTab('topics')"><span class="material-icons-round">category</span> Chọn tình huống</button>
             </div>
             
-            <div style="padding:10px 20px;">
-                <b style="font-size:14px;">Người đồng hành hiện tại</b>
-            </div>
-            
+            <div style="padding:10px 20px;"><b style="font-size:14px;">Người đồng hành hiện tại</b></div>
             <div class="horizontal-scroll" style="margin-bottom: 20px;">
                 <div class="avatar-circle" onclick="openChat('Duy Mentor')"><img src="https://i.pravatar.cc/150?img=11" class="avatar-img"><span style="font-size:12px; font-weight:700;">Duy</span></div>
                 <div class="avatar-circle" onclick="openChat('Đức Speaking')"><img src="https://i.pravatar.cc/150?img=8" class="avatar-img"><span style="font-size:12px; font-weight:700;">Đức</span></div>
@@ -159,47 +162,18 @@
             </div>
 
             <div style="padding: 0 20px; display: flex; flex-direction: column; gap: 15px;">
-                
                 <div class="info-card" style="border-left: 5px solid #FF9F43;">
                     <div style="background: #FFF4E6; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FF9F43; font-weight: 800; font-size: 18px;">W</div>
-                    <div style="flex: 1;">
-                        <div style="font-size: 10px; color: #888; font-weight: 700;">WORD OF THE DAY</div>
-                        <div style="font-size: 15px; font-weight: 800; color: #333;">Serendipity</div>
-                        <div style="font-size: 12px; color: #555;">Sự tình cờ may mắn</div>
-                    </div>
-                    <span class="material-icons-outlined" style="color: #ccc;">volume_up</span>
+                    <div style="flex: 1;"><div style="font-size: 10px; color: #888; font-weight: 700;">WORD OF THE DAY</div><div style="font-size: 15px; font-weight: 800; color: #333;">Serendipity</div><div style="font-size: 12px; color: #555;">Sự tình cờ may mắn</div></div><span class="material-icons-outlined" style="color: #ccc;">volume_up</span>
                 </div>
-
                 <div style="display: flex; gap: 10px;">
-                    <div class="stat-box">
-                        <span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span>
-                        <div style="font-size: 18px; font-weight: 800; color: #333;">12</div>
-                        <div style="font-size: 11px; color: #888;">Ngày liên tiếp</div>
-                    </div>
-                    <div class="stat-box">
-                        <span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span>
-                        <div style="font-size: 18px; font-weight: 800; color: #333;">45m</div>
-                        <div style="font-size: 11px; color: #888;">Hôm nay</div>
-                    </div>
+                    <div class="stat-box"><span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span><div style="font-size: 18px; font-weight: 800; color: #333;">12</div><div style="font-size: 11px; color: #888;">Ngày liên tiếp</div></div>
+                    <div class="stat-box"><span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span><div style="font-size: 18px; font-weight: 800; color: #333;">45m</div><div style="font-size: 11px; color: #888;">Hôm nay</div></div>
                 </div>
-
-                <div style="background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <b style="font-size: 14px;">Bảng xếp hạng 🏆</b>
-                        <small style="color: #00C2FF; cursor: pointer;">Xem tất cả</small>
-                    </div>
-                    <div class="rank-item">
-                        <b style="color: #FFD700; width: 20px;">1</b>
-                        <img src="https://i.pravatar.cc/150?img=12" style="width: 25px; height: 25px; border-radius: 50%; margin: 0 10px;">
-                        <span style="font-size: 13px; flex: 1;">Vương Ức Long</span>
-                        <b style="font-size: 12px; color: #00C2FF;">1200 xp</b>
-                    </div>
-                    <div class="rank-item">
-                        <b style="color: #C0C0C0; width: 20px;">2</b>
-                        <img src="https://i.pravatar.cc/150?img=9" style="width: 25px; height: 25px; border-radius: 50%; margin: 0 10px;">
-                        <span style="font-size: 13px; flex: 1;">Phương Thảo</span>
-                        <b style="font-size: 12px; color: #00C2FF;">980 xp</b>
-                    </div>
+                <div class="info-card" style="display:block; padding: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;"><b style="font-size: 14px;">Bảng xếp hạng 🏆</b><small style="color: #00C2FF; cursor: pointer;">Xem tất cả</small></div>
+                    <div class="rank-item"><b style="color: #FFD700; width: 20px;">1</b><img src="https://i.pravatar.cc/150?img=12" style="width: 25px; height: 25px; border-radius: 50%; margin: 0 10px;"><span style="font-size: 13px; flex: 1;">Vương Ức Long</span><b style="font-size: 12px; color: #00C2FF;">1200 xp</b></div>
+                    <div class="rank-item"><b style="color: #C0C0C0; width: 20px;">2</b><img src="https://i.pravatar.cc/150?img=9" style="width: 25px; height: 25px; border-radius: 50%; margin: 0 10px;"><span style="font-size: 13px; flex: 1;">Phương Thảo</span><b style="font-size: 12px; color: #00C2FF;">980 xp</b></div>
                 </div>
             </div>
         </div> 
@@ -218,22 +192,10 @@
                 <h2 style="margin:0;">Chọn tình huống</h2>
             </div>
             <div class="topic-grid">
-                <div class="topic-card" onclick="selectTopic('Presentation')">
-                    <div class="icon-bg icon-blue"><span class="material-icons-round" style="font-size:32px;">school</span></div>
-                    <b>Thuyết trình</b>
-                </div>
-                <div class="topic-card" onclick="selectTopic('Coffee')">
-                    <div class="icon-bg icon-orange"><span class="material-icons-round" style="font-size:32px; color:#FF9F43;">local_cafe</span></div>
-                    <b>Gọi món Cafe</b>
-                </div>
-                <div class="topic-card" onclick="selectTopic('Job')">
-                    <div class="icon-bg icon-red"><span class="material-icons-round" style="font-size:32px;">work</span></div>
-                    <b>Phỏng vấn</b>
-                </div>
-                <div class="topic-card" onclick="selectTopic('Travel')">
-                    <div class="icon-bg icon-yellow"><span class="material-icons-round" style="font-size:32px; color:#FDCB6E;">explore</span></div>
-                    <b>Du lịch</b>
-                </div>
+                <div class="topic-card" onclick="selectTopic('Presentation')"><div class="icon-bg icon-blue"><span class="material-icons-round" style="font-size:32px;">school</span></div><b>Thuyết trình</b></div>
+                <div class="topic-card" onclick="selectTopic('Coffee')"><div class="icon-bg icon-orange"><span class="material-icons-round" style="font-size:32px; color:#FF9F43;">local_cafe</span></div><b>Gọi món Cafe</b></div>
+                <div class="topic-card" onclick="selectTopic('Job')"><div class="icon-bg icon-red"><span class="material-icons-round" style="font-size:32px;">work</span></div><b>Phỏng vấn</b></div>
+                <div class="topic-card" onclick="selectTopic('Travel')"><div class="icon-bg icon-yellow"><span class="material-icons-round" style="font-size:32px; color:#FDCB6E;">explore</span></div><b>Du lịch</b></div>
             </div>
         </div>
         <div class="bottom-nav">
@@ -244,22 +206,20 @@
         </div>
     </div>
 
+    <div id="matching-screen" class="screen">
+        <div class="radar-circle">
+            <div class="ripple"></div><div class="ripple"></div><div class="ripple"></div>
+            <div class="radar-core"><span class="material-icons-round">search</span></div>
+        </div>
+        <h3>Đang tìm Buddy phù hợp...</h3>
+        <p style="opacity:0.8; margin-top:10px;" id="matching-topic-text">Chủ đề: ...</p>
+    </div>
+
     <div id="buddy-screen" class="screen">
         <div class="content-scroll-area">
             <div style="padding:20px; text-align:center;"><h2>Buddies ✨</h2></div>
-            <div style="padding:0 20px;">
-                <div class="buddy-card">
-                    <img src="https://i.pravatar.cc/150?img=5" class="b-avatar">
-                    <div style="flex:1;"><b>Huỳnh Nguyễn Đăng</b><br><small style="color:#aaa;">⚡ Đang hoạt động</small></div>
-                    <span class="material-icons-outlined" onclick="openChat('Huỳnh Nguyễn Đăng')" style="padding:10px;">chat_bubble_outline</span>
-                    <span class="material-icons-outlined" onclick="startCall()" style="padding:10px;">videocam</span>
+            <div style="padding:0 20px;" id="buddy-list-container">
                 </div>
-                <div class="buddy-card">
-                    <img src="https://i.pravatar.cc/150?img=9" class="b-avatar">
-                    <div style="flex:1;"><b>Phương Thảo</b><br><small style="color:#aaa;">2 phút trước</small></div>
-                    <span class="material-icons-outlined" onclick="openChat('Phương Thảo')" style="padding:10px;">chat_bubble_outline</span>
-                </div>
-            </div>
         </div>
         <div class="bottom-nav">
             <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
@@ -273,20 +233,14 @@
         <div class="chat-header-ui">
             <span class="material-icons-outlined" onclick="goToTab('buddies')">arrow_back</span>
             <img src="https://i.pravatar.cc/150?img=5" style="width:40px; height:40px; border-radius:50%;">
-            <div style="flex:1;">
-                <b id="chat-with-name" style="font-size: 16px;">Buddy</b>
-                <div style="font-size:11px; color:#4CD964;">● Online</div>
-            </div>
-            <span class="material-icons-round" style="color:#0084FF; font-size:28px;" onclick="startCall()">videocam</span>
+            <div style="flex:1;"><b id="chat-with-name" style="font-size: 16px;">Buddy</b><div style="font-size:11px; color:#4CD964;">● Online</div></div>
+            <span class="material-icons-round" style="color:#0084FF; font-size:28px; cursor:pointer;" onclick="startCall()">videocam</span>
         </div>
-        
         <div id="messages"></div>
-        
         <div class="input-area">
             <button class="tool-btn" onclick="document.getElementById('file-input').click()"><span class="material-icons-outlined">attach_file</span></button>
             <button class="tool-btn" onclick="document.getElementById('file-input').click()"><span class="material-icons-outlined">image</span></button>
             <input type="file" id="file-input" hidden onchange="handleFileUpload(this)">
-            
             <div class="chat-input-wrapper">
                 <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." autocomplete="off">
                 <span class="material-icons-round" onclick="sendMessage()" style="color:#0084FF; cursor:pointer;">send</span>
@@ -302,7 +256,7 @@
             <div id="topic-hint-text" style="font-weight:700;">Hello! Nice to meet you.</div>
         </div>
         <div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center;">
-            <button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white;"><span class="material-icons-round">call_end</span></button>
+            <button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white; cursor:pointer;"><span class="material-icons-round">call_end</span></button>
         </div>
     </div>
 
@@ -314,15 +268,15 @@
         <div style="width:80%; background:white; padding:20px; margin-top:-50px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;">
             <h3>Kết quả</h3>
             <p>Bạn đã luyện tập rất tốt.</p>
-            <button onclick="goToTab('topics')" style="padding:12px 20px; background:var(--accent-orange); color:white; border:none; border-radius:20px;">Chọn bài khác</button>
+            <button onclick="goToTab('topics')" style="padding:12px 20px; background:var(--accent-orange); color:white; border:none; border-radius:20px; cursor:pointer;">Chọn bài khác</button>
         </div>
     </div>
 
     <div id="incoming-call" style="display:none; position:absolute; top:20px; left:20px; right:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.3); z-index:2000; text-align:center;">
         <h3>📞 Cuộc gọi đến...</h3>
         <div style="display:flex; gap:10px; margin-top:20px;">
-            <button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px;">Từ chối</button>
-            <button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px;">Nghe</button>
+            <button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px; cursor:pointer;">Từ chối</button>
+            <button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px; cursor:pointer;">Nghe</button>
         </div>
     </div>
 
@@ -330,11 +284,21 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    // --- DATABASE GIẢ LẬP (MOCK DATA) ---
+    const buddiesData = [
+        { id: 1, name: 'Huỳnh Nguyễn Đăng', tags: ['Coffee', 'Travel'], status: '⚡ Đang hoạt động', avatar: 5 },
+        { id: 2, name: 'Phương Thảo', tags: ['Presentation', 'Job'], status: '2 phút trước', avatar: 9 },
+        { id: 3, name: 'Vương Ức Long', tags: ['Presentation', 'Coffee'], status: '⚡ Đang hoạt động', avatar: 12 },
+        { id: 4, name: 'Nguyễn Hoài Đạt', tags: ['Job', 'Travel'], status: '5 phút trước', avatar: 3 },
+        { id: 5, name: 'Mr. David (Mentor)', tags: ['all'], status: '⚡ Đang hoạt động', avatar: 11 }
+    ];
+
     // --- NAV LOGIC ---
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
         let idx = 0;
         if(screenId === 'home-screen') idx = 1;
         if(screenId === 'topic-screen') idx = 2;
@@ -345,7 +309,10 @@
     function goToTab(tab) {
         if(tab === 'home') switchScreen('home-screen');
         if(tab === 'topics') switchScreen('topic-screen');
-        if(tab === 'buddies') switchScreen('buddy-screen');
+        if(tab === 'buddies') {
+            renderBuddyList('all'); // Hiện tất cả khi bấm tab
+            switchScreen('buddy-screen');
+        }
     }
     
     function openChat(name) {
@@ -353,15 +320,9 @@
         switchScreen('chat-screen-ui');
     }
 
-    // --- TOAST FUNCTION ---
-    function showToast(msg) {
-        const t = document.getElementById("toast-box");
-        t.innerText = msg;
-        t.classList.add("show");
-        setTimeout(() => t.classList.remove("show"), 2000);
-    }
-
+    // --- LOGIC GHÉP ĐÔI THÔNG MINH (AI MATCHING) ---
     function selectTopic(topic) {
+        // 1. Lưu gợi ý
         const hint = {
             'Presentation': 'Good morning everyone...',
             'Coffee': 'Can I get a Latte?',
@@ -369,10 +330,55 @@
             'Travel': 'Where is the station?'
         }[topic] || "Hello!";
         document.getElementById('topic-hint-text').innerText = hint;
-        showToast(`Đã chọn: ${topic}`);
+        document.getElementById('matching-topic-text').innerText = "Chủ đề: " + topic;
+
+        // 2. Chuyển sang màn hình Radar
+        switchScreen('matching-screen');
+
+        // 3. Đợi 2 giây (Giả lập AI đang tìm)
+        setTimeout(() => {
+            renderBuddyList(topic);
+            switchScreen('buddy-screen');
+        }, 2000);
     }
 
-    // --- LOGIC GỐC ---
+    // --- HÀM RENDER BUDDY LIST (QUAN TRỌNG) ---
+    function renderBuddyList(filterTopic) {
+        const listContainer = document.getElementById('buddy-list-container');
+        listContainer.innerHTML = ''; // Xóa list cũ
+
+        // Lọc danh sách
+        const filtered = buddiesData.filter(b => 
+            filterTopic === 'all' || b.tags.includes(filterTopic) || b.tags.includes('all')
+        );
+
+        if(filtered.length === 0) {
+            listContainer.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Không tìm thấy Buddy phù hợp :(</p>';
+            return;
+        }
+
+        // Tạo HTML cho từng Buddy
+        filtered.forEach(buddy => {
+            const html = `
+            <div class="buddy-card">
+                <img src="https://i.pravatar.cc/150?img=${buddy.avatar}" class="b-avatar">
+                <div style="flex:1;">
+                    <b style="font-size:15px;">${buddy.name}</b><br>
+                    <small style="color:${buddy.status.includes('Đang') ? 'green' : '#aaa'};">${buddy.status}</small>
+                    <div style="margin-top:4px;">${buddy.tags.map(t => `<span style="font-size:10px; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:4px;">${t}</span>`).join('')}</div>
+                </div>
+                <span class="material-icons-outlined" onclick="openChat('${buddy.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span>
+                <span class="material-icons-outlined" onclick="startCall()" style="padding:10px; cursor:pointer; color:var(--primary-color);">videocam</span>
+            </div>`;
+            listContainer.innerHTML += html;
+        });
+        
+        // Thêm tiêu đề danh sách
+        const title = filterTopic === 'all' ? 'Tất cả Buddy' : `Kết quả cho: ${filterTopic}`;
+        listContainer.insertAdjacentHTML('afterbegin', `<p style="font-size:13px; color:#888; margin-bottom:10px;">${title}</p>`);
+    }
+
+    // --- LOGIC CŨ (LOGIN, CHAT, SOCKET) ---
     const socket = io();
     let myName = localStorage.getItem('chat_username') || "";
     let localStream, peerConnection, pendingOffer, candidateQueue = [];
@@ -408,7 +414,6 @@
         reader.onload = function(e) {
             const type = file.type.startsWith('image/') ? 'image' : 'file';
             socket.emit('chat_message', { user: myName, type, fileData: e.target.result, fileName: file.name });
-            showToast("Đã gửi!");
         };
         reader.readAsDataURL(file);
         input.value = "";

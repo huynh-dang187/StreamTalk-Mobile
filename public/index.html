@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN TOÀN BỘ CSS CŨ (V11) */
         :root { --primary-color: #00C2FF; --accent-orange: #FF9F43; --bg-gray: #F5F5F5; --white: #ffffff; --msg-blue: #0084FF; --text-dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background-color: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -16,6 +15,8 @@
         .screen { display: none !important; flex-direction: column; height: 100%; width: 100%; background: var(--bg-gray); }
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* UI COMPONENTS */
         .content-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
         .content-scroll-area::-webkit-scrollbar { display: none; }
         .bottom-nav { flex-shrink: 0; padding: 15px 0; background: #FFF8F0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
@@ -23,45 +24,47 @@
         .nav-item.active { opacity: 1; font-weight: bold; color: var(--primary-color); }
         #toast-box { visibility: hidden; min-width: 200px; background-color: rgba(0,0,0,0.8); color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; font-weight: 600; }
         #toast-box.show { visibility: visible; opacity: 1; }
-        #add-friend-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
-        .modal-card { background: white; width: 85%; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .search-bar-container { padding: 0 20px 15px; }
-        .search-bar { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
-        .section-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; margin-top: 15px;}
-        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 10px; }
-        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-        .icon-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-        .icon-blue { color: #4facfe; background: #e0f2ff; } 
-        .icon-orange { color: #ff9a9e; background: #fff0f0; } 
-        .icon-red { color: #ff0844; background: #ffeaef; } 
-        .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
-        .icon-purple { color: #a18cd1; background: #f3f0ff; }
-        .icon-green { color: #43e97b; background: #eafff0; }
-        .icon-teal { color: #00b894; background: #e0f9f4; }
-        .icon-pink { color: #fd79a8; background: #ffe6f0; }
-        .buddy-header-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
-        .add-friend-btn { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .profile-header { background: white; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .id-card { background: var(--primary-color); color: white; padding: 15px 20px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin: 20px; }
-        .menu-list { background: white; border-radius: 20px; margin: 0 20px 20px; padding: 10px 0; }
-        .menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 600; }
-        .logout-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: #FF4757; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        /* LOGIN */
         #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
         .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
         .btn-orange-login { width: 100%; padding: 15px; background: var(--accent-orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
         .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; font-size: 14px; margin-bottom: 15px; }
+
+        /* HOME */
         .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
         .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
         .task-btn { background: var(--accent-orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none; }
         .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
         .avatar-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
+        
+        /* WIDGETS */
         .info-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
         .stat-box { flex: 1; background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; }
         .rank-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+
+        /* TOPICS */
+        .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 10px; }
+        .topic-card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .icon-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+        .icon-blue { color: #4facfe; background: #e0f2ff; } .icon-orange { color: #ff9a9e; background: #fff0f0; } .icon-red { color: #ff0844; background: #ffeaef; } .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
+        .icon-purple { color: #a18cd1; background: #f3f0ff; } .icon-green { color: #43e97b; background: #eafff0; } .icon-teal { color: #00b894; background: #e0f9f4; } .icon-pink { color: #fd79a8; background: #ffe6f0; }
+
+        /* BUDDIES & PROFILE */
+        .buddy-header-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .add-friend-btn { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        
+        .profile-header { background: white; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .id-card { background: var(--primary-color); color: white; padding: 15px 20px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin: 20px; }
+        .menu-list { background: white; border-radius: 20px; margin: 0 20px 20px; padding: 10px 0; }
+        .menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 600; }
+        .logout-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: #FF4757; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        /* CHAT & VIDEO */
         #chat-screen-ui { background: white; }
         .chat-header-ui { padding: 15px; display: flex; align-items: center; gap: 10px; background: white; border-bottom: 1px solid #f0f0f0; z-index: 10; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #FAFAFA; }
@@ -71,10 +74,15 @@
         .input-area { background: white; padding: 10px 15px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #eee; }
         .chat-input-wrapper { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #msg-input { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
+        
         #video-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
         #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
         #summary-screen { background: white; align-items: center; }
+        
+        #add-friend-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-card { background: white; width: 85%; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        
         #matching-screen { background: var(--primary-color); align-items: center; justify-content: center; color: white; text-align: center; }
         .radar-circle { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; }
         .radar-core { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 40px; }
@@ -189,6 +197,7 @@
                     <span class="material-icons-round">person_add</span> Thêm bạn
                 </button>
             </div>
+            
             <div style="padding:0 20px;" id="buddy-list-container"></div>
         </div>
         <div class="bottom-nav">
@@ -215,11 +224,11 @@
         <div class="content-scroll-area" style="padding-bottom: 0;">
             <div class="profile-header">
                 <img src="https://i.pravatar.cc/150?img=12" class="profile-avatar">
-                <h2 style="margin: 0;" class="display-name">Dang</h2>
+                <h2 style="margin: 0;" class="display-name">---</h2>
                 <p style="color: var(--primary-color); font-weight: 600; margin: 5px 0;">Học viên tích cực 🌟</p>
             </div>
             <div class="id-card">
-                <div><div style="font-size: 12px; opacity: 0.8;">BUDDY ID CỦA TÔI</div><div style="font-size: 24px; font-weight: 800; letter-spacing: 2px;" id="my-buddy-id">---</div></div>
+                <div><div style="font-size: 12px; opacity: 0.8;">BUDDY ID CỦA TÔI</div><div style="font-size: 24px; font-weight: 800; letter-spacing: 2px;" id="my-buddy-id">...</div></div>
                 <span class="material-icons-round" style="cursor: pointer; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%;" onclick="copyMyID()">content_copy</span>
             </div>
             <div class="menu-list">
@@ -281,116 +290,16 @@
     let myFriends = JSON.parse(localStorage.getItem('my_friends')) || [];
     let onlineUsers = []; // Danh sách User thật từ Server
 
-    // --- 1. LẮNG NGHE SỰ KIỆN TỪ SERVER ---
-    // Nhận danh sách người đang Online
+    // --- 1. LẮNG NGHE SERVER ---
     socket.on('online_users', (users) => {
-        console.log("Online Users:", users);
         onlineUsers = users;
-        // Nếu đang ở màn hình Buddies thì render lại ngay để thấy trạng thái Online
+        // Nếu đang ở màn hình Buddies -> Render lại
         if(document.getElementById('buddy-screen').classList.contains('active')) {
             renderBuddyList('all');
         }
     });
 
-    // --- 2. LOGIC KẾT BẠN THẬT ---
-    function handleAddFriendSubmit() {
-        const idInput = document.getElementById('friend-id-input').value.trim();
-        if(!idInput) return;
-
-        // 1. Tìm trong danh sách Online trước
-        const foundOnline = onlineUsers.find(u => u.id == idInput && u.id != myID);
-        
-        if (foundOnline) {
-            // Nếu tìm thấy Online -> Thêm ngay
-            addFriendToLocal(foundOnline);
-        } else {
-            // Nếu không Online -> Tạo User giả lập (cho Demo)
-            // (Thực tế bạn sẽ gọi API check database ở đây)
-            const mockUser = {
-                id: idInput,
-                username: "Buddy " + idInput.slice(-3),
-                avatar: Math.floor(Math.random()*10)+1,
-                isMock: true // Đánh dấu là user giả
-            };
-            addFriendToLocal(mockUser);
-        }
-        document.getElementById('add-friend-modal').style.display = 'none';
-    }
-
-    function addFriendToLocal(user) {
-        // Check đã kết bạn chưa
-        if(myFriends.some(f => f.id == user.id)) {
-            showToast("Đã là bạn bè rồi!");
-            return;
-        }
-        
-        myFriends.push(user);
-        localStorage.setItem('my_friends', JSON.stringify(myFriends));
-        showToast(`Đã thêm ${user.username} thành công!`);
-        renderBuddyList('all');
-    }
-
-    // --- 3. RENDER DANH SÁCH (CẬP NHẬT TRẠNG THÁI ONLINE) ---
-    function renderBuddyList(filterTopic) {
-        const container = document.getElementById('buddy-list-container');
-        container.innerHTML = '';
-
-        // Phân loại: Online & Offline
-        const friendsList = myFriends.map(friend => {
-            // Check xem friend này có đang online thật không
-            const isOnline = onlineUsers.some(u => u.id == friend.id);
-            return { ...friend, isOnline };
-        });
-
-        if(friendsList.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Chưa có bạn bè. Hãy bấm "Thêm bạn"!</p>';
-            return;
-        }
-
-        // Render từng người
-        friendsList.forEach(b => {
-            const statusColor = b.isOnline ? 'green' : '#aaa';
-            const statusText = b.isOnline ? '⚡ Đang hoạt động' : 'Ngoại tuyến';
-            
-            const html = `
-            <div class="buddy-card">
-                <img src="https://i.pravatar.cc/150?img=${b.avatar || 1}" class="b-avatar">
-                <div style="flex:1;">
-                    <b style="font-size:15px;">${b.username || b.name}</b><br>
-                    <small style="color:${statusColor}">${statusText}</small>
-                    <div style="font-size:10px; color:#888; margin-top:2px;">ID: ${b.id}</div>
-                </div>
-                <span class="material-icons-outlined" onclick="openChat('${b.username || b.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span>
-                <span class="material-icons-outlined" onclick="startCall()" style="padding:10px; cursor:pointer; color:var(--primary-color);">videocam</span>
-            </div>`;
-            container.insertAdjacentHTML('beforeend', html);
-        });
-    }
-
-    // --- CÁC LOGIC KHÁC GIỮ NGUYÊN ---
-    function switchScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        let idx = 0;
-        if(screenId === 'home-screen') idx = 1;
-        if(screenId === 'topic-screen') idx = 2;
-        if(screenId === 'buddy-screen') idx = 3;
-        if(screenId === 'profile-screen') idx = 4;
-        if(idx > 0) document.querySelectorAll(`.bottom-nav .nav-item:nth-child(${idx})`).forEach(n => n.classList.add('active'));
-    }
-
-    function goToTab(tab) {
-        if(tab === 'home') switchScreen('home-screen');
-        if(tab === 'topics') switchScreen('topic-screen');
-        if(tab === 'buddies') { renderBuddyList('all'); switchScreen('buddy-screen'); }
-        if(tab === 'profile') switchScreen('profile-screen');
-    }
-    
-    function openChat(name) { document.getElementById('chat-with-name').innerText = name; switchScreen('chat-screen-ui'); }
-    function showToast(msg) { const t = document.getElementById("toast-box"); t.innerText = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 2000); }
-    function showAddFriendModal() { document.getElementById('add-friend-modal').style.display = 'flex'; document.getElementById('friend-id-input').value = ''; }
-    
+    // --- 2. LOGIC LOGIN (REAL) ---
     let isRegisterMode = false;
     function toggleRegisterMode() {
         isRegisterMode = !isRegisterMode;
@@ -404,49 +313,126 @@
     async function handleLogin() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value.trim();
-        if(!u || !p) return;
+        const msg = document.getElementById('login-msg');
         
-        // Tạo ID mới nếu chưa có
-        if(!localStorage.getItem('buddy_id')) {
-            const newID = Math.floor(100000 + Math.random() * 900000);
-            localStorage.setItem('buddy_id', newID);
+        if(!u || !p) { msg.innerText = "Thiếu thông tin!"; return; }
+        
+        const endpoint = isRegisterMode ? '/api/register' : '/api/login';
+        msg.innerText = "Đang xử lý..."; msg.style.color = "blue";
+
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({username: u, password: p})
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                if(isRegisterMode) {
+                    msg.style.color = "green"; msg.innerText = "Đăng ký xong! Hãy đăng nhập.";
+                    setTimeout(() => toggleRegisterMode(), 1500);
+                } else {
+                    // LƯU THÔNG TIN THẬT TỪ DB
+                    myName = data.username;
+                    myID = data.buddyId; // ID từ server
+                    localStorage.setItem('chat_username', myName);
+                    localStorage.setItem('buddy_id', myID);
+                    
+                    // Báo danh với Socket
+                    socket.emit('register_user', {
+                        id: myID, username: myName, avatar: data.avatar || 1
+                    });
+
+                    // Update UI & Chuyển màn hình
+                    document.querySelectorAll('.display-name').forEach(el => el.innerText = myName);
+                    document.getElementById('my-buddy-id').innerText = myID;
+                    switchScreen('home-screen');
+                }
+            } else {
+                msg.style.color = "red"; msg.innerText = data.message;
+            }
+        } catch(e) {
+            msg.style.color = "red"; msg.innerText = "Lỗi kết nối server!";
         }
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('chat_username');
+        localStorage.removeItem('buddy_id');
+        localStorage.removeItem('my_friends'); // Xóa luôn list bạn bè cục bộ (Tùy chọn)
+        window.location.reload();
+    }
+
+    // --- 3. KẾT BẠN THẬT ---
+    function handleAddFriendSubmit() {
+        const idInput = document.getElementById('friend-id-input').value.trim();
+        if(!idInput) return;
+
+        // Tìm trong Online Users trước
+        const foundUser = onlineUsers.find(u => u.id == idInput && u.id != myID);
         
-        // GỬI LÊN SERVER ĐỂ ĐĂNG KÝ ONLINE
-        myID = localStorage.getItem('buddy_id');
-        myName = u;
-        localStorage.setItem('chat_username', myName);
-        
-        // *** QUAN TRỌNG: Báo danh với Server ***
-        socket.emit('register_user', {
-            id: myID,
-            username: myName,
-            avatar: Math.floor(Math.random()*10)+1
+        if (foundUser) {
+            addFriendToLocal(foundUser);
+        } else {
+            showToast("User không online hoặc không tồn tại!");
+        }
+        document.getElementById('add-friend-modal').style.display = 'none';
+    }
+
+    function addFriendToLocal(user) {
+        if(myFriends.some(f => f.id == user.id)) { showToast("Đã là bạn bè!"); return; }
+        myFriends.push(user);
+        localStorage.setItem('my_friends', JSON.stringify(myFriends));
+        showToast(`Đã thêm ${user.username}!`);
+        renderBuddyList('all');
+    }
+
+    // --- 4. RENDER DANH SÁCH (CHECK ONLINE) ---
+    function renderBuddyList(filterTopic) {
+        const container = document.getElementById('buddy-list-container');
+        container.innerHTML = '';
+
+        if(myFriends.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Chưa có bạn bè.</p>';
+            return;
+        }
+
+        myFriends.forEach(friend => {
+            // Check realtime online status
+            const isOnline = onlineUsers.some(u => u.id == friend.id);
+            const statusColor = isOnline ? 'green' : '#aaa';
+            const statusText = isOnline ? '⚡ Online' : 'Offline';
+            
+            const html = `
+            <div class="buddy-card">
+                <img src="https://i.pravatar.cc/150?img=${friend.avatar || 1}" class="b-avatar">
+                <div style="flex:1;">
+                    <b style="font-size:15px;">${friend.username || friend.name}</b><br>
+                    <small style="color:${statusColor}">${statusText}</small>
+                    <div style="font-size:10px; color:#888;">ID: ${friend.id}</div>
+                </div>
+                <span class="material-icons-outlined" onclick="openChat('${friend.username || friend.name}')" style="padding:10px; cursor:pointer;">chat_bubble_outline</span>
+                <span class="material-icons-outlined" onclick="startCall()" style="padding:10px; cursor:pointer; color:var(--primary-color);">videocam</span>
+            </div>`;
+            container.insertAdjacentHTML('beforeend', html);
         });
-
-        // Update UI
-        document.querySelectorAll('.display-name').forEach(el => el.innerText = myName);
-        document.getElementById('my-buddy-id').innerText = myID;
-        switchScreen('home-screen');
     }
 
-    function copyMyID() { navigator.clipboard.writeText(document.getElementById('my-buddy-id').innerText); showToast("Đã sao chép ID!"); }
-    function handleLogout() { localStorage.removeItem('chat_username'); window.location.reload(); }
-
-    function selectTopic(topic) {
-        const hints = { 'Presentation':'Good morning everyone...', 'Coffee':'Can I get a Latte?', 'SmallTalk':'Nice weather today, isnt it?', 'Pronunciation':'Repeat after me: Th-ink', 'Shopping':'How much is this?', 'Health':'I have a headache.', 'Airport':'Where is gate 5?', 'Restaurant':'Table for two, please.', 'Job':'My strength is teamwork.', 'Meeting':'Lets wrap up this meeting.', 'Email':'I look forward to hearing from you.', 'Travel':'Where is the station?', 'IELTS':'Describe a memorable trip.', 'Vocabulary':'Today we learn about Family.' };
-        document.getElementById('topic-hint-text').innerText = hints[topic] || "Hello!";
-        document.getElementById('matching-topic-text').innerText = "Chủ đề: " + topic;
-        switchScreen('matching-screen');
-        setTimeout(() => { goToTab('buddies'); }, 2000);
-    }
-
-    // Chat & Media
+    // --- LOGIC CHUNG (NAV, CHAT, CALL...) GIỮ NGUYÊN ---
+    function switchScreen(sId) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(sId).classList.add('active'); }
+    function goToTab(t) { if(t==='home') switchScreen('home-screen'); if(t==='topics') switchScreen('topic-screen'); if(t==='buddies'){ renderBuddyList('all'); switchScreen('buddy-screen'); } if(t==='profile') switchScreen('profile-screen'); }
+    function openChat(n) { document.getElementById('chat-with-name').innerText=n; switchScreen('chat-screen-ui'); }
+    function showToast(m) { const t=document.getElementById("toast-box"); t.innerText=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2000); }
+    function showAddFriendModal() { document.getElementById('add-friend-modal').style.display='flex'; }
+    function copyMyID() { navigator.clipboard.writeText(myID); showToast("Đã sao chép ID!"); }
+    function selectTopic(t) { const h={'Presentation':'Good morning...','Coffee':'Latte please'}[t]||"Hello"; document.getElementById('topic-hint-text').innerText=h; document.getElementById('matching-topic-text').innerText="Chủ đề: "+t; switchScreen('matching-screen'); setTimeout(()=>{goToTab('buddies')},2000); }
+    
+    // WebRTC & Chat Core
     function sendMessage() { const i=document.getElementById('msg-input'); if(i.value.trim()){ socket.emit('chat_message', {user:myName, content:i.value.trim(), type:'text'}); i.value=""; } }
-    function handleFileUpload(input) { const f=input.files[0]; if(f){ const r=new FileReader(); r.onload=function(e){ socket.emit('chat_message', {user:myName, type:'file', fileData:e.target.result, fileName:f.name}); }; r.readAsDataURL(f); input.value=""; } }
-    socket.on('chat_message', (d)=>{ const div=document.createElement('div'); div.className=`msg ${d.user===myName?'mine':'theirs'}`; if(d.type==='file') div.innerHTML=`<a href="${d.fileData}" download="${d.fileName}" class="file-card">📎 ${d.fileName}</a>`; else div.innerText=d.content; document.getElementById('messages').appendChild(div); });
-
-    // WebRTC (Giữ nguyên)
+    function handleFileUpload(input) { const f=input.files[0]; if(f){ const r=new FileReader(); r.onload=e=>socket.emit('chat_message',{user:myName, type:'file', fileData:e.target.result, fileName:f.name}); r.readAsDataURL(f); input.value=""; } }
+    socket.on('chat_message', d=>{ const div=document.createElement('div'); div.className=`msg ${d.user===myName?'mine':'theirs'}`; if(d.type==='file') div.innerHTML=`<a href="${d.fileData}" download="${d.fileName}" class="file-card">📎 ${d.fileName}</a>`; else div.innerText=d.content; document.getElementById('messages').appendChild(div); });
+    
+    // WebRTC
     let localStream, peerConnection, pendingOffer;
     const rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
     async function startCall() { document.getElementById('video-modal').style.display='block'; await setupMedia(); createPeerConnection(); const o=await peerConnection.createOffer(); await peerConnection.setLocalDescription(o); socket.emit('offer', o); }
@@ -459,14 +445,12 @@
     socket.on('candidate', c=>{ if(peerConnection) peerConnection.addIceCandidate(c); });
     function endCall() { document.getElementById('video-modal').style.display='none'; if(localStream) localStream.getTracks().forEach(t=>t.stop()); switchScreen('summary-screen'); }
 
-    // Init
-    if(myName) {
+    // Init check
+    if(myName && myID) {
         document.querySelectorAll('.display-name').forEach(el => el.innerText = myName);
-        if(myID) { 
-            document.getElementById('my-buddy-id').innerText = myID;
-            // Re-register if reloaded
-            socket.emit('register_user', { id: myID, username: myName, avatar: Math.floor(Math.random()*10)+1 });
-        }
+        document.getElementById('my-buddy-id').innerText = myID;
+        // Báo danh lại nếu reload trang
+        socket.emit('register_user', { id: myID, username: myName, avatar: 1 });
     }
 </script>
 </body>

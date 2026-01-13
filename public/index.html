@@ -9,10 +9,10 @@
     
     <style>
         :root {
-            --primary-cyan: #00C2FF; /* Màu xanh của thẻ Nhiệm vụ */
-            --primary-orange: #FF9F43; /* Màu nút Tìm Buddy */
-            --bg-app: #F5F5F5; /* Màu nền xám nhẹ */
-            --nav-bg: #FFF8F0; /* Màu nền thanh menu (kem) */
+            --primary-cyan: #00C2FF;
+            --primary-orange: #FF9F43;
+            --bg-app: #F5F5F5;
+            --nav-bg: #FFF8F0;
             --text-dark: #2d3436;
             --white: #ffffff;
         }
@@ -22,7 +22,6 @@
             height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center;
         }
 
-        /* KHUNG MOBILE */
         #mobile-frame {
             width: 375px; height: 812px; background-color: var(--bg-app);
             border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -33,81 +32,82 @@
         .screen.active { display: flex; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- 1. HOME SCREEN STYLES (Update theo ảnh 1) --- */
-        #home-screen { background: var(--bg-app); }
-        
-        .home-header { padding: 25px 20px 10px; background: transparent; display: flex; justify-content: space-between; align-items: flex-start; }
-        .bell-icon { background: white; padding: 8px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); color: #FFC107; }
-        
-        /* Thẻ Nhiệm vụ Xanh Cyan */
-        .cyan-card { 
-            margin: 10px 20px; padding: 25px; border-radius: 25px; color: white;
-            background: linear-gradient(135deg, #00C6FF, #0072FF);
-            position: relative; box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4);
-        }
-        .task-btn {
-            background: var(--primary-orange); color: white; border: none;
-            padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px;
-            margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
-            box-shadow: 0 4px 10px rgba(255, 159, 67, 0.4);
-        }
+        /* --- 1. TOPIC SCREEN STYLES (MỚI - GIỐNG ẢNH 2) --- */
+        #topic-screen { background: white; }
+        .topic-header { padding: 20px; display: flex; align-items: center; gap: 10px; }
+        .topic-title { font-size: 20px; font-weight: 800; color: #333; position: relative; }
+        .topic-title::after { content: ''; display: block; width: 100%; height: 3px; background: #00C2FF; margin-top: 2px; border-radius: 2px;}
 
-        /* Danh sách Ngang (Recent Buddies) */
+        /* Filter Tags (Học tập, Đời sống...) */
+        .tag-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
+        .tag-pill { 
+            padding: 8px 16px; background: #f0f0f0; border-radius: 20px; 
+            font-size: 12px; font-weight: 700; color: #555; white-space: nowrap; cursor: pointer;
+        }
+        .tag-pill.active { background: #00C2FF; color: white; }
+
+        /* Grid Layout (2 cột) */
+        .topic-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; 
+            padding: 0 20px 100px; /* Padding bottom để tránh menu che */
+        }
+        
+        .topic-card {
+            background: white; border: 1px solid #eee; border-radius: 16px;
+            padding: 20px 15px; text-align: center; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: transform 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 160px;
+        }
+        .topic-card:active { transform: scale(0.95); border-color: #00C2FF; }
+        
+        /* Icon styles specific to cards */
+        .icon-bg { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .icon-blue { color: #4facfe; background: #e0f2ff; }
+        .icon-orange { color: #ff9a9e; background: #fff0f0; } /* Cam/Đỏ nhạt */
+        .icon-red { color: #ff0844; background: #ffeaef; }
+        .icon-yellow { color: #fbc2eb; background: #fcf0f9; }
+
+        .topic-name { font-weight: 700; font-size: 14px; color: #333; line-height: 1.4; }
+
+        /* --- HOME, BUDDY, CHAT, VIDEO STYLES (GIỮ NGUYÊN) --- */
+        #home-screen { background: var(--bg-app); }
+        .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .bell-icon { background: white; padding: 8px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); color: #FFC107; }
+        .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
+        .task-btn { background: var(--primary-orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-top: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(255, 159, 67, 0.4); }
         .recent-section { margin-top: 20px; padding-left: 20px; }
-        .section-title { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 15px; display: flex; justify-content: space-between; padding-right: 20px;}
         .horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; padding-right: 20px; scrollbar-width: none; }
         .avatar-circle { display: flex; flex-direction: column; align-items: center; min-width: 60px; cursor: pointer;}
         .avatar-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
-        .avatar-name { font-size: 12px; font-weight: 700; color: #555; }
-
-        /* --- 2. BUDDY LIST STYLES (Update theo ảnh 2) --- */
-        #buddy-screen { background: var(--bg-app); }
-        .buddy-header-bar { padding: 20px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .buddy-list-container { padding: 10px 20px; padding-bottom: 100px; }
         
-        .buddy-card {
-            background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px;
-            display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            transition: transform 0.2s;
-        }
-        .buddy-card:active { transform: scale(0.98); }
-        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
-        .b-info { flex: 1; }
-        .b-name { font-weight: 800; font-size: 15px; color: #333; margin-bottom: 2px; }
-        .b-status { font-size: 11px; color: #888; display: flex; align-items: center; gap: 4px; }
-        .status-icon { color: #FFC107; font-size: 14px; } /* Icon tia sét vàng */
-        
-        .b-actions { display: flex; flex-direction: column; gap: 10px; }
-        .icon-btn { color: #333; background: none; border: none; cursor: pointer; }
-
-        /* --- 3. BOTTOM NAV (Màu kem) --- */
-        .bottom-nav {
-            margin-top: auto; padding: 15px 0; background: var(--nav-bg); 
-            display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05);
-        }
+        .bottom-nav { margin-top: auto; padding: 15px 0; background: var(--nav-bg); display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); }
         .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; }
         .nav-item.active { opacity: 1; font-weight: bold; }
         .nav-item .material-icons-outlined { font-size: 28px; display: block; margin-bottom: -5px; color: black;}
 
-        /* --- CÁC PHẦN KHÁC (Chat, Video, Login...) GIỮ NGUYÊN --- */
+        #buddy-screen { background: var(--bg-app); }
+        .buddy-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .b-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .b-info { flex: 1; }
+        .status-icon { color: #FFC107; font-size: 14px; }
+        .icon-btn { color: #333; background: none; border: none; cursor: pointer; }
+
         #login-screen { padding: 30px; align-items: center; justify-content: center; text-align: center; background: white;}
         .custom-input { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #FAFAFA; outline: none; margin-bottom: 15px; }
         .btn-orange-login { width: 100%; padding: 15px; background: var(--primary-orange); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; }
-        
-        /* Chat UI */
+
         #chat-screen-ui { background: white; }
         .chat-header-ui { padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #FAFAFA; }
         .msg { padding: 12px 16px; border-radius: 16px; max-width: 75%; font-size: 14px; }
         .msg.mine { align-self: flex-end; background: #0084ff; color: white; border-bottom-right-radius: 4px; }
         .msg.theirs { align-self: flex-start; background: #eee; border-bottom-left-radius: 4px; }
-        
-        /* Video Modal */
+
         #video-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
         #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
         
-        /* Summary Screen */
         #summary-screen { background: white; align-items: center; }
     </style>
 </head>
@@ -134,112 +134,103 @@
             </div>
             <span class="material-icons-outlined bell-icon">notifications</span>
         </div>
-
         <div class="cyan-card">
             <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 5px;">Nhiệm vụ ưu tiên 🔥</h3>
             <p style="font-size: 13px; opacity: 0.9;">Chuẩn bị bài thuyết trình<br>(hạn thứ 6 27/9/2026)</p>
-            <button class="task-btn" onclick="goToTab('buddies')">
-                <span class="material-icons-round">handshake</span> Tìm Buddy luyện tập ngay
+            <button class="task-btn" onclick="goToTab('topics')"> <span class="material-icons-round">category</span> Chọn tình huống luyện tập
             </button>
-            <div style="display:flex; gap:5px; justify-content:center; margin-top:15px; opacity:0.5;">
-                <div style="width:6px; height:6px; background:black; border-radius:50%;"></div>
-                <div style="width:6px; height:6px; background:white; border-radius:50%;"></div>
-                <div style="width:6px; height:6px; background:white; border-radius:50%;"></div>
-            </div>
         </div>
-
         <div class="recent-section">
-            <div class="section-title">
-                <span>Người đồng hành hiện tại</span>
-                <span style="color:#999; font-weight:400; font-size:12px;">Tất cả</span>
-            </div>
+            <div style="font-size: 14px; font-weight: 700; color: #333; margin-bottom: 15px;">Người đồng hành hiện tại</div>
             <div class="horizontal-scroll">
                 <div class="avatar-circle" onclick="openChat('Duy Mentor')">
-                    <img src="https://i.pravatar.cc/150?img=11" class="avatar-img">
-                    <span class="avatar-name">Duy</span>
+                    <img src="https://i.pravatar.cc/150?img=11" class="avatar-img"><span style="font-size:12px; font-weight:700;">Duy</span>
                 </div>
                 <div class="avatar-circle" onclick="openChat('Đức Speaking')">
-                    <img src="https://i.pravatar.cc/150?img=8" class="avatar-img">
-                    <span class="avatar-name">Đức</span>
-                </div>
-                <div class="avatar-circle" onclick="openChat('Long IELTS')">
-                    <img src="https://i.pravatar.cc/150?img=5" class="avatar-img">
-                    <span class="avatar-name">Long</span>
-                </div>
-                <div class="avatar-circle" onclick="openChat('Bảo Basic')">
-                    <img src="https://i.pravatar.cc/150?img=9" class="avatar-img">
-                    <span class="avatar-name">Bảo</span>
+                    <img src="https://i.pravatar.cc/150?img=8" class="avatar-img"><span style="font-size:12px; font-weight:700;">Đức</span>
                 </div>
                 <div class="avatar-circle">
-                    <img src="https://i.pravatar.cc/150?img=3" class="avatar-img">
-                    <span class="avatar-name">Tú</span>
+                    <img src="https://i.pravatar.cc/150?img=5" class="avatar-img"><span style="font-size:12px; font-weight:700;">Long</span>
                 </div>
             </div>
         </div>
-
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="goToTab('home')">
-                <span class="material-icons-outlined">home</span>
-            </div>
-            <div class="nav-item" onclick="alert('Chức năng Chọn Tình Huống')">
-                <span class="material-icons-outlined">grid_view</span>
-            </div>
-            <div class="nav-item" onclick="goToTab('buddies')">
-                <span class="material-icons-outlined">people</span>
-            </div>
-            <div class="nav-item" onclick="alert('Trang cá nhân')">
-                <span class="material-icons-outlined">person</span>
-            </div>
+            <div class="nav-item active" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
+            <div class="nav-item" onclick="goToTab('topics')"><span class="material-icons-outlined">grid_view</span></div>
+            <div class="nav-item" onclick="goToTab('buddies')"><span class="material-icons-outlined">people</span></div>
+            <div class="nav-item"><span class="material-icons-outlined">person</span></div>
         </div>
     </div>
 
-    <div id="buddy-screen" class="screen">
-        <div class="buddy-header-bar">
-            <span class="material-icons-outlined" style="position:absolute; left:20px; cursor:pointer;" onclick="goToTab('home')">arrow_back</span>
-            <h2 style="font-weight: 800; font-style: italic;">Buddies ✨</h2>
+    <div id="topic-screen" class="screen">
+        <div class="topic-header">
+            <span class="material-icons-outlined" onclick="goToTab('home')" style="cursor:pointer; font-size: 24px;">arrow_back</span>
+            <div class="topic-title">Chọn tình huống thực tế</div>
+        </div>
+        
+        <div class="tag-scroll">
+            <div class="tag-pill active">Học tập</div>
+            <div class="tag-pill">Đời sống</div>
+            <div class="tag-pill">Công việc</div>
+            <div class="tag-pill">Âm nhạc</div>
+            <div class="tag-pill">Thể thao</div>
         </div>
 
-        <div class="buddy-list-container">
-            <div class="buddy-card">
-                <img src="https://i.pravatar.cc/150?img=5" class="b-avatar">
-                <div class="b-info">
-                    <div class="b-name">Huỳnh Nguyễn Đăng</div>
-                    <div class="b-status"><span class="status-icon">⚡</span> Đang hoạt động</div>
-                </div>
-                <div class="b-actions">
-                    <button class="icon-btn" onclick="openChat('Huỳnh Nguyễn Đăng')"><span class="material-icons-outlined">chat_bubble_outline</span></button>
-                    <button class="icon-btn" onclick="startCall()"><span class="material-icons-outlined">videocam</span></button>
-                </div>
-            </div>
-
-            <div class="buddy-card">
-                <img src="https://i.pravatar.cc/150?img=9" class="b-avatar">
-                <div class="b-info">
-                    <div class="b-name">Nghiêm Thị Phương Thảo</div>
-                    <div class="b-status" style="color:#aaa;"><span class="material-icons-outlined" style="font-size:14px;">history</span> 2 phút trước</div>
-                </div>
-                <div class="b-actions">
-                    <button class="icon-btn" onclick="openChat('Phương Thảo')"><span class="material-icons-outlined">chat_bubble_outline</span></button>
-                    <button class="icon-btn" onclick="startCall()"><span class="material-icons-outlined">videocam</span></button>
-                </div>
+        <div class="topic-grid">
+            <div class="topic-card" onclick="selectTopic('Presentation')">
+                <div class="icon-bg icon-blue"><span class="material-icons-round" style="font-size:32px;">school</span></div>
+                <div class="topic-name">Thuyết trình<br>trên lớp</div>
             </div>
             
-             <div class="buddy-card">
-                <img src="https://i.pravatar.cc/150?img=12" class="b-avatar">
-                <div class="b-info">
-                    <div class="b-name">Vương Ức Long</div>
-                    <div class="b-status"><span class="status-icon">⚡</span> Đang hoạt động</div>
-                </div>
-                <div class="b-actions">
-                    <button class="icon-btn" onclick="openChat('Vương Ức Long')"><span class="material-icons-outlined">chat_bubble_outline</span></button>
-                    <button class="icon-btn" onclick="startCall()"><span class="material-icons-outlined">videocam</span></button>
-                </div>
+            <div class="topic-card" onclick="selectTopic('Coffee')">
+                <div class="icon-bg icon-orange"><span class="material-icons-round" style="font-size:32px; color:#FF9F43;">local_cafe</span></div>
+                <div class="topic-name">Gọi món tại<br>quán cà phê</div>
+            </div>
+
+            <div class="topic-card" onclick="selectTopic('Job')">
+                <div class="icon-bg icon-red"><span class="material-icons-round" style="font-size:32px;">work</span></div>
+                <div class="topic-name">Phỏng vấn xin<br>việc cơ bản</div>
+            </div>
+
+            <div class="topic-card" onclick="selectTopic('Travel')">
+                <div class="icon-bg icon-yellow"><span class="material-icons-round" style="font-size:32px; color:#FDCB6E;">explore</span></div>
+                <div class="topic-name">Hỏi đường khi<br>đi du lịch</div>
             </div>
         </div>
 
         <div class="bottom-nav">
             <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
-            <div class="nav-item"><span class="material-icons-outlined">grid_view</span></div>
+            <div class="nav-item active" onclick="goToTab('topics')"><span class="material-icons-outlined">grid_view</span></div>
+            <div class="nav-item" onclick="goToTab('buddies')"><span class="material-icons-outlined">people</span></div>
+            <div class="nav-item"><span class="material-icons-outlined">person</span></div>
+        </div>
+    </div>
+
+    <div id="buddy-screen" class="screen">
+        <div class="buddy-header-bar" style="padding:20px; display:flex; justify-content:center;">
+            <h2 style="font-weight: 800; font-style: italic;">Buddies ✨</h2>
+        </div>
+        <div class="buddy-list-container" style="padding:0 20px;">
+            <div class="buddy-card">
+                <img src="https://i.pravatar.cc/150?img=5" class="b-avatar">
+                <div class="b-info"><div class="b-name">Huỳnh Nguyễn Đăng</div><div class="b-status"><span class="status-icon">⚡</span> Đang hoạt động</div></div>
+                <div class="b-actions">
+                    <button class="icon-btn" onclick="openChat('Huỳnh Nguyễn Đăng')"><span class="material-icons-outlined">chat_bubble_outline</span></button>
+                    <button class="icon-btn" onclick="startCall()"><span class="material-icons-outlined">videocam</span></button>
+                </div>
+            </div>
+            <div class="buddy-card">
+                <img src="https://i.pravatar.cc/150?img=9" class="b-avatar">
+                <div class="b-info"><div class="b-name">Phương Thảo</div><div class="b-status" style="color:#aaa;">Hoạt động 2 phút trước</div></div>
+                <div class="b-actions">
+                    <button class="icon-btn" onclick="openChat('Phương Thảo')"><span class="material-icons-outlined">chat_bubble_outline</span></button>
+                    <button class="icon-btn" onclick="startCall()"><span class="material-icons-outlined">videocam</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-outlined">home</span></div>
+            <div class="nav-item" onclick="goToTab('topics')"><span class="material-icons-outlined">grid_view</span></div>
             <div class="nav-item active" onclick="goToTab('buddies')"><span class="material-icons-outlined">people</span></div>
             <div class="nav-item"><span class="material-icons-outlined">person</span></div>
         </div>
@@ -248,11 +239,7 @@
     <div id="chat-screen-ui" class="screen">
         <div class="chat-header-ui">
             <span class="material-icons-outlined" onclick="goToTab('buddies')" style="cursor:pointer;">arrow_back</span>
-            <img src="https://i.pravatar.cc/150?img=5" style="width:35px; height:35px; border-radius:50%; margin-left:5px;">
-            <div style="flex:1; margin-left:10px;">
-                <b id="chat-with-name">Buddy</b>
-                <div style="font-size:10px; color:green;">● Online</div>
-            </div>
+            <div style="flex:1; margin-left:10px;"><b id="chat-with-name">Buddy</b><div style="font-size:10px; color:green;">● Online</div></div>
             <span class="material-icons-round" style="color:#00C2FF; cursor:pointer; font-size:28px;" onclick="startCall()">videocam</span>
         </div>
         <div id="messages"></div>
@@ -265,6 +252,15 @@
     <div id="video-modal">
         <video id="remote-video" autoplay playsinline></video>
         <video id="local-video" autoplay playsinline muted></video>
+        
+        <div style="position:absolute; top:40px; left:20px; background:rgba(255,255,255,0.9); padding:15px; border-radius:12px; max-width:220px; box-shadow:0 5px 15px rgba(0,0,0,0.2);">
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:5px;">
+                <span class="material-icons-round" style="color:#00C2FF; font-size:16px;">lightbulb</span>
+                <small style="color:#888; font-weight:800; font-size:10px;">GỢI Ý TỪ VỰNG</small>
+            </div>
+            <div id="topic-hint-text" style="font-weight:700; color:#333; font-size:14px; line-height:1.4;">"Hello! Nice to meet you."</div>
+        </div>
+
         <div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center; gap:20px;">
             <button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; border:none; background:red; color:white;"><span class="material-icons-round">call_end</span></button>
         </div>
@@ -280,7 +276,7 @@
                 <div><h3 style="margin:0;">15:00</h3><small style="color:#888;">Thời gian</small></div>
                 <div><h3 style="margin:0;">85</h3><small style="color:#888;">Điểm</small></div>
             </div>
-            <button class="btn-orange-login" onclick="goToTab('buddies')">Tìm Buddy tiếp theo</button>
+            <button class="btn-orange-login" onclick="goToTab('topics')">Chọn tình huống khác</button>
         </div>
     </div>
 
@@ -300,21 +296,53 @@
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
-        // Update Bottom Nav Active State
-        document.querySelectorAll('.nav-item').forEach(n => n.style.opacity = '0.5');
-        if(screenId === 'home-screen') document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.style.opacity='1');
-        if(screenId === 'buddy-screen') document.querySelectorAll('.bottom-nav .nav-item:nth-child(3)').forEach(n=>n.style.opacity='1');
+        // Update Bottom Nav Style
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        let navIndex = 0;
+        if(screenId === 'home-screen') navIndex = 1;
+        if(screenId === 'topic-screen') navIndex = 2;
+        if(screenId === 'buddy-screen') navIndex = 3;
+        
+        if(navIndex > 0) {
+            document.querySelectorAll(`.bottom-nav .nav-item:nth-child(${navIndex})`).forEach(n => n.classList.add('active'));
+        }
     }
+
     function goToTab(tab) {
         if(tab === 'home') switchScreen('home-screen');
+        if(tab === 'topics') switchScreen('topic-screen');
         if(tab === 'buddies') switchScreen('buddy-screen');
     }
+    
     function openChat(name) {
         document.getElementById('chat-with-name').innerText = name;
         switchScreen('chat-screen-ui');
     }
 
-    // --- SOCKET & WEBRTC LOGIC (Giữ nguyên logic cũ) ---
+    // --- LOGIC CHỌN TÌNH HUỐNG (MỚI) ---
+    // Dữ liệu gợi ý cho từng chủ đề
+    const topicHints = {
+        'Presentation': 'Good morning everyone.\nToday I would like to present about...',
+        'Coffee': 'Can I get a Latte, please?\nHow much is it?\nLess sugar, please.',
+        'Job': 'My strength is teamwork.\nI have 2 years of experience in...',
+        'Travel': 'Excuse me, where is the bus station?\nCan you show me on the map?'
+    };
+
+    function selectTopic(topicKey) {
+        // 1. Lấy nội dung gợi ý tương ứng
+        const hint = topicHints[topicKey] || "Hello! Nice to meet you.";
+        
+        // 2. Cập nhật vào thẻ SOS trong Video Modal
+        document.getElementById('topic-hint-text').innerText = hint;
+
+        // 3. Chuyển sang màn hình tìm Buddy (hoặc vào thẳng Call nếu muốn demo nhanh)
+        // Ở đây ta chuyển sang tab Buddies để chọn người gọi
+        alert(`Đã chọn chủ đề: ${topicKey}. Hãy chọn một Buddy để thực hành ngay!`);
+        goToTab('buddies');
+    }
+
+    // --- CORE LOGIC (GIỮ NGUYÊN) ---
     const socket = io();
     let myName = localStorage.getItem('chat_username') || "";
     let localStream, peerConnection, pendingOffer, candidateQueue = [];
@@ -334,7 +362,7 @@
         } catch(e) {}
     }
 
-    async function handleRegister() { /* Logic cũ... */ }
+    async function handleRegister() { /*...*/ }
 
     function sendMessage() {
         const input = document.getElementById('msg-input');
@@ -407,7 +435,7 @@
         if(localStream) localStream.getTracks().forEach(t => t.stop());
         if(peerConnection) peerConnection.close();
         peerConnection = null;
-        switchScreen('summary-screen'); // Chuyển sang màn tổng kết
+        switchScreen('summary-screen');
     }
 </script>
 

@@ -3,107 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StreamTalk Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>BuddySpeak</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* 1. CẤU HÌNH CHUNG */
+        /* --- 1. THEME VARIABLES (BuddySpeak Style) --- */
+        :root {
+            --primary-orange: #FF8c00;
+            --primary-blue: #00A8FF;
+            --text-dark: #2d3436;
+            --text-gray: #636e72;
+            --bg-gray: #F7F7F7;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- 2. GLOBAL RESET --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
-        /* 2. LOGIN SCREEN */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; padding: 20px; transition: opacity 0.3s ease; }
-        .login-card { background: rgba(255, 255, 255, 0.95); padding: 40px 30px; border-radius: 24px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        .login-card h2 { margin-bottom: 20px; color: #333; }
-        .login-input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
-        .btn-primary { width: 100%; padding: 15px; background: #339af0; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-primary:active { transform: scale(0.98); }
-
-        /* 3. CHAT SCREEN */
-        #chat-screen { display: none; flex-direction: column; height: 100%; background: #f0f2f5; }
-        .chat-header { padding: 15px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .room-name { font-weight: bold; font-size: 18px; }
+        body { font-family: 'Nunito', sans-serif; background-color: var(--bg-gray); color: var(--text-dark); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message-bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 15px; position: relative; word-wrap: break-word; }
-        .message-bubble.mine { align-self: flex-end; background: #0084ff; color: white; border-bottom-right-radius: 4px; }
-        .message-bubble.theirs { align-self: flex-start; background: white; color: black; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .message-sender { font-size: 11px; margin-bottom: 4px; font-weight: bold; opacity: 0.7; }
+        .screen { display: none; height: 100%; flex-direction: column; overflow-y: auto; background: var(--white); }
+        .screen.active { display: flex; }
+
+        /* --- 3. LOGIN SCREEN --- */
+        #login-screen { padding: 30px; align-items: center; justify-content: center; text-align: center; }
+        .login-illus { width: 80%; max-width: 250px; margin-bottom: 20px; }
+        .app-title { font-size: 24px; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+        .app-subtitle { color: var(--text-gray); font-size: 14px; margin-bottom: 30px; }
+        .form-group { width: 100%; margin-bottom: 15px; text-align: left; }
+        .form-label { font-size: 13px; font-weight: 700; color: var(--text-gray); margin-bottom: 5px; display: block; }
+        .custom-input { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; background: #FAFAFA; font-size: 16px; outline: none; transition: 0.3s; }
+        .custom-input:focus { border-color: var(--primary-orange); background: #fff; }
+        .btn-orange { width: 100%; padding: 16px; background: var(--primary-orange); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3); margin-top: 10px; }
+        .link-text { margin-top: 20px; font-size: 14px; color: var(--text-gray); }
+        .link-text span { color: var(--primary-orange); font-weight: 700; cursor: pointer; }
+
+        /* --- 4. HOME SCREEN --- */
+        #home-screen { background: #f9f9f9; padding-bottom: 80px; }
+        .home-header { padding: 20px 24px; background: var(--white); display: flex; justify-content: space-between; align-items: center; }
+        .greeting h2 { font-size: 22px; font-weight: 800; }
+        .greeting p { color: var(--text-gray); font-size: 13px; }
         
-        /* Media trong chat */
-        .chat-image { max-width: 100%; border-radius: 10px; margin-top: 5px; cursor: pointer; }
-        .chat-file { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 10px; text-decoration: none; color: inherit; margin-top: 5px; }
+        .blue-card { 
+            margin: 20px; background: linear-gradient(135deg, #00C6FF, #0072FF); 
+            border-radius: 20px; padding: 24px; color: white; position: relative; overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 114, 255, 0.25);
+        }
+        .blue-card h3 { font-size: 18px; margin-bottom: 8px; font-weight: 800; }
+        .blue-card p { font-size: 13px; opacity: 0.9; margin-bottom: 15px; max-width: 70%; }
+        .btn-small-orange { background: var(--primary-orange); border: none; padding: 8px 16px; border-radius: 20px; color: white; font-weight: 700; font-size: 12px; cursor: pointer; }
+        
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: var(--white);
+            display: flex; justify-content: space-around; padding: 15px 0;
+            border-top: 1px solid #eee; z-index: 100;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #b2bec3; cursor: pointer; }
+        .nav-item.active { color: var(--text-dark); }
+        .nav-item span { font-size: 24px; margin-bottom: 4px; }
+        .nav-item label { font-size: 10px; font-weight: 700; }
 
-        /* Typing & Input */
-        #typing-indicator { font-size: 12px; color: #888; padding: 0 20px 10px; font-style: italic; display: none; }
-        .input-container { padding: 10px 15px; background: white; display: flex; gap: 10px; align-items: center; border-top: 1px solid #ddd; }
-        .btn-attach, .btn-send { background: none; border: none; color: #0084ff; cursor: pointer; padding: 5px; }
-        #msg-input { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #ddd; background: #f0f2f5; outline: none; }
+        /* --- 5. BUDDY LIST SCREEN --- */
+        .list-container { padding: 20px; }
+        .buddy-item { 
+            background: var(--white); padding: 15px; border-radius: 16px; 
+            display: flex; align-items: center; margin-bottom: 15px; 
+            box-shadow: var(--shadow); cursor: pointer;
+        }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; background: #ddd; margin-right: 15px; object-fit: cover; }
+        .buddy-info { flex: 1; }
+        .buddy-name { font-weight: 700; font-size: 16px; }
+        .buddy-status { font-size: 12px; color: #2ecc71; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .action-icon { padding: 8px; background: #F0F2F5; border-radius: 50%; color: var(--primary-blue); margin-left: 10px; }
 
-        /* Call UI */
-        #incoming-call { display: none; position: fixed; top: 20px; left: 5%; width: 90%; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 2000; animation: slideDown 0.5s; }
-        @keyframes slideDown { from {transform: translateY(-100%);} to {transform: translateY(0);} }
-        .call-actions { display: flex; gap: 10px; margin-top: 15px; }
-        .call-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-        .btn-accept { background: #2ecc71; } .btn-reject { background: #e74c3c; }
-
-        /* Video Modal */
-        #video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 3000; }
+        /* --- 6. CHAT & CALL --- */
+        #chat-screen-ui { display: flex; flex-direction: column; height: 100%; padding-bottom: 0; }
+        .chat-header-ui { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+        .btn-back { border: none; background: none; font-size: 24px; cursor: pointer; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #F5F7FA; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        .msg.mine { align-self: flex-end; background: var(--primary-blue); color: white; border-bottom-right-radius: 4px; }
+        .msg.theirs { align-self: flex-start; background: white; color: var(--text-dark); border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .input-area { padding: 10px; background: white; display: flex; gap: 10px; align-items: center; border-top: 1px solid #eee; }
+        .chat-input { flex: 1; padding: 12px; background: #f0f2f5; border: none; border-radius: 20px; outline: none; }
+        
+        #video-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; }
         .video-wrapper { position: relative; width: 100%; height: 100%; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
-        #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 150px; background: #333; border: 2px solid white; border-radius: 10px; object-fit: cover; z-index: 3001; }
-        .video-controls { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; gap: 20px; z-index: 3002; }
-        .ctrl-btn { width: 50px; height: 50px; border-radius: 50%; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .btn-end { background: #e74c3c; } .btn-mute { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
+        #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .topic-overlay { position: absolute; top: 40px; left: 20px; background: rgba(255,255,255,0.95); padding: 15px; border-radius: 12px; max-width: 60%; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .call-controls { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: center; gap: 20px; }
+        .ctrl-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-end { background: #FF4757; }
+        .btn-mute { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body>
-    <audio id="sound-msg" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
-    <audio id="sound-call" src="https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3" loop></audio>
 
-    <div id="login-screen">
-        <div class="login-card">
-            <h2>StreamTalk Cloud</h2>
-            <input type="text" id="username" class="login-input" placeholder="Tên đăng nhập">
-            <input type="password" id="password" class="login-input" placeholder="Mật khẩu">
-            
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-primary" onclick="handleLogin()" style="flex: 1;">Đăng Nhập</button>
-                <button class="btn-primary" onclick="handleRegister()" style="flex: 1; background: #6c757d;">Đăng Ký</button>
+    <div id="login-screen" class="screen active">
+        <img src="https://cdni.iconscout.com/illustration/premium/thumb/students-talking-to-each-other-2949755-2453673.png" class="login-illus" alt="Illustration">
+        <h1 class="app-title">BuddySpeak</h1>
+        <p class="app-subtitle">Luyện nói tiếng Anh mỗi ngày</p>
+        <div class="form-group">
+            <label class="form-label">Tên đăng nhập</label>
+            <input type="text" id="username" class="custom-input" placeholder="Nhập tên của bạn...">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" id="password" class="custom-input" placeholder="••••••">
+        </div>
+        <button class="btn-orange" onclick="handleLogin()">Đăng nhập</button>
+        <p class="link-text">Chưa có tài khoản? <span onclick="handleRegister()">Đăng ký ngay</span></p>
+        <p id="login-msg" style="color: red; margin-top: 10px; font-size: 12px;"></p>
+    </div>
+
+    <div id="home-screen" class="screen">
+        <div class="home-header">
+            <div class="greeting">
+                <h2 id="greeting-name">Chào Dang! 👋</h2>
+                <p>Hôm nay bạn muốn học gì?</p>
             </div>
-            <p id="login-msg" style="color: red; margin-top: 10px; font-size: 13px;"></p>
+            <img src="https://i.pravatar.cc/150?img=12" style="width:40px; height:40px; border-radius:50%;">
+        </div>
+        <div class="blue-card">
+            <h3>Nhiệm vụ ưu tiên 🔥</h3>
+            <p>Chuẩn bị bài thuyết trình về sản phẩm công nghệ yêu thích.</p>
+            <button class="btn-small-orange" onclick="goToTab('buddies')">Tìm Buddy Ngay</button>
+        </div>
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="goToTab('home')"><span class="material-icons-round">home</span><label>Trang chủ</label></div>
+            <div class="nav-item" onclick="goToTab('buddies')"><span class="material-icons-round">people</span><label>Bạn bè</label></div>
         </div>
     </div>
 
-    <div id="chat-screen">
-        <div class="chat-header">
-            <span class="room-name">Nhóm 13</span>
-            <button onclick="startCall()" style="background:none; border:none; color:#0084ff;">
-                <span class="material-icons-round" style="font-size: 28px;">videocam</span>
-            </button>
+    <div id="buddy-screen" class="screen" style="padding-bottom: 80px;">
+        <div class="home-header"><h2>Tìm Buddy 🚀</h2></div>
+        <div class="list-container">
+            <div class="buddy-item" onclick="openChat('Sarah Teacher')">
+                <img src="https://i.pravatar.cc/150?img=5" class="avatar">
+                <div class="buddy-info"><div class="buddy-name">Sarah Teacher</div><div class="buddy-status">🟢 Online</div></div>
+                <span class="material-icons-round action-icon">chat</span>
+            </div>
+            <div class="buddy-item" onclick="openChat('Mike Student')">
+                <img src="https://i.pravatar.cc/150?img=3" class="avatar">
+                <div class="buddy-info"><div class="buddy-name">Mike Student</div><div class="buddy-status">🟢 Online</div></div>
+                <span class="material-icons-round action-icon">chat</span>
+            </div>
         </div>
-        
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="goToTab('home')"><span class="material-icons-round">home</span><label>Trang chủ</label></div>
+            <div class="nav-item active" onclick="goToTab('buddies')"><span class="material-icons-round">people</span><label>Bạn bè</label></div>
+        </div>
+    </div>
+
+    <div id="chat-screen-ui" class="screen">
+        <div class="chat-header-ui">
+            <button class="btn-back" onclick="goToTab('buddies')"><span class="material-icons-round">arrow_back</span></button>
+            <div style="flex:1;"><h3 id="chat-with-name">Buddy</h3></div>
+            <button class="action-icon" onclick="startCall()"><span class="material-icons-round">videocam</span></button>
+        </div>
         <div id="messages"></div>
-        <div id="typing-indicator"></div>
-
-        <div class="input-container">
+        <div class="input-area">
+            <span class="material-icons-round" style="color:#aaa; cursor:pointer;" onclick="document.getElementById('file-input').click()">attach_file</span>
             <input type="file" id="file-input" hidden onchange="handleFileUpload(this)">
-            <button class="btn-attach" onclick="document.getElementById('file-input').click()">
-                <span class="material-icons-round">attach_file</span>
-            </button>
-            <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." autocomplete="off">
-            <button class="btn-send" onclick="sendMessage()">
-                <span class="material-icons-round">send</span>
-            </button>
+            <input type="text" id="msg-input" class="chat-input" placeholder="Nhập tin nhắn...">
+            <span class="material-icons-round" style="color:var(--primary-orange); cursor:pointer;" onclick="sendMessage()">send</span>
         </div>
     </div>
 
-    <div id="incoming-call">
-        <h3>📞 Có cuộc gọi video...</h3>
-        <div class="call-actions">
-            <button class="call-btn btn-reject" onclick="rejectCall()">Từ chối</button>
-            <button class="call-btn btn-accept" onclick="acceptCall()">Trả lời</button>
+    <div id="incoming-call" style="display:none; position:fixed; top:20px; left:5%; width:90%; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); z-index:3000;">
+        <h3 style="text-align:center;">📞 Incoming Call...</h3>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="rejectCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px;">Decline</button>
+            <button onclick="acceptCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px;">Accept</button>
         </div>
     </div>
 
@@ -111,151 +184,142 @@
         <div class="video-wrapper">
             <video id="remote-video" autoplay playsinline></video>
             <video id="local-video" autoplay playsinline muted></video>
-            <div class="video-controls">
+            <div class="topic-overlay">
+                <small style="color:#888; font-weight:700;">GỢI Ý CHỦ ĐỀ:</small>
+                <p style="font-weight:600; margin-top:5px;">"Describe your dream vacation."</p>
+            </div>
+            <div class="call-controls">
                 <button class="ctrl-btn btn-mute" onclick="toggleMic()"><span class="material-icons-round">mic</span></button>
                 <button class="ctrl-btn btn-end" onclick="endCall()"><span class="material-icons-round">call_end</span></button>
             </div>
         </div>
     </div>
 
+    <audio id="sound-msg" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+    <audio id="sound-call" src="https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3" loop></audio>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+        function goToTab(tabName) {
+            if (tabName === 'home') switchScreen('home-screen');
+            if (tabName === 'buddies') switchScreen('buddy-screen');
+        }
+        function openChat(buddyName) {
+            document.getElementById('chat-with-name').innerText = buddyName;
+            switchScreen('chat-screen-ui');
+        }
+
         const socket = io();
         let myName = localStorage.getItem('chat_username') || "";
+        let localStream, peerConnection, pendingOffer;
+        // 1. BIẾN HÀNG CHỜ (FIX MÀN HÌNH ĐEN)
+        let candidateQueue = [];
 
-        // --- 1. LOGIC LOGIN / REGISTER ---
         async function handleLogin() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
             const msg = document.getElementById('login-msg');
-            if(!u || !p) { msg.innerText = "Thiếu thông tin!"; return; }
-
-            msg.innerText = "Đang kiểm tra...";
+            if(!u || !p) { msg.innerText = "Vui lòng nhập đủ thông tin!"; return; }
+            msg.innerText = "Đang đăng nhập...";
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({username: u, password: p})
                 });
                 const data = await res.json();
-                if(data.success) enterChatRoom(data.username);
-                else msg.innerText = data.message;
-            } catch(e) { msg.innerText = "Lỗi kết nối!"; }
+                if(data.success) {
+                    myName = data.username;
+                    localStorage.setItem('chat_username', myName);
+                    document.getElementById('greeting-name').innerText = `Chào ${myName}! 👋`;
+                    switchScreen('home-screen');
+                } else msg.innerText = data.message;
+            } catch(e) { msg.innerText = "Lỗi kết nối server!"; }
         }
-
+        
         async function handleRegister() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
             const msg = document.getElementById('login-msg');
-            if(!u || !p) { msg.innerText = "Thiếu thông tin!"; return; }
-
-            msg.innerText = "Đang đăng ký...";
+            if(!u || !p) { msg.innerText = "Vui lòng nhập đủ thông tin!"; return; }
+             msg.innerText = "Đang đăng ký...";
             try {
                 const res = await fetch('/api/register', {
-                    method: 'POST', headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({username: u, password: p})
-                });
-                const data = await res.json();
-                msg.innerText = data.message;
-                if(data.success) msg.style.color = "green";
-                else msg.style.color = "red";
+                     method: 'POST', headers: {'Content-Type':'application/json'},
+                     body: JSON.stringify({username: u, password: p})
+                 });
+                 const data = await res.json();
+                 msg.innerText = data.message;
+                 msg.style.color = data.success ? "green" : "red";
             } catch(e) { msg.innerText = "Lỗi kết nối!"; }
         }
 
-        function enterChatRoom(name) {
-            myName = name;
-            localStorage.setItem('chat_username', myName);
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('chat-screen').style.display = 'flex';
-        }
-
-        // --- 2. LOGIC CHAT & FILE ---
         function sendMessage() {
             const input = document.getElementById('msg-input');
             const content = input.value.trim();
             if(content) {
                 socket.emit('chat_message', { user: myName, content: content, type: 'text' });
                 input.value = "";
-                socket.emit('stop_typing');
             }
         }
-
+        
         function handleFileUpload(input) {
-            const file = input.files[0];
-            if (!file || file.size > 5*1024*1024) { alert("File > 5MB!"); return; }
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const type = file.type.startsWith('image/') ? 'image' : 'file';
-                socket.emit('chat_message', { user: myName, type, fileData: e.target.result, fileName: file.name });
-            };
-            reader.readAsDataURL(file);
-            input.value = "";
-        }
+             const file = input.files[0];
+             if (!file || file.size > 5*1024*1024) { alert("File > 5MB!"); return; }
+             const reader = new FileReader();
+             reader.onload = function(e) {
+                 const type = file.type.startsWith('image/') ? 'image' : 'file';
+                 socket.emit('chat_message', { user: myName, type, fileData: e.target.result, fileName: file.name });
+             };
+             reader.readAsDataURL(file);
+             input.value = "";
+         }
 
         socket.on('chat_message', (data) => {
             const msgArea = document.getElementById('messages');
             const div = document.createElement('div');
             const isMine = data.user === myName;
-            div.className = `message-bubble ${isMine ? 'mine' : 'theirs'}`;
-            
-            let html = '';
-            if(data.type === 'image') html = `<div class="message-sender">${data.user}</div><img src="${data.fileData}" class="chat-image" onclick="window.open(this.src)">`;
-            else if(data.type === 'file') html = `<div class="message-sender">${data.user}</div><a href="${data.fileData}" download="${data.fileName}" class="chat-file"><span class="material-icons-round">description</span>${data.fileName}</a>`;
-            else html = `${isMine ? '' : `<div class="message-sender">${data.user}</div>`} ${data.content}`;
-
-            div.innerHTML = html;
+            div.className = `msg ${isMine ? 'mine' : 'theirs'}`;
+            if(data.type === 'image') div.innerHTML = `<img src="${data.fileData}" style="max-width:100%; border-radius:10px;">`;
+            else if(data.type === 'file') div.innerHTML = `<a href="${data.fileData}" download="${data.fileName}" style="color:blue;">📎 ${data.fileName}</a>`;
+            else div.innerText = data.content;
             msgArea.appendChild(div);
             msgArea.scrollTop = msgArea.scrollHeight;
-            if (!isMine) document.getElementById('sound-msg').play().catch(()=>{});
+            if(!isMine) document.getElementById('sound-msg').play().catch(()=>{});
         });
 
-        // --- 3. TYPING INDICATOR ---
-        let typingTimeout;
-        document.getElementById('msg-input').addEventListener('input', () => {
-            socket.emit('typing', { user: myName });
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => socket.emit('stop_typing'), 1000);
-        });
-        socket.on('typing', data => {
-            const ind = document.getElementById('typing-indicator');
-            ind.innerText = `${data.user} đang soạn tin...`; ind.style.display = 'block';
-        });
-        socket.on('stop_typing', () => document.getElementById('typing-indicator').style.display = 'none');
-
-        // --- 4. WEBRTC (VIDEO CALL) ---
-        // Cấu hình STUN/TURN Server để xuyên tường lửa
-        // Thay thế đoạn rtcConfig cũ bằng đoạn này
-const rtcConfig = {
-    iceServers: [
-        // 1. Giữ lại STUN của Google cho nhanh (khi cùng mạng)
-        { 
-            urls: "stun:stun.l.google.com:19302" 
-        },
-      {
-        urls: "turn:global.relay.metered.ca:80",
-        username: "c6a7fe020cb38d3823a09173",
-        credential: "vKt+DGKLZ6//Thnv",
-      },
-      {
-        urls: "turn:global.relay.metered.ca:80?transport=tcp",
-        username: "c6a7fe020cb38d3823a09173",
-        credential: "vKt+DGKLZ6//Thnv",
-      },
-      {
-        urls: "turn:global.relay.metered.ca:443",
-        username: "c6a7fe020cb38d3823a09173",
-        credential: "vKt+DGKLZ6//Thnv",
-      },
-      {
-        urls: "turns:global.relay.metered.ca:443?transport=tcp",
-        username: "c6a7fe020cb38d3823a09173",
-        credential: "vKt+DGKLZ6//Thnv",
-      },
-  ],
-};
-        let localStream, peerConnection, pendingOffer;
+        // WEBRTC LOGIC (CẤU HÌNH ĐẦY ĐỦ + FIX)
+        const rtcConfig = {
+            iceServers: [
+                { urls: "stun:stun.l.google.com:19302" },
+                {
+                    urls: "turn:global.relay.metered.ca:80",
+                    username: "c6a7fe020cb38d3823a09173",
+                    credential: "vKt+DGKLZ6//Thnv" // Đã tự điền password của bạn
+                },
+                {
+                    urls: "turn:global.relay.metered.ca:80?transport=tcp",
+                    username: "c6a7fe020cb38d3823a09173",
+                    credential: "vKt+DGKLZ6//Thnv"
+                },
+                 {
+                    urls: "turn:global.relay.metered.ca:443",
+                    username: "c6a7fe020cb38d3823a09173",
+                    credential: "vKt+DGKLZ6//Thnv"
+                },
+                 {
+                    urls: "turns:global.relay.metered.ca:443?transport=tcp",
+                    username: "c6a7fe020cb38d3823a09173",
+                    credential: "vKt+DGKLZ6//Thnv"
+                }
+            ]
+        };
 
         async function startCall() {
-            document.getElementById('video-modal').style.display = 'flex';
+            document.getElementById('video-modal').style.display = 'block';
             await setupMedia(); createPeerConnection();
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
@@ -266,29 +330,21 @@ const rtcConfig = {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('local-video').srcObject = localStream;
-            } catch(e) { alert("Lỗi Camera/Mic! Hãy kiểm tra quyền truy cập."); }
+            } catch(e) { alert("Lỗi Camera/Mic!"); }
         }
 
         function createPeerConnection() {
             peerConnection = new RTCPeerConnection(rtcConfig);
             if(localStream) localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
-            
             peerConnection.ontrack = e => document.getElementById('remote-video').srcObject = e.streams[0];
-            
-            // Fix lỗi undefined addIceCandidate
-            // Tìm đoạn này trong hàm createPeerConnection()
-        peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                // 👇 Thêm dòng này để soi log
-                console.log("📡 Tìm thấy đường đi loại:", event.candidate.type); 
-                
-                socket.emit('candidate', {
-                    sdpMid: event.candidate.sdpMid,
-                    sdpMLineIndex: event.candidate.sdpMLineIndex,
-                    candidate: event.candidate.candidate
-                });
-            }
-        };
+            peerConnection.onicecandidate = e => { 
+                if(e.candidate) {
+                     if (peerConnection && peerConnection.remoteDescription) {
+                         socket.emit('candidate', e.candidate);
+                     } 
+                     // Không cần queue ở chiều gửi, chỉ cần queue ở chiều nhận
+                }
+            };
         }
 
         socket.on('offer', (offer) => {
@@ -297,45 +353,56 @@ const rtcConfig = {
             document.getElementById('sound-call').play().catch(()=>{});
         });
 
+        // 2. HÀM TRẢ LỜI CÓ XẢ HÀNG CHỜ (FIX MÀN HÌNH ĐEN)
         async function acceptCall() {
-            stopSoundCall();
+            document.getElementById('sound-call').pause();
             document.getElementById('incoming-call').style.display = 'none';
-            document.getElementById('video-modal').style.display = 'flex';
-            await setupMedia(); createPeerConnection();
+            document.getElementById('video-modal').style.display = 'block';
+            
+            await setupMedia(); 
+            createPeerConnection();
+            
             await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
             const ans = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(ans);
             socket.emit('answer', ans);
+
+            // XẢ HÀNG CHỜ
+            if (candidateQueue.length > 0) {
+                console.log("🚀 Nạp " + candidateQueue.length + " candidates từ hàng chờ...");
+                candidateQueue.forEach(cand => {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(cand))
+                        .catch(e => console.log(e));
+                });
+                candidateQueue = [];
+            }
         }
 
-        function rejectCall() { stopSoundCall(); document.getElementById('incoming-call').style.display = 'none'; socket.emit('call_rejected'); }
-        
+        function rejectCall() { 
+            document.getElementById('sound-call').pause();
+            document.getElementById('incoming-call').style.display = 'none'; 
+            socket.emit('call_rejected'); 
+        }
+
         socket.on('answer', ans => {
-            if (peerConnection) peerConnection.setRemoteDescription(new RTCSessionDescription(ans));
+            if(peerConnection) peerConnection.setRemoteDescription(new RTCSessionDescription(ans));
         });
-        
-        // --- ĐOẠN CODE ĐƯỢC SỬA LỖI (FIX CRASH) ---
-        socket.on('candidate', (candidate) => {
-            // Kiểm tra xem peerConnection đã được tạo chưa trước khi add
-            if (peerConnection) {
-                peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
-                    .catch(e => console.log("Lỗi thêm candidate (có thể bỏ qua):", e));
+
+        // 3. LOGIC NHẬN CANDIDATE THÔNG MINH (CÓ QUEUE)
+        socket.on('candidate', cand => {
+            if(peerConnection && peerConnection.remoteDescription) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(cand))
+                    .catch(e => console.log(e));
+            } else {
+                console.log("⏳ Đang đổ chuông, lưu candidate vào hàng chờ...");
+                candidateQueue.push(cand); 
             }
         });
-
-        socket.on('call_rejected', () => { alert("Người kia từ chối!"); endCall(); });
-
+        
         function endCall() {
-            document.getElementById('video-modal').style.display = 'none';
-            if(localStream) localStream.getTracks().forEach(t => t.stop());
-            if(peerConnection) peerConnection.close();
-            peerConnection = null; // Reset biến
-            stopSoundCall();
             window.location.reload();
         }
         function toggleMic() { const track = localStream.getAudioTracks()[0]; track.enabled = !track.enabled; }
-        function stopSoundCall() { const s = document.getElementById('sound-call'); s.pause(); s.currentTime = 0; }
-        document.getElementById('msg-input').addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
     </script>
 </body>
 </html>

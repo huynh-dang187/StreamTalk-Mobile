@@ -7,129 +7,116 @@ const mongoose = require('mongoose');
 const app = express();
 const server = http.createServer(app);
 
-// 👇 MongoDB của bạn (Giữ nguyên)
+// 👇 MongoDB của bạn
 const MONGO_URI = "mongodb+srv://admin:huynhdang187@admin.gxovlx7.mongodb.net/?appName=admin";
 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('✅ Đã kết nối MongoDB Atlas'))
     .catch(err => console.error('❌ Lỗi kết nối MongoDB:', err));
 
-// --- 1. CẬP NHẬT SCHEMA (Thêm buddyId & Avatar) ---
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    buddyId: { type: String, unique: true }, // ID 6 số để kết bạn
-    avatar: { type: Number, default: 1 },    // Lưu ID ảnh đại diện
+    buddyId: { type: String, unique: true },
+    avatar: { type: Number, default: 1 },
     createdAt: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', UserSchema);
 
-const io = new Server(server, {
-    cors: { origin: "*", methods: ["GET", "POST"] },
-    maxHttpBufferSize: 1e8 
-});
+const io = new Server(server, { cors: { origin: "*" }, maxHttpBufferSize: 1e8 });
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// --- 2. API ĐĂNG KÝ (Tự tạo Buddy ID) ---
+// API Đăng ký
 app.post('/api/register', async (req, res) => {
     try {
         const { username, password } = req.body;
         if (!username || !password) return res.json({ success: false, message: "Thiếu thông tin!" });
+        const existing = await User.findOne({ username });
+        if (existing) return res.json({ success: false, message: "Tên đã tồn tại!" });
         
-        const existingUser = await User.findOne({ username });
-        if (existingUser) return res.json({ success: false, message: "Tên này đã có người dùng!" });
-
-        // Tạo Buddy ID ngẫu nhiên (6 số)
-        const randomBuddyId = Math.floor(100000 + Math.random() * 900000).toString();
-        const randomAvatar = Math.floor(Math.random() * 12) + 1;
-
         const newUser = new User({ 
-            username, 
-            password,
-            buddyId: randomBuddyId,
-            avatar: randomAvatar
+            username, password,
+            buddyId: Math.floor(100000 + Math.random() * 900000).toString(),
+            avatar: Math.floor(Math.random() * 12) + 1
         });
-        
         await newUser.save();
-        res.json({ success: true, message: "Đăng ký thành công! Hãy đăng nhập." });
-    } catch (e) {
-        res.json({ success: false, message: "Lỗi server: " + e.message });
-    }
+        res.json({ success: true, message: "Đăng ký thành công!" });
+    } catch (e) { res.json({ success: false, message: e.message }); }
 });
 
-// --- 3. API ĐĂNG NHẬP (Trả về cả Buddy ID) ---
+// API Đăng nhập
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username, password });
-        
-        if (user) {
-            // Trả về full thông tin để Client lưu vào localStorage
-            res.json({ 
-                success: true, 
-                username: user.username,
-                buddyId: user.buddyId,
-                avatar: user.avatar
-            });
-        } else {
-            res.json({ success: false, message: "Sai tên hoặc mật khẩu!" });
-        }
-    } catch (e) {
-        res.json({ success: false, message: "Lỗi server" });
-    }
+        if (user) res.json({ success: true, username: user.username, buddyId: user.buddyId, avatar: user.avatar });
+        else res.json({ success: false, message: "Sai thông tin!" });
+    } catch (e) { res.json({ success: false, message: "Lỗi server" }); }
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-// --- 4. SOCKET.IO (CẬP NHẬT LOGIC KẾT BẠN) ---
-let onlineUsers = {}; // { socketId: { id, username, avatar, socketId } }
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+
+// --- SOCKET.IO REALTIME ROUTING ---
+let onlineUsers = {}; // Map: socket.id -> user info
 
 io.on('connection', (socket) => {
     console.log('⚡ User connected:', socket.id);
 
-    // 1. Báo danh
+    // 1. Báo danh khi online
     socket.on('register_user', (userData) => {
         onlineUsers[socket.id] = { ...userData, socketId: socket.id };
-        io.emit('online_users', Object.values(onlineUsers)); // Báo cho mọi người
+        io.emit('online_users', Object.values(onlineUsers));
     });
 
-    // 2. Chat & Call
-    socket.on('chat_message', (data) => { io.emit('chat_message', data); });
-    socket.on('offer', (data) => { socket.broadcast.emit('offer', data); });
-    socket.on('answer', (data) => { socket.broadcast.emit('answer', data); });
-    socket.on('candidate', (data) => { socket.broadcast.emit('candidate', data); });
+    // Helper tìm socketId theo buddyId
+    const findSocketById = (buddyId) => {
+        return Object.keys(onlineUsers).find(key => onlineUsers[key].id == buddyId);
+    };
 
-    // --- 3. LOGIC KẾT BẠN (MỚI) ---
-    
-    // A gửi lời mời cho B
+    // 2. Chat riêng tư (Private Message)
+    socket.on('private_message', (data) => {
+        // data = { to: targetBuddyId, content, type... }
+        const targetSocket = findSocketById(data.to);
+        if (targetSocket) {
+            io.to(targetSocket).emit('private_message', { ...data, from: onlineUsers[socket.id].id });
+        }
+    });
+
+    // 3. Kết bạn
     socket.on('send_friend_request', ({ toId, fromUser }) => {
-        // Tìm socket của người nhận (B) dựa trên ID
-        const receiverSocketId = Object.keys(onlineUsers).find(
-            key => onlineUsers[key].id === toId
-        );
-
-        if (receiverSocketId) {
-            // Gửi thông báo riêng cho B
-            io.to(receiverSocketId).emit('incoming_friend_request', fromUser);
-        }
+        const targetSocket = findSocketById(toId);
+        if (targetSocket) io.to(targetSocket).emit('incoming_friend_request', fromUser);
     });
 
-    // B chấp nhận lời mời của A
     socket.on('accept_friend_request', ({ toId, fromUser }) => {
-        const receiverSocketId = Object.keys(onlineUsers).find(
-            key => onlineUsers[key].id === toId
-        );
-
-        if (receiverSocketId) {
-            // Báo lại cho A biết là B đã đồng ý
-            io.to(receiverSocketId).emit('friend_request_accepted', fromUser);
-        }
+        const targetSocket = findSocketById(toId);
+        if (targetSocket) io.to(targetSocket).emit('friend_request_accepted', fromUser);
     });
 
-    // 4. Ngắt kết nối
+    // 4. Video Call (Signaling P2P)
+    // Chỉ gửi cho đúng người nhận (toId), không broadcast
+    socket.on('video_offer', ({ to, offer }) => {
+        const targetSocket = findSocketById(to);
+        if (targetSocket) io.to(targetSocket).emit('video_offer', { offer, from: onlineUsers[socket.id].id, user: onlineUsers[socket.id] });
+    });
+
+    socket.on('video_answer', ({ to, answer }) => {
+        const targetSocket = findSocketById(to);
+        if (targetSocket) io.to(targetSocket).emit('video_answer', { answer });
+    });
+
+    socket.on('video_candidate', ({ to, candidate }) => {
+        const targetSocket = findSocketById(to);
+        if (targetSocket) io.to(targetSocket).emit('video_candidate', { candidate });
+    });
+    
+    socket.on('video_reject', ({ to }) => {
+        const targetSocket = findSocketById(to);
+        if (targetSocket) io.to(targetSocket).emit('video_reject');
+    });
+
     socket.on('disconnect', () => {
         delete onlineUsers[socket.id];
         io.emit('online_users', Object.values(onlineUsers));
@@ -137,6 +124,4 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`🚀 Server đang chạy tại port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Server chạy tại port ${PORT}`));

@@ -16,16 +16,11 @@
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
-        .scroll-area::-webkit-scrollbar { display: none; }
-        
-        /* BOTTOM NAV */
         .bottom-nav { flex-shrink: 0; padding: 15px 0; background: #FFF8F0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; position: relative; }
         .nav-item.active { opacity: 1; font-weight: bold; color: var(--primary); }
         .red-dot { position: absolute; top: -2px; right: 5px; width: 10px; height: 10px; background: red; border-radius: 50%; border: 2px solid #FFF8F0; display: none; }
         .red-dot.show { display: block; }
-
-        /* TOAST & MODAL */
         #toast { visibility: hidden; min-width: 200px; background: rgba(0,0,0,0.8); color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; }
         #toast.show { visibility: visible; opacity: 1; }
         .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
@@ -45,12 +40,6 @@
         .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .tip-card { background: #E3F2FD; border-radius: 16px; padding: 15px; display: flex; gap: 15px; align-items: flex-start; }
 
-        /* LOGIN */
-        #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
-        .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
-        .btn-main { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
-        .inp { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; margin-bottom: 15px; }
-
         /* TOPICS */
         .search-box { padding: 0 20px 15px; }
         .search-inp { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
@@ -60,7 +49,7 @@
         .ico-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
         .ib { background: #e0f2ff; color: #4facfe; } .io { background: #fff0f0; color: #ff9a9e; } .ir { background: #ffeaef; color: #ff0844; } .iy { background: #fcf0f9; color: #fbc2eb; } .ip { background: #f3f0ff; color: #a18cd1; } .ig { background: #eafff0; color: #43e97b; } .it { background: #e0f9f4; color: #00b894; } .ipi { background: #ffe6f0; color: #fd79a8; }
 
-        /* BUDDIES & PROFILE */
+        /* PROFILE & BUDDIES */
         .bud-head { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .bud-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .b-avt { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
@@ -87,7 +76,11 @@
         .c-wrap { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #c-inp { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
 
-        /* OTHER */
+        /* LOGIN & OTHER */
+        #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
+        .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
+        .btn-main { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
+        .inp { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; margin-bottom: 15px; }
         #vid-mod { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #rem-vid { width: 100%; height: 100%; object-fit: cover; }
         #loc-vid { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
@@ -130,16 +123,12 @@
                 <div class="ava-circ"><img src="https://i.pravatar.cc/150?img=8" class="ava-img"></div>
                 <div class="ava-circ"><img src="https://i.pravatar.cc/150?img=5" class="ava-img"></div>
             </div>
-            
-            <div style="padding: 0 20px; display: flex; flex-direction: column;">
+            <div style="padding: 0 20px;">
                 <div class="wotd-card" onclick="playWordAudio()">
                     <div style="background: #FFF4E6; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FF9F43; font-weight: 800; font-size: 18px;" id="wotd-icon">W</div>
                     <div style="flex: 1;"><div style="font-size: 10px; color: #888; font-weight: 700;">WORD OF THE DAY</div><div style="font-size: 15px; font-weight: 800; color: #333;" id="wotd-word">Loading...</div><div style="font-size: 12px; color: #555;" id="wotd-mean">...</div></div><span class="material-icons-outlined" style="color: #ccc;">volume_up</span>
                 </div>
-                <div class="stats-row">
-                    <div class="stat-card"><span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span><div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">5</div><div style="font-size: 11px; color: #888;">Ngày Streak</div></div>
-                    <div class="stat-card"><span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span><div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">15m</div><div style="font-size: 11px; color: #888;">Hôm nay</div></div>
-                </div>
+                <div class="stats-row"><div class="stat-card"><span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span><div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">5</div><div style="font-size: 11px; color: #888;">Ngày Streak</div></div><div class="stat-card"><span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span><div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">15m</div><div style="font-size: 11px; color: #888;">Hôm nay</div></div></div>
                 <div class="tip-card"><span class="material-icons-round" style="color: #0084FF;">lightbulb</span><div><b style="font-size: 13px; color:#0056b3;">Mẹo hôm nay</b><p style="font-size: 12px; margin: 3px 0; color:#444;">Đừng học từng từ đơn lẻ, hãy học cả cụm từ!</p></div></div>
             </div>
         </div> 
@@ -209,7 +198,7 @@
 
     <div id="profile-screen" class="screen">
         <div class="scroll-area">
-            <div class="pro-head"><img src="https://i.pravatar.cc/150?img=12" class="pro-avt"><h2 style="margin:0;" class="d-name">User</h2><p style="color:var(--primary);">Học viên tích cực</p></div>
+            <div class="pro-head"><img id="my-profile-pic" src="https://i.pravatar.cc/150?img=12" class="pro-avt"><h2 style="margin:0;" class="d-name">User</h2><p style="color:var(--primary);">Học viên tích cực</p></div>
             <div class="id-card"><div><div style="font-size:12px; opacity:0.8;">BUDDY ID CỦA TÔI</div><div style="font-size:24px; font-weight:800; letter-spacing:2px;" id="my-id">---</div></div><span class="material-icons-round" onclick="copyID()">content_copy</span></div>
             <div class="menu"><div class="m-item"><span class="material-icons-round" style="margin-right:15px; color:#888;">settings</span> Cài đặt</div><div class="m-item"><span class="material-icons-round" style="margin-right:15px; color:#888;">history</span> Lịch sử</div><div class="m-item"><span class="material-icons-round" style="margin-right:15px; color:#888;">help_outline</span> Trợ giúp</div></div>
             <button class="out-btn" onclick="logout()"><span class="material-icons-round">logout</span> Đăng xuất</button>
@@ -251,12 +240,13 @@
     const socket = io();
     let myName = localStorage.getItem('chat_username') || "";
     let myID = localStorage.getItem('buddy_id') || "";
+    let myAvatar = localStorage.getItem('my_avatar') || 1;
     let myFriends = JSON.parse(localStorage.getItem('my_friends')) || [];
     let onlineUsers = [];
     let pendingRequest = null;
     let currentChatID = null;
 
-    // --- DATA WORD OF DAY ---
+    // --- DATA ---
     const vocabList = [ { word: "Serendipity", mean: "Sự tình cờ may mắn", ph: "/ˌser.ənˈdɪp.ə.ti/" }, { word: "Resilience", mean: "Khả năng phục hồi", ph: "/rɪˈzɪl.jəns/" }, { word: "Ebullience", mean: "Sự sôi nổi", ph: "/ɪˈbʊl.i.əns/" } ];
     function initRandomWord() { const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0); }
     function playWordAudio() { const u = new SpeechSynthesisUtterance(document.getElementById('wotd-word').innerText); u.lang = 'en-US'; speechSynthesis.speak(u); }
@@ -266,22 +256,20 @@
     socket.on('incoming_friend_request', u => { pendingRequest=u; document.getElementById('req-name').innerText=u.username; document.getElementById('req-mod').style.display='flex'; });
     socket.on('friend_request_accepted', u => { addF(u); showT(`${u.username} đã chấp nhận!`); });
     
-    // --- XỬ LÝ TIN NHẮN ĐẾN & LƯU ---
     socket.on('private_message', data => {
-        // Lưu tin nhắn vào LocalStorage ngay lập tức
+        // Lưu tin nhắn đến vào LocalStorage
         saveChat(data.from, { ...data, type: data.type, user: 'theirs' });
-
+        
         if (currentChatID === data.from) {
-            appendMsg(data, 'theirs');
+            appendMsg(data, 'theirs'); // Hiện ngay nếu đang mở chat
         } else {
             showRedDot(true); 
             showT(`Tin nhắn mới từ ${data.user}`);
         }
     });
 
-    // --- LOCAL STORAGE CHAT LOGIC (QUAN TRỌNG) ---
+    // --- LOCAL STORAGE CHAT ---
     function saveChat(friendID, msgData) {
-        // msgData: { content, type, fileData, user: 'mine'/'theirs' }
         let chatKey = `chat_${myID}_${friendID}`;
         let history = JSON.parse(localStorage.getItem(chatKey)) || [];
         history.push(msgData);
@@ -291,10 +279,8 @@
     function loadChat(friendID) {
         let chatKey = `chat_${myID}_${friendID}`;
         let history = JSON.parse(localStorage.getItem(chatKey)) || [];
-        document.getElementById('msgs').innerHTML = ''; // Clear cũ
-        history.forEach(msg => {
-            appendMsg(msg, msg.user === 'mine' ? 'mine' : 'theirs');
-        });
+        document.getElementById('msgs').innerHTML = '';
+        history.forEach(msg => appendMsg(msg, msg.user === 'mine' ? 'mine' : 'theirs'));
     }
 
     // --- UI LOGIC ---
@@ -305,8 +291,7 @@
         document.getElementById('chat-name').innerText = name; 
         document.getElementById('chat-avatar').src = `https://i.pravatar.cc/150?img=${avatar || 1}`;
         
-        // Load tin nhắn cũ
-        loadChat(id);
+        loadChat(id); // LOAD TIN CŨ
         
         switchScreen('chat-ui'); 
         showRedDot(false); 
@@ -318,7 +303,7 @@
             const msgData = { to: currentChatID, content, type: 'text', user: myName };
             socket.emit('private_message', msgData); 
             
-            // Lưu và hiện tin nhắn của mình
+            // Lưu và hiện
             const savedMsg = { content, type: 'text', user: 'mine' };
             saveChat(currentChatID, savedMsg);
             appendMsg(savedMsg, 'mine'); 
@@ -333,10 +318,8 @@
             r.onload = e => {
                 const type = f.type.startsWith('image/') ? 'image' : 'file';
                 const msgData = { to: currentChatID, type: type, fileData: e.target.result, fileName: f.name, user: myName };
-                
                 socket.emit('private_message', msgData);
                 
-                // Lưu và hiện
                 const savedMsg = { type: type, fileData: e.target.result, fileName: f.name, user: 'mine' };
                 saveChat(currentChatID, savedMsg);
                 appendMsg(savedMsg, 'mine');
@@ -353,7 +336,7 @@
         const area = document.getElementById('msgs'); area.appendChild(div); area.scrollTop = area.scrollHeight;
     }
 
-    // --- OTHER LOGIC ---
+    // --- OTHER ---
     function startCall() { if (!myFriends.some(f => f.id == currentChatID)) { showT("Chỉ gọi cho bạn bè!"); return; } document.getElementById('vid-mod').style.display='block'; setupMedia().then(() => { createPeer(); peerConnection.createOffer().then(o => { peerConnection.setLocalDescription(o); socket.emit('video_offer', { to: currentChatID, offer: o }); }); }); }
     socket.on('video_offer', d => { if(d.from) { pendingOffer = d.offer; currentChatID = d.from; document.getElementById('inc-call').style.display='block'; } });
     socket.on('video_answer', d => { if(peerConnection) peerConnection.setRemoteDescription(d.answer); });
@@ -369,14 +352,13 @@
     }
     function showT(m){const t=document.getElementById("toast");t.innerText=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000);}
     function showAdd(){document.getElementById('add-mod').style.display='flex';document.getElementById('fid-inp').value='';}
-    function sendReq(){const id=document.getElementById('fid-inp').value; if(id){socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:1}});document.getElementById('add-mod').style.display='none';showT("Đã gửi lời mời...");}}
-    function accReq(){if(pendingRequest){addF(pendingRequest);socket.emit('accept_friend_request',{toId:pendingRequest.id,fromUser:{id:myID,username:myName,avatar:1}});document.getElementById('req-mod').style.display='none';}}
+    function sendReq(){const id=document.getElementById('fid-inp').value; if(id){socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:myAvatar}});document.getElementById('add-mod').style.display='none';showT("Đã gửi lời mời...");}}
+    function accReq(){if(pendingRequest){addF(pendingRequest);socket.emit('accept_friend_request',{toId:pendingRequest.id,fromUser:{id:myID,username:myName,avatar:myAvatar}});document.getElementById('req-mod').style.display='none';}}
     
-    // SỬA HÀM THÊM BẠN ĐỂ LƯU AVATAR
     function addF(u){
         if(myFriends.some(f=>f.id==u.id))return;
-        // Lưu avatar vào object bạn bè
-        const newFriend = { ...u, avatar: u.avatar || Math.floor(Math.random()*12)+1 }; 
+        // LƯU CẢ AVATAR KHI KẾT BẠN
+        const newFriend = { ...u, avatar: u.avatar || 1 }; 
         myFriends.push(newFriend);
         localStorage.setItem('my_friends',JSON.stringify(myFriends));
         if(document.getElementById('buddy-screen').classList.contains('active'))renderBuds('all');
@@ -387,7 +369,6 @@
         if(myFriends.length===0) c.innerHTML='<p style="text-align:center;color:#888;margin-top:20px;">Chưa có bạn.</p>';
         myFriends.forEach(b=>{
             const on=onlineUsers.some(u=>u.id==b.id);
-            // Lấy avatar đã lưu
             c.innerHTML+=`<div class="bud-card"><img src="https://i.pravatar.cc/150?img=${b.avatar}" class="b-avt"><div style="flex:1;"><b style="font-size:15px;">${b.username||b.name}</b><br><small style="color:${on?'green':'#aaa'}">${on?'⚡ Online':'Offline'}</small><div style="font-size:10px;color:#888;">ID: ${b.id}</div></div><span class="material-icons-outlined" onclick="openChat('${b.id}','${b.username||b.name}', ${b.avatar})" style="padding:10px;cursor:pointer;">chat_bubble_outline</span></div>`;
         });
     }
@@ -402,9 +383,18 @@
         if(d.success){
             if(isReg){alert("Đăng ký thành công!");toggleRegisterMode();}
             else{
-                myName=d.username;myID=d.buddyId;localStorage.setItem('chat_username',myName);localStorage.setItem('buddy_id',myID);
-                socket.emit('register_user',{id:myID,username:myName,avatar:d.avatar||1});
-                document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;switchScreen('home-screen'); initRandomWord();
+                myName=d.username; myID=d.buddyId; myAvatar=d.avatar||1;
+                localStorage.setItem('chat_username',myName);
+                localStorage.setItem('buddy_id',myID);
+                localStorage.setItem('my_avatar', myAvatar);
+                
+                socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar});
+                
+                document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);
+                document.getElementById('my-id').innerText=myID;
+                document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
+                
+                switchScreen('home-screen'); initRandomWord();
             }
         }else{alert(d.message);}}catch(e){alert("Lỗi!");}
     }
@@ -419,7 +409,12 @@
     function rejCall(){document.getElementById('inc-call').style.display='none';socket.emit('video_reject',{to:currentChatID});}
     function endCall(){document.getElementById('vid-mod').style.display='none';if(localStream)localStream.getTracks().forEach(t=>t.stop());switchScreen('sum-scr');}
 
-    if(myName&&myID){document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;socket.emit('register_user',{id:myID,username:myName,avatar:1}); initRandomWord();}
+    if(myName&&myID){
+        document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);
+        document.getElementById('my-id').innerText=myID;
+        document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
+        socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar}); initRandomWord();
+    }
 </script>
 </body>
 </html>

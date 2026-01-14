@@ -39,7 +39,7 @@ app.post('/api/register', async (req, res) => {
         const newUser = new User({ 
             username, password,
             buddyId: Math.floor(100000 + Math.random() * 900000).toString(),
-            avatar: Math.floor(Math.random() * 12) + 1
+            avatar: Math.floor(Math.random() * 70) + 1
         });
         await newUser.save();
         res.json({ success: true, message: "Đăng ký thành công!" });

@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN CSS CŨ */
         :root { --primary: #00C2FF; --orange: #FF9F43; --bg: #F5F5F5; --white: #fff; --blue: #0084FF; --dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -17,40 +16,42 @@
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
+        .scroll-area::-webkit-scrollbar { display: none; }
+        
+        /* BOTTOM NAV */
         .bottom-nav { flex-shrink: 0; padding: 15px 0; background: #FFF8F0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; position: relative; }
         .nav-item.active { opacity: 1; font-weight: bold; color: var(--primary); }
         .red-dot { position: absolute; top: -2px; right: 5px; width: 10px; height: 10px; background: red; border-radius: 50%; border: 2px solid #FFF8F0; display: none; }
         .red-dot.show { display: block; }
+
+        /* TOAST & MODAL */
         #toast { visibility: hidden; min-width: 200px; background: rgba(0,0,0,0.8); color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; position: absolute; z-index: 5000; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.3s; font-size: 14px; }
         #toast.show { visibility: visible; opacity: 1; }
         .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-card { background: white; width: 85%; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
-        /* HOME UI IMPROVED */
+        /* HOME UI */
         .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
         .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
         .task-btn { background: var(--orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .h-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none; }
         .ava-circ { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
         .ava-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px;}
-        
-        /* NEW HOME WIDGETS */
+        .info-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
         .wotd-card { background: white; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; border-left: 5px solid #FF9F43; transition: transform 0.1s; }
         .wotd-card:active { transform: scale(0.98); }
-        
         .stats-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
         .tip-card { background: #E3F2FD; border-radius: 16px; padding: 15px; display: flex; gap: 15px; align-items: flex-start; }
 
-        /* Login */
+        /* LOGIN */
         #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
         .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
         .btn-main { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
         .inp { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; margin-bottom: 15px; }
 
-        /* Other Styles (Giữ nguyên) */
+        /* TOPICS */
         .search-box { padding: 0 20px 15px; }
         .search-inp { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
         .sec-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 5px; margin-top: 15px; }
@@ -58,12 +59,12 @@
         .card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .ico-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
         .ib { background: #e0f2ff; color: #4facfe; } .io { background: #fff0f0; color: #ff9a9e; } .ir { background: #ffeaef; color: #ff0844; } .iy { background: #fcf0f9; color: #fbc2eb; } .ip { background: #f3f0ff; color: #a18cd1; } .ig { background: #eafff0; color: #43e97b; } .it { background: #e0f9f4; color: #00b894; } .ipi { background: #ffe6f0; color: #fd79a8; }
-        
+
+        /* BUDDIES & PROFILE */
         .bud-head { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .bud-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .b-avt { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
         .add-btn { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        
         .pro-head { background: white; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .pro-avt { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .id-card { background: var(--primary); color: white; padding: 15px 20px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin: 20px; }
@@ -71,13 +72,14 @@
         .m-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 600; }
         .out-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: #FF4757; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: calc(100% - 40px); }
 
+        /* CHAT UI */
         #chat-ui { background: white; }
         .c-head { padding: 15px; display: flex; align-items: center; gap: 10px; background: white; border-bottom: 1px solid #f0f0f0; z-index: 10; }
         #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #FAFAFA; }
         .msg { padding: 10px 16px; border-radius: 18px; max-width: 75%; font-size: 15px; word-wrap: break-word; }
         .mine { align-self: flex-end; background: var(--blue); color: white; border-bottom-right-radius: 4px; }
         .theirs { align-self: flex-start; background: #E4E6EB; color: black; border-bottom-left-radius: 4px; }
-        .m-img { max-width: 100%; border-radius: 15px; margin-top: 5px; }
+        .m-img { max-width: 100%; border-radius: 15px; margin-top: 5px; border: 1px solid #ddd; display: block; }
         .f-card { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,0.2); border-radius: 10px; text-decoration: none; color: inherit; font-weight: 600; font-size: 13px; }
         .theirs .f-card { background: white; border: 1px solid #ddd; color: #333; }
         .inp-area { background: white; padding: 10px 15px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #eee; }
@@ -85,6 +87,7 @@
         .c-wrap { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #c-inp { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
 
+        /* OTHER */
         #vid-mod { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #rem-vid { width: 100%; height: 100%; object-fit: cover; }
         #loc-vid { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
@@ -129,38 +132,15 @@
             </div>
             
             <div style="padding: 0 20px; display: flex; flex-direction: column;">
-                
                 <div class="wotd-card" onclick="playWordAudio()">
                     <div style="background: #FFF4E6; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FF9F43; font-weight: 800; font-size: 18px;" id="wotd-icon">W</div>
-                    <div style="flex: 1;">
-                        <div style="font-size: 10px; color: #888; font-weight: 700;">WORD OF THE DAY</div>
-                        <div style="font-size: 15px; font-weight: 800; color: #333;" id="wotd-word">Loading...</div>
-                        <div style="font-size: 12px; color: #555;" id="wotd-mean">...</div>
-                    </div>
-                    <span class="material-icons-outlined" style="color: #ccc;">volume_up</span>
+                    <div style="flex: 1;"><div style="font-size: 10px; color: #888; font-weight: 700;">WORD OF THE DAY</div><div style="font-size: 15px; font-weight: 800; color: #333;" id="wotd-word">Loading...</div><div style="font-size: 12px; color: #555;" id="wotd-mean">...</div></div><span class="material-icons-outlined" style="color: #ccc;">volume_up</span>
                 </div>
-
                 <div class="stats-row">
-                    <div class="stat-card">
-                        <span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span>
-                        <div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">5</div>
-                        <div style="font-size: 11px; color: #888;">Ngày Streak</div>
-                    </div>
-                    <div class="stat-card">
-                        <span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span>
-                        <div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">15m</div>
-                        <div style="font-size: 11px; color: #888;">Hôm nay</div>
-                    </div>
+                    <div class="stat-card"><span class="material-icons-round" style="color: #FF6B6B; font-size: 24px;">local_fire_department</span><div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">5</div><div style="font-size: 11px; color: #888;">Ngày Streak</div></div>
+                    <div class="stat-card"><span class="material-icons-round" style="color: #00C2FF; font-size: 24px;">schedule</span><div style="font-size: 18px; font-weight: 800; color: #333; margin-top:5px;">15m</div><div style="font-size: 11px; color: #888;">Hôm nay</div></div>
                 </div>
-
-                <div class="tip-card">
-                    <span class="material-icons-round" style="color: #0084FF;">lightbulb</span>
-                    <div>
-                        <b style="font-size: 13px; color:#0056b3;">Mẹo hôm nay</b>
-                        <p style="font-size: 12px; margin: 3px 0; color:#444;">Đừng học từng từ đơn lẻ, hãy học cả cụm từ!</p>
-                    </div>
-                </div>
-
+                <div class="tip-card"><span class="material-icons-round" style="color: #0084FF;">lightbulb</span><div><b style="font-size: 13px; color:#0056b3;">Mẹo hôm nay</b><p style="font-size: 12px; margin: 3px 0; color:#444;">Đừng học từng từ đơn lẻ, hãy học cả cụm từ!</p></div></div>
             </div>
         </div> 
         <div class="bottom-nav">
@@ -245,7 +225,7 @@
     <div id="chat-ui" class="screen">
         <div class="c-head">
             <span class="material-icons-outlined" onclick="goToTab('buddies')" style="cursor:pointer;">arrow_back</span>
-            <img src="https://i.pravatar.cc/150?img=5" style="width:40px; height:40px; border-radius:50%;">
+            <img src="https://i.pravatar.cc/150?img=5" style="width:40px; height:40px; border-radius:50%;" id="chat-avatar">
             <div style="flex:1;"><b id="chat-name">Buddy</b><div style="font-size:11px; color:#4CD964;">● Online</div></div>
             <span class="material-icons-round" style="color:#0084FF; font-size:28px; cursor:pointer;" onclick="startCall()">videocam</span>
         </div>
@@ -260,6 +240,7 @@
 
     <div id="vid-mod"><video id="rem-vid" autoplay playsinline></video><video id="loc-vid" autoplay playsinline muted></video><div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center;"><button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white; cursor:pointer;"><span class="material-icons-round">call_end</span></button></div></div>
     <div id="sum-scr" class="screen"><div style="width:100%; height:200px; background:#00C2FF; border-radius:0 0 30px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;"><span class="material-icons-round" style="font-size:50px;">thumb_up</span><h2>Tuyệt vời!</h2></div><div style="width:80%; background:white; padding:20px; margin-top:-50px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;"><h3>Kết quả</h3><p>Bạn đã luyện tập rất tốt.</p><button onclick="goToTab('topics')" style="padding:12px 20px; background:var(--accent-orange); color:white; border:none; border-radius:20px; cursor:pointer;">Chọn bài khác</button></div></div>
+    
     <div id="inc-call" style="display:none; position:absolute; top:20px; left:20px; right:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.3); z-index:2000; text-align:center;"><h3>📞 Cuộc gọi đến...</h3><div style="display:flex; gap:10px; margin-top:20px;"><button onclick="rejCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px; cursor:pointer;">Từ chối</button><button onclick="accCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px; cursor:pointer;">Nghe</button></div></div>
     <div id="add-mod" class="modal"><div class="modal-card"><h3 style="margin-top:0;">Thêm bạn mới</h3><p style="font-size:13px; color:#666;">Nhập Buddy ID để gửi lời mời.</p><input type="number" id="fid-inp" class="inp" placeholder="Nhập ID" style="text-align:center; letter-spacing:2px;"><div style="display:flex; gap:10px;"><button onclick="document.getElementById('add-mod').style.display='none'" style="flex:1; padding:10px; border:1px solid #ddd; background:white; border-radius:10px;">Hủy</button><button onclick="sendReq()" style="flex:1; padding:10px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:700;">Gửi lời mời</button></div></div></div>
     <div id="req-mod" class="modal"><div class="modal-card"><h3 style="margin:10px 0 5px;">Lời mời kết bạn!</h3><p style="font-size:14px; color:#555;"><b id="req-name">User</b> muốn kết nối.</p><div style="display:flex; gap:10px; margin-top:20px;"><button onclick="document.getElementById('req-mod').style.display='none'" style="flex:1; padding:10px; border:1px solid #ddd; background:white; border-radius:10px;">Từ chối</button><button onclick="accReq()" style="flex:1; padding:10px; background:var(--orange); color:white; border:none; border-radius:10px; font-weight:700;">Chấp nhận</button></div></div></div>
@@ -267,15 +248,6 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    // --- DATA TỪ VỰNG ---
-    const vocabList = [
-        { word: "Serendipity", mean: "Sự tình cờ may mắn", ph: "/ˌser.ənˈdɪp.ə.ti/" },
-        { word: "Resilience", mean: "Khả năng phục hồi", ph: "/rɪˈzɪl.jəns/" },
-        { word: "Ebullience", mean: "Sự sôi nổi", ph: "/ɪˈbʊl.i.əns/" },
-        { word: "Luminous", mean: "Sáng chói", ph: "/ˈluː.mɪ.nəs/" },
-        { word: "Petrichor", mean: "Mùi mưa", ph: "/ˈpet.rɪ.kɔːr/" }
-    ];
-
     const socket = io();
     let myName = localStorage.getItem('chat_username') || "";
     let myID = localStorage.getItem('buddy_id') || "";
@@ -284,30 +256,75 @@
     let pendingRequest = null;
     let currentChatID = null;
 
-    // --- RANDOM WORD LOGIC ---
-    function initRandomWord() {
-        const rand = vocabList[Math.floor(Math.random() * vocabList.length)];
-        document.getElementById('wotd-word').innerText = rand.word;
-        document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean;
-        document.getElementById('wotd-icon').innerText = rand.word.charAt(0);
-    }
-    
-    function playWordAudio() {
-        const text = document.getElementById('wotd-word').innerText;
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        speechSynthesis.speak(u);
-    }
+    // --- DATA WORD OF DAY ---
+    const vocabList = [ { word: "Serendipity", mean: "Sự tình cờ may mắn", ph: "/ˌser.ənˈdɪp.ə.ti/" }, { word: "Resilience", mean: "Khả năng phục hồi", ph: "/rɪˈzɪl.jəns/" }, { word: "Ebullience", mean: "Sự sôi nổi", ph: "/ɪˈbʊl.i.əns/" } ];
+    function initRandomWord() { const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0); }
+    function playWordAudio() { const u = new SpeechSynthesisUtterance(document.getElementById('wotd-word').innerText); u.lang = 'en-US'; speechSynthesis.speak(u); }
 
     // --- SOCKET EVENTS ---
     socket.on('online_users', u => { onlineUsers = u; if(document.getElementById('buddy-screen').classList.contains('active')) renderBuds('all'); });
     socket.on('incoming_friend_request', u => { pendingRequest=u; document.getElementById('req-name').innerText=u.username; document.getElementById('req-mod').style.display='flex'; });
     socket.on('friend_request_accepted', u => { addF(u); showT(`${u.username} đã chấp nhận!`); });
-    socket.on('private_message', data => { if (currentChatID === data.from) appendMsg(data, 'theirs'); else { showRedDot(true); showT(`Tin nhắn từ ${data.user}`); } });
+    
+    // --- XỬ LÝ TIN NHẮN ĐẾN & LƯU ---
+    socket.on('private_message', data => {
+        // Lưu tin nhắn vào LocalStorage ngay lập tức
+        saveChat(data.from, { ...data, type: data.type, user: 'theirs' });
 
+        if (currentChatID === data.from) {
+            appendMsg(data, 'theirs');
+        } else {
+            showRedDot(true); 
+            showT(`Tin nhắn mới từ ${data.user}`);
+        }
+    });
+
+    // --- LOCAL STORAGE CHAT LOGIC (QUAN TRỌNG) ---
+    function saveChat(friendID, msgData) {
+        // msgData: { content, type, fileData, user: 'mine'/'theirs' }
+        let chatKey = `chat_${myID}_${friendID}`;
+        let history = JSON.parse(localStorage.getItem(chatKey)) || [];
+        history.push(msgData);
+        localStorage.setItem(chatKey, JSON.stringify(history));
+    }
+
+    function loadChat(friendID) {
+        let chatKey = `chat_${myID}_${friendID}`;
+        let history = JSON.parse(localStorage.getItem(chatKey)) || [];
+        document.getElementById('msgs').innerHTML = ''; // Clear cũ
+        history.forEach(msg => {
+            appendMsg(msg, msg.user === 'mine' ? 'mine' : 'theirs');
+        });
+    }
+
+    // --- UI LOGIC ---
     function showRedDot(show) { document.querySelectorAll('.red-dot').forEach(el => el.style.display = show ? 'block' : 'none'); }
-    function openChat(id, name) { currentChatID = id; document.getElementById('chat-name').innerText = name; document.getElementById('msgs').innerHTML = ''; switchScreen('chat-ui'); showRedDot(false); }
-    function sendMsg() { const inp = document.getElementById('c-inp'); const content = inp.value.trim(); if(content && currentChatID) { socket.emit('private_message', { to: currentChatID, content, type: 'text', user: myName }); appendMsg({ content, type: 'text' }, 'mine'); inp.value = ""; } }
+    
+    function openChat(id, name, avatar) { 
+        currentChatID = id; 
+        document.getElementById('chat-name').innerText = name; 
+        document.getElementById('chat-avatar').src = `https://i.pravatar.cc/150?img=${avatar || 1}`;
+        
+        // Load tin nhắn cũ
+        loadChat(id);
+        
+        switchScreen('chat-ui'); 
+        showRedDot(false); 
+    }
+
+    function sendMsg() { 
+        const inp = document.getElementById('c-inp'); const content = inp.value.trim(); 
+        if(content && currentChatID) { 
+            const msgData = { to: currentChatID, content, type: 'text', user: myName };
+            socket.emit('private_message', msgData); 
+            
+            // Lưu và hiện tin nhắn của mình
+            const savedMsg = { content, type: 'text', user: 'mine' };
+            saveChat(currentChatID, savedMsg);
+            appendMsg(savedMsg, 'mine'); 
+            inp.value = ""; 
+        } 
+    }
     
     function fileUp(inp) {
         const f = inp.files[0];
@@ -315,9 +332,14 @@
             const r = new FileReader();
             r.onload = e => {
                 const type = f.type.startsWith('image/') ? 'image' : 'file';
-                const data = { to: currentChatID, type: type, fileData: e.target.result, fileName: f.name, user: myName };
-                socket.emit('private_message', data);
-                appendMsg(data, 'mine');
+                const msgData = { to: currentChatID, type: type, fileData: e.target.result, fileName: f.name, user: myName };
+                
+                socket.emit('private_message', msgData);
+                
+                // Lưu và hiện
+                const savedMsg = { type: type, fileData: e.target.result, fileName: f.name, user: 'mine' };
+                saveChat(currentChatID, savedMsg);
+                appendMsg(savedMsg, 'mine');
             };
             r.readAsDataURL(f); inp.value = "";
         }
@@ -331,6 +353,7 @@
         const area = document.getElementById('msgs'); area.appendChild(div); area.scrollTop = area.scrollHeight;
     }
 
+    // --- OTHER LOGIC ---
     function startCall() { if (!myFriends.some(f => f.id == currentChatID)) { showT("Chỉ gọi cho bạn bè!"); return; } document.getElementById('vid-mod').style.display='block'; setupMedia().then(() => { createPeer(); peerConnection.createOffer().then(o => { peerConnection.setLocalDescription(o); socket.emit('video_offer', { to: currentChatID, offer: o }); }); }); }
     socket.on('video_offer', d => { if(d.from) { pendingOffer = d.offer; currentChatID = d.from; document.getElementById('inc-call').style.display='block'; } });
     socket.on('video_answer', d => { if(peerConnection) peerConnection.setRemoteDescription(d.answer); });
@@ -348,13 +371,24 @@
     function showAdd(){document.getElementById('add-mod').style.display='flex';document.getElementById('fid-inp').value='';}
     function sendReq(){const id=document.getElementById('fid-inp').value; if(id){socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:1}});document.getElementById('add-mod').style.display='none';showT("Đã gửi lời mời...");}}
     function accReq(){if(pendingRequest){addF(pendingRequest);socket.emit('accept_friend_request',{toId:pendingRequest.id,fromUser:{id:myID,username:myName,avatar:1}});document.getElementById('req-mod').style.display='none';}}
-    function addF(u){if(myFriends.some(f=>f.id==u.id))return;myFriends.push(u);localStorage.setItem('my_friends',JSON.stringify(myFriends));if(document.getElementById('buddy-screen').classList.contains('active'))renderBuds('all');}
+    
+    // SỬA HÀM THÊM BẠN ĐỂ LƯU AVATAR
+    function addF(u){
+        if(myFriends.some(f=>f.id==u.id))return;
+        // Lưu avatar vào object bạn bè
+        const newFriend = { ...u, avatar: u.avatar || Math.floor(Math.random()*12)+1 }; 
+        myFriends.push(newFriend);
+        localStorage.setItem('my_friends',JSON.stringify(myFriends));
+        if(document.getElementById('buddy-screen').classList.contains('active'))renderBuds('all');
+    }
+
     function renderBuds(){
         const c=document.getElementById('bud-list');c.innerHTML='';
         if(myFriends.length===0) c.innerHTML='<p style="text-align:center;color:#888;margin-top:20px;">Chưa có bạn.</p>';
         myFriends.forEach(b=>{
             const on=onlineUsers.some(u=>u.id==b.id);
-            c.innerHTML+=`<div class="bud-card"><img src="https://i.pravatar.cc/150?img=${b.avatar||1}" class="b-avt"><div style="flex:1;"><b style="font-size:15px;">${b.username||b.name}</b><br><small style="color:${on?'green':'#aaa'}">${on?'⚡ Online':'Offline'}</small><div style="font-size:10px;color:#888;">ID: ${b.id}</div></div><span class="material-icons-outlined" onclick="openChat('${b.id}','${b.username||b.name}')" style="padding:10px;cursor:pointer;">chat_bubble_outline</span></div>`;
+            // Lấy avatar đã lưu
+            c.innerHTML+=`<div class="bud-card"><img src="https://i.pravatar.cc/150?img=${b.avatar}" class="b-avt"><div style="flex:1;"><b style="font-size:15px;">${b.username||b.name}</b><br><small style="color:${on?'green':'#aaa'}">${on?'⚡ Online':'Offline'}</small><div style="font-size:10px;color:#888;">ID: ${b.id}</div></div><span class="material-icons-outlined" onclick="openChat('${b.id}','${b.username||b.name}', ${b.avatar})" style="padding:10px;cursor:pointer;">chat_bubble_outline</span></div>`;
         });
     }
     
@@ -370,8 +404,7 @@
             else{
                 myName=d.username;myID=d.buddyId;localStorage.setItem('chat_username',myName);localStorage.setItem('buddy_id',myID);
                 socket.emit('register_user',{id:myID,username:myName,avatar:d.avatar||1});
-                document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;switchScreen('home-screen');
-                initRandomWord();
+                document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;switchScreen('home-screen'); initRandomWord();
             }
         }else{alert(d.message);}}catch(e){alert("Lỗi!");}
     }

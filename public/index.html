@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     
     <style>
+        /* GIỮ NGUYÊN CSS CŨ (KHÔNG ĐỔI GIAO DIỆN) */
         :root { --primary: #00C2FF; --orange: #FF9F43; --bg: #F5F5F5; --white: #fff; --blue: #0084FF; --dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -16,6 +17,7 @@
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
+        .scroll-area::-webkit-scrollbar { display: none; }
         .bottom-nav { flex-shrink: 0; padding: 15px 0; background: #FFF8F0; display: flex; justify-content: space-around; border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
         .nav-item { text-align: center; color: #333; opacity: 0.5; cursor: pointer; position: relative; }
         .nav-item.active { opacity: 1; font-weight: bold; color: var(--primary); }
@@ -25,8 +27,6 @@
         #toast.show { visibility: visible; opacity: 1; }
         .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-card { background: white; width: 85%; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-
-        /* HOME UI */
         .home-header { padding: 25px 20px 10px; display: flex; justify-content: space-between; align-items: flex-start; }
         .cyan-card { margin: 10px 20px; padding: 25px; border-radius: 25px; color: white; background: linear-gradient(135deg, #00C6FF, #0072FF); box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4); }
         .task-btn { background: var(--orange); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
@@ -39,8 +39,10 @@
         .stats-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .tip-card { background: #E3F2FD; border-radius: 16px; padding: 15px; display: flex; gap: 15px; align-items: flex-start; }
-
-        /* TOPICS */
+        #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
+        .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
+        .btn-main { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
+        .inp { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; margin-bottom: 15px; }
         .search-box { padding: 0 20px 15px; }
         .search-inp { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
         .sec-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 5px; margin-top: 15px; }
@@ -48,8 +50,6 @@
         .card { background: white; border: 1px solid #eee; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .ico-bg { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
         .ib { background: #e0f2ff; color: #4facfe; } .io { background: #fff0f0; color: #ff9a9e; } .ir { background: #ffeaef; color: #ff0844; } .iy { background: #fcf0f9; color: #fbc2eb; } .ip { background: #f3f0ff; color: #a18cd1; } .ig { background: #eafff0; color: #43e97b; } .it { background: #e0f9f4; color: #00b894; } .ipi { background: #ffe6f0; color: #fd79a8; }
-
-        /* PROFILE & BUDDIES */
         .bud-head { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .bud-card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .b-avt { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
@@ -60,8 +60,6 @@
         .menu { background: white; border-radius: 20px; margin: 0 20px 20px; padding: 10px 0; }
         .m-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 600; }
         .out-btn { margin: 0 20px 30px; padding: 15px; background: #FFF0F0; color: #FF4757; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: calc(100% - 40px); }
-
-        /* CHAT UI */
         #chat-ui { background: white; }
         .c-head { padding: 15px; display: flex; align-items: center; gap: 10px; background: white; border-bottom: 1px solid #f0f0f0; z-index: 10; }
         #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #FAFAFA; }
@@ -75,12 +73,6 @@
         .t-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: #F0F2F5; color: #0084FF; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .c-wrap { flex: 1; background: #F0F2F5; border-radius: 20px; padding: 0 15px; display: flex; align-items: center; }
         #c-inp { width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 15px; }
-
-        /* LOGIN & OTHER */
-        #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
-        .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
-        .btn-main { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
-        .inp { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; margin-bottom: 15px; }
         #vid-mod { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #rem-vid { width: 100%; height: 100%; object-fit: cover; }
         #loc-vid { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
@@ -106,7 +98,7 @@
             <input type="password" id="password" class="inp" placeholder="Mật khẩu">
             <button id="auth-btn" onclick="handleLogin()" class="btn-main">Đăng nhập</button>
         </div>
-        <p id="login-msg" style="color:red; font-size:12px; margin-top:15px; min-height: 18px;"></p>
+        <p id="login-msg" style="color:red; font-size:13px; margin-top:15px; min-height: 20px; font-weight: 700;"></p>
         <p style="font-size: 13px; margin-top: 20px; color: #888;"><span id="toggle-text">Chưa có tài khoản?</span> <b id="toggle-btn" style="color: var(--orange); cursor: pointer;" onclick="toggleRegisterMode()">Đăng ký ngay</b></p>
     </div>
 
@@ -246,29 +238,34 @@
     let pendingRequest = null;
     let currentChatID = null;
 
-    // --- DATA ---
-    const vocabList = [ { word: "Serendipity", mean: "Sự tình cờ may mắn", ph: "/ˌser.ənˈdɪp.ə.ti/" }, { word: "Resilience", mean: "Khả năng phục hồi", ph: "/rɪˈzɪl.jəns/" }, { word: "Ebullience", mean: "Sự sôi nổi", ph: "/ɪˈbʊl.i.əns/" } ];
-    function initRandomWord() { const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0); }
-    function playWordAudio() { const u = new SpeechSynthesisUtterance(document.getElementById('wotd-word').innerText); u.lang = 'en-US'; speechSynthesis.speak(u); }
-
     // --- SOCKET EVENTS ---
     socket.on('online_users', u => { onlineUsers = u; if(document.getElementById('buddy-screen').classList.contains('active')) renderBuds('all'); });
-    socket.on('incoming_friend_request', u => { pendingRequest=u; document.getElementById('req-name').innerText=u.username; document.getElementById('req-mod').style.display='flex'; });
-    socket.on('friend_request_accepted', u => { addF(u); showT(`${u.username} đã chấp nhận!`); });
     
+    // NHẬN LỜI MỜI (LOGIC)
+    socket.on('incoming_friend_request', u => { 
+        pendingRequest=u; 
+        document.getElementById('req-name').innerText=u.username; 
+        document.getElementById('req-mod').style.display='flex'; 
+    });
+    
+    // ĐƯỢC CHẤP NHẬN
+    socket.on('friend_request_accepted', u => { 
+        addF(u); 
+        showT(`${u.username} đã chấp nhận!`); 
+    });
+    
+    // NHẬN PHẢN HỒI KHI GỬI LỜI MỜI
+    socket.on('request_failed', msg => { showT(msg); });
+    socket.on('request_sent_success', msg => { showT(msg); });
+
+    // NHẬN TIN NHẮN
     socket.on('private_message', data => {
-        // Lưu tin nhắn đến vào LocalStorage
         saveChat(data.from, { ...data, type: data.type, user: 'theirs' });
-        
-        if (currentChatID === data.from) {
-            appendMsg(data, 'theirs'); // Hiện ngay nếu đang mở chat
-        } else {
-            showRedDot(true); 
-            showT(`Tin nhắn mới từ ${data.user}`);
-        }
+        if (currentChatID === data.from) appendMsg(data, 'theirs');
+        else { showRedDot(true); showT(`Tin nhắn từ ${data.user}`); }
     });
 
-    // --- LOCAL STORAGE CHAT ---
+    // --- CHAT PERSISTENCE (LƯU LẠI TIN NHẮN) ---
     function saveChat(friendID, msgData) {
         let chatKey = `chat_${myID}_${friendID}`;
         let history = JSON.parse(localStorage.getItem(chatKey)) || [];
@@ -290,9 +287,7 @@
         currentChatID = id; 
         document.getElementById('chat-name').innerText = name; 
         document.getElementById('chat-avatar').src = `https://i.pravatar.cc/150?img=${avatar || 1}`;
-        
-        loadChat(id); // LOAD TIN CŨ
-        
+        loadChat(id);
         switchScreen('chat-ui'); 
         showRedDot(false); 
     }
@@ -302,8 +297,6 @@
         if(content && currentChatID) { 
             const msgData = { to: currentChatID, content, type: 'text', user: myName };
             socket.emit('private_message', msgData); 
-            
-            // Lưu và hiện
             const savedMsg = { content, type: 'text', user: 'mine' };
             saveChat(currentChatID, savedMsg);
             appendMsg(savedMsg, 'mine'); 
@@ -319,7 +312,6 @@
                 const type = f.type.startsWith('image/') ? 'image' : 'file';
                 const msgData = { to: currentChatID, type: type, fileData: e.target.result, fileName: f.name, user: myName };
                 socket.emit('private_message', msgData);
-                
                 const savedMsg = { type: type, fileData: e.target.result, fileName: f.name, user: 'mine' };
                 saveChat(currentChatID, savedMsg);
                 appendMsg(savedMsg, 'mine');
@@ -336,6 +328,22 @@
         const area = document.getElementById('msgs'); area.appendChild(div); area.scrollTop = area.scrollHeight;
     }
 
+    // --- FRIEND LOGIC FIX ---
+    function sendReq(){
+        const id=document.getElementById('fid-inp').value; 
+        if(!id) { showT("Vui lòng nhập ID!"); return; }
+        
+        // CHECK 1: TỰ KẾT BẠN
+        if(id == myID) { showT("Không thể kết bạn với chính mình!"); return; }
+        
+        // CHECK 2: ĐÃ LÀ BẠN
+        if(myFriends.some(f => f.id == id)) { showT("Đã là bạn bè rồi!"); return; }
+
+        socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:myAvatar}});
+        document.getElementById('add-mod').style.display='none';
+        // Xóa thông báo "Đã gửi" ở đây, để Server trả về mới hiện
+    }
+
     // --- OTHER ---
     function startCall() { if (!myFriends.some(f => f.id == currentChatID)) { showT("Chỉ gọi cho bạn bè!"); return; } document.getElementById('vid-mod').style.display='block'; setupMedia().then(() => { createPeer(); peerConnection.createOffer().then(o => { peerConnection.setLocalDescription(o); socket.emit('video_offer', { to: currentChatID, offer: o }); }); }); }
     socket.on('video_offer', d => { if(d.from) { pendingOffer = d.offer; currentChatID = d.from; document.getElementById('inc-call').style.display='block'; } });
@@ -345,25 +353,23 @@
     function switchScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
     function goToTab(t){
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(t==='home'){switchScreen('home-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.classList.add('active')); initRandomWord();}
+        if(t==='home'){switchScreen('home-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.classList.add('active')); }
         if(t==='topics'){switchScreen('topic-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(2)').forEach(n=>n.classList.add('active'));}
         if(t==='buddies'){renderBuds('all');switchScreen('buddy-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(3)').forEach(n=>n.classList.add('active'));}
         if(t==='profile'){switchScreen('profile-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(4)').forEach(n=>n.classList.add('active'));}
     }
-    function showT(m){const t=document.getElementById("toast");t.innerText=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000);}
-    function showAdd(){document.getElementById('add-mod').style.display='flex';document.getElementById('fid-inp').value='';}
-    function sendReq(){const id=document.getElementById('fid-inp').value; if(id){socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:myAvatar}});document.getElementById('add-mod').style.display='none';showT("Đã gửi lời mời...");}}
-    function accReq(){if(pendingRequest){addF(pendingRequest);socket.emit('accept_friend_request',{toId:pendingRequest.id,fromUser:{id:myID,username:myName,avatar:myAvatar}});document.getElementById('req-mod').style.display='none';}}
     
-    function addF(u){
-        if(myFriends.some(f=>f.id==u.id))return;
-        // LƯU CẢ AVATAR KHI KẾT BẠN
-        const newFriend = { ...u, avatar: u.avatar || 1 }; 
-        myFriends.push(newFriend);
-        localStorage.setItem('my_friends',JSON.stringify(myFriends));
-        if(document.getElementById('buddy-screen').classList.contains('active'))renderBuds('all');
+    // SHOW ERROR MSG INSTEAD OF ALERT
+    function showError(msg) {
+        const el = document.getElementById('login-msg');
+        el.innerText = msg;
+        setTimeout(() => el.innerText = "", 3000);
     }
 
+    function showT(m){const t=document.getElementById("toast");t.innerText=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000);}
+    function showAdd(){document.getElementById('add-mod').style.display='flex';document.getElementById('fid-inp').value='';}
+    function accReq(){if(pendingRequest){addF(pendingRequest);socket.emit('accept_friend_request',{toId:pendingRequest.id,fromUser:{id:myID,username:myName,avatar:myAvatar}});document.getElementById('req-mod').style.display='none';}}
+    function addF(u){if(myFriends.some(f=>f.id==u.id))return;const newF={...u,avatar:u.avatar||1};myFriends.push(newF);localStorage.setItem('my_friends',JSON.stringify(myFriends));if(document.getElementById('buddy-screen').classList.contains('active'))renderBuds('all');}
     function renderBuds(){
         const c=document.getElementById('bud-list');c.innerHTML='';
         if(myFriends.length===0) c.innerHTML='<p style="text-align:center;color:#888;margin-top:20px;">Chưa có bạn.</p>';
@@ -373,30 +379,26 @@
         });
     }
     
+    // LOGIN FIX
     let isReg=false;
     function toggleRegisterMode(){isReg=!isReg;document.getElementById('form-title').innerText=isReg?"Đăng ký":"BuddySpeak";document.getElementById('auth-btn').innerText=isReg?"Đăng ký":"Đăng nhập";document.getElementById('toggle-text').innerText=isReg?"Đã có TK?":"Chưa có TK?";document.getElementById('toggle-btn').innerText=isReg?"Đăng nhập":"Đăng ký";}
     async function handleLogin(){
         const u=document.getElementById('username').value,p=document.getElementById('password').value;
-        if(!u||!p)return;
+        if(!u||!p){ showError("Vui lòng nhập đủ thông tin!"); return; }
         const url=isReg?'/api/register':'/api/login';
         try{const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});const d=await res.json();
         if(d.success){
-            if(isReg){alert("Đăng ký thành công!");toggleRegisterMode();}
+            if(isReg){showError("Đăng ký thành công!"); document.getElementById('login-msg').style.color="green"; setTimeout(()=>{toggleRegisterMode(); document.getElementById('login-msg').style.color="red";},1500);}
             else{
-                myName=d.username; myID=d.buddyId; myAvatar=d.avatar||1;
-                localStorage.setItem('chat_username',myName);
-                localStorage.setItem('buddy_id',myID);
-                localStorage.setItem('my_avatar', myAvatar);
-                
+                myName=d.username;myID=d.buddyId;myAvatar=d.avatar||1;
+                localStorage.setItem('chat_username',myName);localStorage.setItem('buddy_id',myID);localStorage.setItem('my_avatar',myAvatar);
                 socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar});
-                
-                document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);
-                document.getElementById('my-id').innerText=myID;
-                document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
-                
-                switchScreen('home-screen'); initRandomWord();
+                document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
+                switchScreen('home-screen');
+                // DATA WORD OF DAY
+                const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0);
             }
-        }else{alert(d.message);}}catch(e){alert("Lỗi!");}
+        }else{showError(d.message);}}catch(e){showError("Lỗi kết nối Server!");}
     }
     function logout(){localStorage.clear();window.location.reload();}
     function copyID(){navigator.clipboard.writeText(myID);showT("Đã sao chép ID!");}
@@ -413,7 +415,9 @@
         document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);
         document.getElementById('my-id').innerText=myID;
         document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
-        socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar}); initRandomWord();
+        socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar});
+        // Init Word
+        const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0);
     }
 </script>
 </body>

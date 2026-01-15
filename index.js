@@ -85,9 +85,30 @@ io.on('connection', (socket) => {
     });
 
     // 3. Kết bạn
-    socket.on('send_friend_request', ({ toId, fromUser }) => {
+    socket.on('send_friend_request', async ({ toId, fromUser }) => {
+        // 1. Chặn tự kết bạn với chính mình
+        if (toId === fromUser.id) {
+            io.to(socket.id).emit('request_failed', "Không thể kết bạn với chính mình!");
+            return;
+        }
+
+        // 2. Kiểm tra người nhận có tồn tại trong Database không?
+        const userExists = await User.findOne({ buddyId: toId });
+        
+        if (!userExists) {
+            // Nếu không tìm thấy -> Báo lỗi ngay
+            io.to(socket.id).emit('request_failed', "Không tìm thấy người dùng này!");
+            return;
+        }
+
+        // 3. Nếu tồn tại -> Tìm xem họ có online không để hiện thông báo
         const targetSocket = findSocketById(toId);
-        if (targetSocket) io.to(targetSocket).emit('incoming_friend_request', fromUser);
+        if (targetSocket) {
+            io.to(targetSocket).emit('incoming_friend_request', fromUser);
+        }
+
+        // 4. Báo cho người gửi biết là đã gửi thành công
+        io.to(socket.id).emit('request_sent_success', "Đã gửi lời mời kết bạn!");
     });
 
     socket.on('accept_friend_request', ({ toId, fromUser }) => {

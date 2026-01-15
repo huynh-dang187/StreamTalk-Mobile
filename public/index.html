@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN CSS CŨ (KHÔNG ĐỔI GIAO DIỆN) */
+        /* GIỮ NGUYÊN CSS CŨ */
         :root { --primary: #00C2FF; --orange: #FF9F43; --bg: #F5F5F5; --white: #fff; --blue: #0084FF; --dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -238,34 +238,25 @@
     let pendingRequest = null;
     let currentChatID = null;
 
+    // --- DATA ---
+    const vocabList = [ { word: "Serendipity", mean: "Sự tình cờ may mắn", ph: "/ˌser.ənˈdɪp.ə.ti/" }, { word: "Resilience", mean: "Khả năng phục hồi", ph: "/rɪˈzɪl.jəns/" }, { word: "Ebullience", mean: "Sự sôi nổi", ph: "/ɪˈbʊl.i.əns/" } ];
+    function initRandomWord() { const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0); }
+    function playWordAudio() { const u = new SpeechSynthesisUtterance(document.getElementById('wotd-word').innerText); u.lang = 'en-US'; speechSynthesis.speak(u); }
+
     // --- SOCKET EVENTS ---
     socket.on('online_users', u => { onlineUsers = u; if(document.getElementById('buddy-screen').classList.contains('active')) renderBuds('all'); });
-    
-    // NHẬN LỜI MỜI (LOGIC)
-    socket.on('incoming_friend_request', u => { 
-        pendingRequest=u; 
-        document.getElementById('req-name').innerText=u.username; 
-        document.getElementById('req-mod').style.display='flex'; 
-    });
-    
-    // ĐƯỢC CHẤP NHẬN
-    socket.on('friend_request_accepted', u => { 
-        addF(u); 
-        showT(`${u.username} đã chấp nhận!`); 
-    });
-    
-    // NHẬN PHẢN HỒI KHI GỬI LỜI MỜI
+    socket.on('incoming_friend_request', u => { pendingRequest=u; document.getElementById('req-name').innerText=u.username; document.getElementById('req-mod').style.display='flex'; });
+    socket.on('friend_request_accepted', u => { addF(u); showT(`${u.username} đã chấp nhận!`); });
     socket.on('request_failed', msg => { showT(msg); });
     socket.on('request_sent_success', msg => { showT(msg); });
-
-    // NHẬN TIN NHẮN
+    
     socket.on('private_message', data => {
         saveChat(data.from, { ...data, type: data.type, user: 'theirs' });
         if (currentChatID === data.from) appendMsg(data, 'theirs');
-        else { showRedDot(true); showT(`Tin nhắn từ ${data.user}`); }
+        else { showRedDot(true); showT(`Tin nhắn mới từ ${data.user}`); }
     });
 
-    // --- CHAT PERSISTENCE (LƯU LẠI TIN NHẮN) ---
+    // --- CHAT PERSISTENCE ---
     function saveChat(friendID, msgData) {
         let chatKey = `chat_${myID}_${friendID}`;
         let history = JSON.parse(localStorage.getItem(chatKey)) || [];
@@ -280,7 +271,7 @@
         history.forEach(msg => appendMsg(msg, msg.user === 'mine' ? 'mine' : 'theirs'));
     }
 
-    // --- UI LOGIC ---
+    // --- UI ---
     function showRedDot(show) { document.querySelectorAll('.red-dot').forEach(el => el.style.display = show ? 'block' : 'none'); }
     
     function openChat(id, name, avatar) { 
@@ -328,22 +319,6 @@
         const area = document.getElementById('msgs'); area.appendChild(div); area.scrollTop = area.scrollHeight;
     }
 
-    // --- FRIEND LOGIC FIX ---
-    function sendReq(){
-        const id=document.getElementById('fid-inp').value; 
-        if(!id) { showT("Vui lòng nhập ID!"); return; }
-        
-        // CHECK 1: TỰ KẾT BẠN
-        if(id == myID) { showT("Không thể kết bạn với chính mình!"); return; }
-        
-        // CHECK 2: ĐÃ LÀ BẠN
-        if(myFriends.some(f => f.id == id)) { showT("Đã là bạn bè rồi!"); return; }
-
-        socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:myAvatar}});
-        document.getElementById('add-mod').style.display='none';
-        // Xóa thông báo "Đã gửi" ở đây, để Server trả về mới hiện
-    }
-
     // --- OTHER ---
     function startCall() { if (!myFriends.some(f => f.id == currentChatID)) { showT("Chỉ gọi cho bạn bè!"); return; } document.getElementById('vid-mod').style.display='block'; setupMedia().then(() => { createPeer(); peerConnection.createOffer().then(o => { peerConnection.setLocalDescription(o); socket.emit('video_offer', { to: currentChatID, offer: o }); }); }); }
     socket.on('video_offer', d => { if(d.from) { pendingOffer = d.offer; currentChatID = d.from; document.getElementById('inc-call').style.display='block'; } });
@@ -353,19 +328,14 @@
     function switchScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
     function goToTab(t){
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(t==='home'){switchScreen('home-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.classList.add('active')); }
+        if(t==='home'){switchScreen('home-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.classList.add('active')); initRandomWord();}
         if(t==='topics'){switchScreen('topic-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(2)').forEach(n=>n.classList.add('active'));}
         if(t==='buddies'){renderBuds('all');switchScreen('buddy-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(3)').forEach(n=>n.classList.add('active'));}
         if(t==='profile'){switchScreen('profile-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(4)').forEach(n=>n.classList.add('active'));}
     }
     
-    // SHOW ERROR MSG INSTEAD OF ALERT
-    function showError(msg) {
-        const el = document.getElementById('login-msg');
-        el.innerText = msg;
-        setTimeout(() => el.innerText = "", 3000);
-    }
-
+    // ERROR MSG
+    function showError(msg) { const el = document.getElementById('login-msg'); el.innerText = msg; setTimeout(() => el.innerText = "", 3000); }
     function showT(m){const t=document.getElementById("toast");t.innerText=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000);}
     function showAdd(){document.getElementById('add-mod').style.display='flex';document.getElementById('fid-inp').value='';}
     function accReq(){if(pendingRequest){addF(pendingRequest);socket.emit('accept_friend_request',{toId:pendingRequest.id,fromUser:{id:myID,username:myName,avatar:myAvatar}});document.getElementById('req-mod').style.display='none';}}
@@ -379,7 +349,7 @@
         });
     }
     
-    // LOGIN FIX
+    // LOGIN & FRIEND FIX
     let isReg=false;
     function toggleRegisterMode(){isReg=!isReg;document.getElementById('form-title').innerText=isReg?"Đăng ký":"BuddySpeak";document.getElementById('auth-btn').innerText=isReg?"Đăng ký":"Đăng nhập";document.getElementById('toggle-text').innerText=isReg?"Đã có TK?":"Chưa có TK?";document.getElementById('toggle-btn').innerText=isReg?"Đăng nhập":"Đăng ký";}
     async function handleLogin(){
@@ -394,15 +364,22 @@
                 localStorage.setItem('chat_username',myName);localStorage.setItem('buddy_id',myID);localStorage.setItem('my_avatar',myAvatar);
                 socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar});
                 document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
-                switchScreen('home-screen');
-                // DATA WORD OF DAY
-                const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0);
+                switchScreen('home-screen'); initRandomWord();
             }
         }else{showError(d.message);}}catch(e){showError("Lỗi kết nối Server!");}
     }
     function logout(){localStorage.clear();window.location.reload();}
     function copyID(){navigator.clipboard.writeText(myID);showT("Đã sao chép ID!");}
     function selTop(t){const h={'Presentation':'Good morning...','Coffee':'Latte please'}[t]||"Hello";document.getElementById('match-txt').innerText="Chủ đề: "+t;switchScreen('match-scr');setTimeout(()=>{goToTab('buddies')},2000);}
+    
+    function sendReq(){
+        const id=document.getElementById('fid-inp').value; 
+        if(!id) { showT("Vui lòng nhập ID!"); return; }
+        if(id == myID) { showT("Không thể kết bạn với chính mình!"); return; }
+        if(myFriends.some(f => f.id == id)) { showT("Đã là bạn bè rồi!"); return; }
+        socket.emit('send_friend_request',{toId:id,fromUser:{id:myID,username:myName,avatar:myAvatar}});
+        document.getElementById('add-mod').style.display='none';
+    }
 
     let peerConnection, localStream; const rtcConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"}]};
     async function setupMedia(){try{localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('loc-vid').srcObject=localStream;}catch(e){alert("Cam Error");}}
@@ -411,13 +388,13 @@
     function rejCall(){document.getElementById('inc-call').style.display='none';socket.emit('video_reject',{to:currentChatID});}
     function endCall(){document.getElementById('vid-mod').style.display='none';if(localStream)localStream.getTracks().forEach(t=>t.stop());switchScreen('sum-scr');}
 
+    // INIT
     if(myName&&myID){
         document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);
         document.getElementById('my-id').innerText=myID;
         document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
-        socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar});
-        // Init Word
-        const rand = vocabList[Math.floor(Math.random()*vocabList.length)]; document.getElementById('wotd-word').innerText = rand.word; document.getElementById('wotd-mean').innerText = rand.ph + " • " + rand.mean; document.getElementById('wotd-icon').innerText = rand.word.charAt(0);
+        socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar}); initRandomWord();
+        switchScreen('home-screen'); // AUTO LOGIN FIX
     }
 </script>
 </body>

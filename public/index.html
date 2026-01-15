@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN TOÀN BỘ CSS CŨ */
+        /* GIỮ NGUYÊN CSS CŨ */
         :root { --primary: #00C2FF; --orange: #FF9F43; --bg: #F5F5F5; --white: #fff; --blue: #0084FF; --dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -76,12 +76,23 @@
         #vid-mod { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #rem-vid { width: 100%; height: 100%; object-fit: cover; }
         #loc-vid { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
-        #sum-scr { background: white; align-items: center; }
         #match-scr { background: var(--primary); align-items: center; justify-content: center; color: white; text-align: center; }
         .radar { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; }
         .core { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 40px; }
         .rip { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); opacity: 0; animation: rip 2s infinite linear; }
         @keyframes rip { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+
+        /* SUMMARY SCREEN - NEW DESIGN */
+        #sum-scr { background: white; align-items: center; }
+        .sum-head { width: 100%; height: 220px; background: linear-gradient(135deg, #00C6FF, #0072FF); border-radius: 0 0 40px 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; margin-bottom: 60px; position: relative; }
+        .sum-avatar { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; position: absolute; bottom: -40px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .sum-stat-row { display: flex; gap: 20px; margin-bottom: 20px; width: 100%; padding: 0 40px; }
+        .sum-stat { flex: 1; background: #F8F9FA; padding: 15px; border-radius: 15px; text-align: center; }
+        .stars { display: flex; gap: 5px; margin: 15px 0; }
+        .star { color: #FFD700; font-size: 28px; }
+        .sum-btn-row { display: flex; gap: 15px; width: 80%; }
+        .btn-sec { flex: 1; padding: 12px; background: #F0F2F5; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; color: #555; }
+        .btn-pri { flex: 1; padding: 12px; background: var(--primary); border: none; border-radius: 12px; font-weight: 700; cursor: pointer; color: white; }
     </style>
 </head>
 <body>
@@ -219,8 +230,51 @@
         </div>
     </div>
 
-    <div id="vid-mod"><video id="rem-vid" autoplay playsinline></video><video id="loc-vid" autoplay playsinline muted></video><div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center;"><button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white; cursor:pointer;"><span class="material-icons-round">call_end</span></button></div></div>
-    <div id="sum-scr" class="screen"><div style="width:100%; height:200px; background:#00C2FF; border-radius:0 0 30px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;"><span class="material-icons-round" style="font-size:50px;">thumb_up</span><h2>Tuyệt vời!</h2></div><div style="width:80%; background:white; padding:20px; margin-top:-50px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;"><h3>Kết quả</h3><p>Bạn đã luyện tập rất tốt.</p><button onclick="goToTab('topics')" style="padding:12px 20px; background:var(--accent-orange); color:white; border:none; border-radius:20px; cursor:pointer;">Chọn bài khác</button></div></div>
+    <div id="vid-mod">
+        <video id="rem-vid" autoplay playsinline></video>
+        <video id="loc-vid" autoplay playsinline muted></video>
+        <div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center;">
+            <button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white; cursor:pointer;"><span class="material-icons-round">call_end</span></button>
+        </div>
+    </div>
+
+    <div id="sum-scr" class="screen">
+        <div class="sum-head">
+            <span class="material-icons-round" style="font-size:40px; margin-bottom:10px;">check_circle</span>
+            <h2 style="margin:0;">Tuyệt vời!</h2>
+            <p style="opacity:0.9;">Bạn đã hoàn thành buổi trò chuyện</p>
+            <img id="sum-friend-avt" src="https://i.pravatar.cc/150?img=5" class="sum-avatar">
+        </div>
+        <h3 style="text-align:center; margin:20px 0 5px;" id="sum-friend-name">Buddy Name</h3>
+        <p style="text-align:center; color:#888; font-size:13px; margin:0;">Vừa trò chuyện với bạn</p>
+        
+        <div class="sum-stat-row">
+            <div class="sum-stat">
+                <b style="font-size:20px; color:#00C2FF;">12:05</b><br>
+                <span style="font-size:12px; color:#888;">Thời gian</span>
+            </div>
+            <div class="sum-stat">
+                <b style="font-size:20px; color:#FF9F43;">15</b><br>
+                <span style="font-size:12px; color:#888;">Từ vựng mới</span>
+            </div>
+        </div>
+
+        <div style="text-align:center;">
+            <p style="font-size:13px; color:#555;">Đánh giá bạn học:</p>
+            <div class="stars">
+                <span class="material-icons-round star">star</span>
+                <span class="material-icons-round star">star</span>
+                <span class="material-icons-round star">star</span>
+                <span class="material-icons-round star">star</span>
+                <span class="material-icons-round star">star_half</span>
+            </div>
+        </div>
+
+        <div class="sum-btn-row" style="margin-top:30px; align-self:center;">
+            <button class="btn-sec" onclick="goToTab('home')">Trang chủ</button>
+            <button class="btn-pri" onclick="goToTab('buddies')">Gọi lại</button>
+        </div>
+    </div>
     
     <div id="inc-call" style="display:none; position:absolute; top:20px; left:20px; right:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.3); z-index:2000; text-align:center;"><h3>📞 Cuộc gọi đến...</h3><div style="display:flex; gap:10px; margin-top:20px;"><button onclick="rejCall()" style="flex:1; padding:10px; background:#FF4757; color:white; border:none; border-radius:10px; cursor:pointer;">Từ chối</button><button onclick="accCall()" style="flex:1; padding:10px; background:#2ECC71; color:white; border:none; border-radius:10px; cursor:pointer;">Nghe</button></div></div>
     <div id="add-mod" class="modal"><div class="modal-card"><h3 style="margin-top:0;">Thêm bạn mới</h3><p style="font-size:13px; color:#666;">Nhập Buddy ID để gửi lời mời.</p><input type="number" id="fid-inp" class="inp" placeholder="Nhập ID" style="text-align:center; letter-spacing:2px;"><div style="display:flex; gap:10px;"><button onclick="document.getElementById('add-mod').style.display='none'" style="flex:1; padding:10px; border:1px solid #ddd; background:white; border-radius:10px;">Hủy</button><button onclick="sendReq()" style="flex:1; padding:10px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:700;">Gửi lời mời</button></div></div></div>
@@ -319,7 +373,7 @@
         const area = document.getElementById('msgs'); area.appendChild(div); area.scrollTop = area.scrollHeight;
     }
 
-    // --- VIDEO CALL LOGIC FIXED ---
+    // --- VIDEO CALL LOGIC FIXED (FLOW & PERMISSION) ---
     
     // 1. Setup Media with Error Handling
     async function setupMedia() {
@@ -328,13 +382,13 @@
             document.getElementById('loc-vid').srcObject = localStream;
             return true;
         } catch (e) {
-            alert("Vui lòng cho phép quyền Camera/Mic để gọi video!");
+            alert("Lỗi: Bạn đã chặn Camera/Mic. Vui lòng bật quyền truy cập trong cài đặt trình duyệt!");
             document.getElementById('vid-mod').style.display = 'none';
             return false;
         }
     }
 
-    // 2. Start Call with Permission Check
+    // 2. Start Call
     async function startCall() {
         if (!myFriends.some(f => f.id == currentChatID)) { 
             showT("Chỉ gọi cho bạn bè!"); return; 
@@ -353,7 +407,9 @@
 
     // 3. Handle Rejection
     socket.on('video_reject', () => {
-        endCall(); // Clean up and close modal
+        // TẮT MODAL VÀ QUAY VỀ BUDDIES (NHƯ YÊU CẦU)
+        closeVideoModal(); 
+        goToTab('buddies'); 
         showT("Người nhận đang bận!");
     });
 
@@ -367,11 +423,13 @@
     socket.on('video_answer', d => { if(peerConnection) peerConnection.setRemoteDescription(d.answer); });
     socket.on('video_candidate', d => { if(peerConnection) peerConnection.addIceCandidate(d.candidate); });
 
+    // 4. Reject Call (User B bấm)
     function rejCall() {
         document.getElementById('inc-call').style.display = 'none';
         socket.emit('video_reject', { to: currentChatID });
     }
 
+    // 5. Accept Call (User B bấm)
     async function accCall() {
         document.getElementById('inc-call').style.display = 'none';
         document.getElementById('vid-mod').style.display = 'block';
@@ -386,11 +444,25 @@
         }
     }
 
+    // 6. End Call (Thành công -> Tổng kết)
     function endCall() {
+        closeVideoModal(); // Dọn dẹp stream
+        
+        // Cập nhật thông tin lên trang tổng kết
+        const friend = myFriends.find(f => f.id == currentChatID);
+        if(friend) {
+            document.getElementById('sum-friend-name').innerText = friend.username || friend.name;
+            document.getElementById('sum-friend-avt').src = `https://i.pravatar.cc/150?img=${friend.avatar || 1}`;
+        }
+        
+        switchScreen('sum-scr'); // Chuyển sang màn hình tổng kết
+    }
+
+    // 7. Hàm dọn dẹp video (Dùng chung)
+    function closeVideoModal() {
         document.getElementById('vid-mod').style.display = 'none';
         if (localStream) localStream.getTracks().forEach(t => t.stop());
         if (peerConnection) peerConnection.close();
-        switchScreen('sum-scr');
     }
 
     let peerConnection, localStream; const rtcConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"}]};

@@ -115,7 +115,13 @@ io.on('connection', (socket) => {
         const targetSocket = findSocketById(toId);
         if (targetSocket) io.to(targetSocket).emit('friend_request_accepted', fromUser);
     });
-
+    // 5. Xử lý KẾT THÚC cuộc gọi (MỚI THÊM)
+    socket.on('end_call', ({ to }) => {
+        const targetSocket = findSocketById(to);
+        if (targetSocket) {
+            io.to(targetSocket).emit('call_ended');
+        }
+    });
     // 4. Video Call (Signaling P2P)
     // Chỉ gửi cho đúng người nhận (toId), không broadcast
     socket.on('video_offer', ({ to, offer }) => {

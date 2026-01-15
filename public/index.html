@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN TOÀN BỘ CSS */
+        /* GIỮ NGUYÊN TOÀN BỘ CSS CŨ */
         :root { --primary: #00C2FF; --orange: #FF9F43; --bg: #F5F5F5; --white: #fff; --blue: #0084FF; --dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
@@ -270,7 +270,7 @@
     let pendingRequest = null;
     let currentChatID = null;
     
-    // LOAD FRIENDS FROM UNIQUE USER STORAGE (FIX DATA MIXING)
+    // --- FRIENDS PERSISTENCE (FIXED: PER USER) ---
     function getFriends() { return JSON.parse(localStorage.getItem('friends_' + myID)) || []; }
     function saveFriends(list) { localStorage.setItem('friends_' + myID, JSON.stringify(list)); }
 
@@ -355,29 +355,25 @@
         const area = document.getElementById('msgs'); area.appendChild(div); area.scrollTop = area.scrollHeight;
     }
 
-    // --- VIDEO CALL LOGIC FIXED (FLOW & PERMISSION) ---
+    // --- VIDEO CALL LOGIC FIXED ---
     
-    // 1. Setup Media with Error Handling
     async function setupMedia() {
         try {
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             document.getElementById('loc-vid').srcObject = localStream;
             return true;
         } catch (e) {
-            alert("Vui lòng cho phép quyền Camera/Mic để gọi video!");
+            alert("Lỗi: Bạn đã chặn Camera/Mic. Vui lòng bật quyền truy cập trong cài đặt trình duyệt!");
             document.getElementById('vid-mod').style.display = 'none';
             return false;
         }
     }
 
-    // 2. Start Call
     async function startCall() {
         if (!getFriends().some(f => f.id == currentChatID)) { 
             showT("Chỉ gọi cho bạn bè!"); return; 
         }
-        
         document.getElementById('vid-mod').style.display = 'block'; 
-        
         const mediaReady = await setupMedia();
         if (mediaReady) {
             createPeer();
@@ -387,17 +383,14 @@
         }
     }
 
-    // 3. Handle Events
     socket.on('video_reject', () => {
         closeVideoModal(); 
         goToTab('buddies'); 
         showT("Người nhận đang bận!");
     });
 
-    // 4. Handle CALL ENDED SYNC
     socket.on('call_ended', () => {
         closeVideoModal();
-        // Cập nhật thông tin tổng kết
         const friend = getFriends().find(f => f.id == currentChatID);
         if(friend) {
             document.getElementById('sum-friend-name').innerText = friend.username || friend.name;
@@ -424,7 +417,6 @@
     async function accCall() {
         document.getElementById('inc-call').style.display = 'none';
         document.getElementById('vid-mod').style.display = 'block';
-        
         const mediaReady = await setupMedia();
         if(mediaReady) {
             createPeer();
@@ -436,11 +428,8 @@
     }
 
     function endCall() {
-        // Gửi tín hiệu kết thúc cho đối phương
         socket.emit('end_call', { to: currentChatID });
-        
         closeVideoModal();
-        // Update summary info
         const friend = getFriends().find(f => f.id == currentChatID);
         if(friend) {
             document.getElementById('sum-friend-name').innerText = friend.username || friend.name;
@@ -523,7 +512,15 @@
             }
         }else{showError(d.message);}}catch(e){showError("Lỗi kết nối Server!");}
     }
-    function logout(){localStorage.clear();window.location.reload();}
+    
+    // FIX LOGOUT (XÓA ĐÚNG KEY)
+    function logout(){
+        localStorage.removeItem('chat_username');
+        localStorage.removeItem('buddy_id');
+        localStorage.removeItem('my_avatar');
+        window.location.reload();
+    }
+    
     function copyID(){navigator.clipboard.writeText(myID);showT("Đã sao chép ID!");}
     function selTop(t){const h={'Presentation':'Good morning...','Coffee':'Latte please'}[t]||"Hello";document.getElementById('match-txt').innerText="Chủ đề: "+t;switchScreen('match-scr');setTimeout(()=>{goToTab('buddies')},2000);}
 

@@ -93,51 +93,211 @@
         .rip { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); opacity: 0; animation: rip 2s infinite linear; }
         @keyframes rip { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
         
-        /* 🎨 RESPONSIVE DESIGN - DESKTOP SUPPORT */
+        /* 🎨 RESPONSIVE DESIGN - WEB APP LAYOUT */
         @media (min-width: 768px) {
             body {
-                background: var(--bg);
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
             
             #mobile-frame {
                 width: 100%;
-                max-width: 1200px;
+                max-width: 1400px;
                 height: 100vh;
                 border-radius: 0;
                 box-shadow: none;
+                background: white;
+                display: grid;
+                grid-template-columns: 280px 1fr;
+            }
+            
+            /* SIDEBAR NAVIGATION (Desktop only) */
+            .bottom-nav {
+                display: none !important; /* Ẩn bottom nav trên desktop */
+            }
+            
+            #desktop-sidebar {
+                display: flex !important;
+                flex-direction: column;
+                background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+                padding: 30px 20px;
+                border-right: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .sidebar-logo {
+                color: white;
+                font-size: 24px;
+                font-weight: 800;
+                margin-bottom: 40px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .sidebar-nav-item {
+                color: rgba(255,255,255,0.7);
+                padding: 15px 20px;
+                border-radius: 12px;
+                margin-bottom: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                transition: all 0.3s;
+                font-weight: 600;
+            }
+            
+            .sidebar-nav-item:hover {
+                background: rgba(255,255,255,0.1);
+                color: white;
+            }
+            
+            .sidebar-nav-item.active {
+                background: white;
+                color: #667eea;
+            }
+            
+            .sidebar-user {
+                margin-top: auto;
+                padding: 20px;
+                background: rgba(255,255,255,0.1);
+                border-radius: 16px;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .sidebar-user img {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                border: 2px solid white;
+            }
+            
+            /* MAIN CONTENT AREA */
+            .screen {
+                grid-column: 2;
+                background: var(--bg);
+            }
+            
+            #login-screen {
+                grid-column: 1 / -1;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            
+            #vid-mod {
+                grid-column: 1 / -1;
             }
             
             /* Desktop: Grid rộng hơn */
             .grid {
                 grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+                padding: 0 30px 20px;
+            }
+            
+            .card {
+                height: 160px;
+                transition: all 0.3s;
+            }
+            
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             }
             
             /* Chat messages rộng hơn */
             .msg {
-                max-width: 65%;
+                max-width: 60%;
             }
             
-            /* Input lớn hơn cho desktop */
+            /* Desktop header styling */
+            .home-header, .bud-head, .c-head {
+                padding: 25px 30px;
+            }
+            
+            .c-head {
+                background: white;
+                border-bottom: 2px solid #f0f0f0;
+            }
+            
+            /* Scroll areas */
+            .scroll-area {
+                scrollbar-width: thin;
+                scrollbar-color: #ccc transparent;
+            }
+            
+            .scroll-area::-webkit-scrollbar {
+                display: block;
+                width: 8px;
+            }
+            
+            .scroll-area::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            
+            .scroll-area::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 10px;
+            }
+            
+            .scroll-area::-webkit-scrollbar-thumb:hover {
+                background: #999;
+            }
+            
+            /* Input lớn hơn */
             #c-inp {
                 font-size: 16px;
             }
             
+            .inp-area {
+                padding: 15px 30px;
+            }
+            
             /* Video call controls */
             #loc-vid {
-                width: 120px;
-                height: 180px;
+                width: 150px;
+                height: 200px;
+            }
+            
+            /* Padding adjustments */
+            .cyan-card {
+                margin: 15px 30px;
+            }
+            
+            .search-box {
+                padding: 0 30px 15px;
+            }
+            
+            .sec-title {
+                padding: 0 30px 15px;
+                font-size: 18px;
+            }
+            
+            .id-card {
+                margin: 25px 30px;
+            }
+            
+            .menu {
+                margin: 0 30px 25px;
+            }
+            
+            .out-btn {
+                margin: 0 30px 30px;
+                width: calc(100% - 60px);
             }
         }
         
         /* Desktop lớn */
-        @media (min-width: 1200px) {
-            #mobile-frame {
-                max-width: 1400px;
-            }
-            
+        @media (min-width: 1400px) {
             .grid {
                 grid-template-columns: repeat(5, 1fr);
             }
+        }
+        
+        /* SIDEBAR (Ẩn mặc định trên mobile) */
+        #desktop-sidebar {
+            display: none;
         }
         
         /* Demo Mode Controls */
@@ -193,6 +353,42 @@
 </div>
 
 <div id="mobile-frame">
+    <!-- 🎨 DESKTOP SIDEBAR (Chỉ hiện trên màn hình lớn ≥768px) -->
+    <div id="desktop-sidebar">
+        <div class="sidebar-logo">
+            <span class="material-icons-round">chat_bubble</span>
+            BuddySpeak
+        </div>
+        
+        <div class="sidebar-nav-item active" onclick="goToTab('home')">
+            <span class="material-icons-outlined">home</span>
+            <span>Trang chủ</span>
+        </div>
+        
+        <div class="sidebar-nav-item" onclick="goToTab('topics')">
+            <span class="material-icons-outlined">grid_view</span>
+            <span>Khám phá</span>
+        </div>
+        
+        <div class="sidebar-nav-item" onclick="goToTab('buddies')">
+            <span class="material-icons-outlined">people</span>
+            <span>Buddies</span>
+            <span class="red-dot" id="sidebar-badge" style="position: relative; margin-left: auto;"></span>
+        </div>
+        
+        <div class="sidebar-nav-item" onclick="goToTab('profile')">
+            <span class="material-icons-outlined">person</span>
+            <span>Tài khoản</span>
+        </div>
+        
+        <div class="sidebar-user">
+            <img id="sidebar-avatar" src="https://i.pravatar.cc/150?img=12">
+            <div style="flex: 1; overflow: hidden;">
+                <div class="d-name" style="font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User</div>
+                <div style="font-size: 11px; opacity: 0.8;">ID: <span id="sidebar-id">---</span></div>
+            </div>
+        </div>
+    </div>
     <div id="toast">Thông báo</div>
 
     <div id="login-screen" class="screen active">
@@ -572,13 +768,7 @@
     }
 
     function switchScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-    function goToTab(t){
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(t==='home'){switchScreen('home-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.classList.add('active')); initRandomWord();}
-        if(t==='topics'){switchScreen('topic-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(2)').forEach(n=>n.classList.add('active'));}
-        if(t==='buddies'){renderBuds('all');switchScreen('buddy-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(3)').forEach(n=>n.classList.add('active'));}
-        if(t==='profile'){switchScreen('profile-screen');document.querySelectorAll('.bottom-nav .nav-item:nth-child(4)').forEach(n=>n.classList.add('active'));}
-    }
+
     
     function showError(msg) { const el = document.getElementById('login-msg'); el.innerText = msg; setTimeout(() => el.innerText = "", 3000); }
     function showT(m){const t=document.getElementById("toast");t.innerText=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000);}
@@ -641,11 +831,12 @@
         document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);
         document.getElementById('my-id').innerText=myID;
         document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
+        updateSidebarInfo(); // Cập nhật sidebar
         socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar}); initRandomWord();
         switchScreen('home-screen');
     }
     
-    // 🎮 DEMO MODE TOGGLE FUNCTION
+    // 🎮 DEMO MODE TOGGLE FUNCTION (Cho Desktop)
     let demoMode = false;
     function toggleDemoMode() {
         demoMode = !demoMode;
@@ -654,25 +845,66 @@
         const demoBtn = document.getElementById('demo-btn');
         
         if (demoMode) {
-            // Demo mode: Split view (2 cột)
+            // Demo mode: Split view - Hiện 2 cột để demo 2 user
+            frame.style.gridTemplateColumns = '280px 1fr';
             frame.style.width = '48%';
-            frame.style.maxWidth = '600px';
-            frame.style.borderRadius = '20px';
-            frame.style.boxShadow = '0 10px 40px rgba(0,0,0,0.25)';
-            frame.style.margin = '0 10px';
+            frame.style.maxWidth = '700px';
+            frame.style.borderRadius = '16px';
+            frame.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
+            frame.style.margin = '20px 10px';
             demoText.innerText = 'Full Screen';
             demoBtn.style.background = '#FF9F43';
             showT('Demo Mode: Mở tab thứ 2 và đặt cạnh nhau!');
         } else {
-            // Normal mode: Full screen
+            // Normal mode: Full screen với sidebar
+            frame.style.gridTemplateColumns = '280px 1fr';
             frame.style.width = '100%';
-            frame.style.maxWidth = '1200px';
+            frame.style.maxWidth = '1400px';
             frame.style.borderRadius = '0';
             frame.style.boxShadow = 'none';
             frame.style.margin = '0';
             demoText.innerText = 'Demo Mode';
             demoBtn.style.background = 'var(--primary)';
             showT('Chế độ Full Screen');
+        }
+    }
+    
+    // 🎨 CẬP NHẬT SIDEBAR KHI CHUYỂN TAB
+    function goToTab(t){
+        // Cập nhật bottom nav (mobile)
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        // Cập nhật sidebar nav (desktop)
+        document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
+        
+        if(t==='home'){
+            switchScreen('home-screen');
+            document.querySelectorAll('.bottom-nav .nav-item:nth-child(1)').forEach(n=>n.classList.add('active'));
+            document.querySelectorAll('.sidebar-nav-item:nth-child(2)').forEach(n=>n.classList.add('active'));
+        }
+        if(t==='topics'){
+            switchScreen('topic-screen');
+            document.querySelectorAll('.bottom-nav .nav-item:nth-child(2)').forEach(n=>n.classList.add('active'));
+            document.querySelectorAll('.sidebar-nav-item:nth-child(3)').forEach(n=>n.classList.add('active'));
+        }
+        if(t==='buddies'){
+            renderBuds('all');
+            switchScreen('buddy-screen');
+            document.querySelectorAll('.bottom-nav .nav-item:nth-child(3)').forEach(n=>n.classList.add('active'));
+            document.querySelectorAll('.sidebar-nav-item:nth-child(4)').forEach(n=>n.classList.add('active'));
+        }
+        if(t==='profile'){
+            switchScreen('profile-screen');
+            document.querySelectorAll('.bottom-nav .nav-item:nth-child(4)').forEach(n=>n.classList.add('active'));
+            document.querySelectorAll('.sidebar-nav-item:nth-child(5)').forEach(n=>n.classList.add('active'));
+        }
+    }
+    
+    // Cập nhật sidebar info khi login
+    function updateSidebarInfo() {
+        if (myName && myID) {
+            document.getElementById('sidebar-id').innerText = myID.substring(0, 6);
+            document.getElementById('sidebar-avatar').src = `https://i.pravatar.cc/150?img=${myAvatar}`;
         }
     }
 </script>

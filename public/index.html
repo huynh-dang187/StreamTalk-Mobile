@@ -12,7 +12,19 @@
         :root { --primary: #00C2FF; --orange: #FF9F43; --bg: #F5F5F5; --white: #fff; --blue: #0084FF; --dark: #2d3436; }
         * { box-sizing: border-box; }
         body { background: #e0e0e0; font-family: 'Nunito', sans-serif; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
-        #mobile-frame { width: 375px; height: 812px; background: var(--bg); border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* 📱 MOBILE: Full-screen không có khung */
+        #mobile-frame { 
+            width: 100%; 
+            height: 100vh; 
+            background: var(--bg); 
+            border-radius: 0; 
+            box-shadow: none; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
         .screen { display: none !important; flex-direction: column; height: 100%; width: 100%; background: var(--bg); }
         .screen.active { display: flex !important; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -96,7 +108,7 @@
         /* 🎨 RESPONSIVE DESIGN - WEB APP LAYOUT */
         @media (min-width: 768px) {
             body {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             }
             
             #mobile-frame {
@@ -118,7 +130,7 @@
             #desktop-sidebar {
                 display: flex !important;
                 flex-direction: column;
-                background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(180deg, #4facfe 0%, #00d4ff 100%);
                 padding: 30px 20px;
                 border-right: 1px solid rgba(255,255,255,0.1);
             }
@@ -153,7 +165,7 @@
             
             .sidebar-nav-item.active {
                 background: white;
-                color: #667eea;
+                color: #00C2FF;
             }
             
             .sidebar-user {
@@ -182,7 +194,7 @@
             
             #login-screen {
                 grid-column: 1 / -1;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             }
             
             #vid-mod {

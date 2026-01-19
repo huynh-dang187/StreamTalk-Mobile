@@ -88,6 +88,74 @@
         #vid-mod { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; }
         #rem-vid { width: 100%; height: 100%; object-fit: cover; }
         #loc-vid { position: absolute; top: 20px; right: 20px; width: 100px; height: 140px; border-radius: 12px; background: #333; object-fit: cover; border: 2px solid white; }
+        
+        /* 🎛️ VIDEO CALL CONTROLS */
+        .video-controls {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            z-index: 300;
+        }
+        
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .control-btn.mic-btn {
+            background: #4CD964;
+            color: white;
+        }
+        
+        .control-btn.mic-btn.muted {
+            background: #FF3B30;
+        }
+        
+        .control-btn.cam-btn {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .control-btn.cam-btn.off {
+            background: #FF9500;
+        }
+        
+        .control-btn.end-btn {
+            background: #FF3B30;
+            color: white;
+        }
+        
+        /* Mobile: Nút nhỏ hơn */
+        @media (max-width: 767px) {
+            .control-btn {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .video-controls {
+                gap: 10px;
+            }
+        }
         #sum-scr { background: white; align-items: center; }
         .sum-head { width: 100%; height: 220px; background: linear-gradient(135deg, #00C6FF, #0072FF); border-radius: 0 0 40px 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; margin-bottom: 60px; position: relative; }
         .sum-avatar { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; position: absolute; bottom: -40px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
@@ -268,8 +336,17 @@
             
             /* Video call controls */
             #loc-vid {
-                width: 150px;
-                height: 200px;
+                width: 180px;
+                height: 240px;
+            }
+            
+            .control-btn {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .video-controls {
+                gap: 20px;
             }
             
             /* Padding adjustments */
@@ -533,7 +610,30 @@
         </div>
     </div>
 
-    <div id="vid-mod"><video id="rem-vid" autoplay playsinline></video><video id="loc-vid" autoplay playsinline muted></video><div style="position:absolute; bottom:40px; width:100%; display:flex; justify-content:center;"><button onclick="endCall()" style="width:60px; height:60px; border-radius:50%; background:red; border:none; color:white; cursor:pointer;"><span class="material-icons-round">call_end</span></button></div></div>
+    <!-- 🔊 RINGTONE AUDIO (Hidden) -->
+    <audio id="ringtone" loop>
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS26+OdTQwOTqTi8LZjHAU2jdXwyXkqBSF0w+zek0IJFF6169yoVRIKRp/h8r5sIQQrhM7y2Ik2Bxhktuvjn00MDk6k4vC2YxwFN43V8Ml5KgUgdMPs3pNBCRResuvbqFUSCUaf4fK+bCEEK4TO8tmJNgcYZLbr5J9NDA5OpOLwtmMcBTeN1fDJeSoFIHTE7N6TQQkUXrLr26hWEglGn+HyvmwhBCuEzvLZiTYHGGS36+SfTQwOTqTi8LZjHAU3jdXwyXkqBSJ0w+zek0EJE16y69qoVhIJRp/h8r5sIQQrhM7y2Yk2BxhktuvknkwMDk6k4vC2YxwFN43V8Ml5KgUidMPs3pNBCRNesuvaqFYSCEaf4fK+bCEEK4TO8tmJNgcYZLbr5J5MDA5OpOLwtmMcBTeN1fDJeSoFInTD7N6TQQkTXrLr2qhWEghGn+HyvmwhBCuEzvLZiTYHGGS26+SeTAwOTqTi8LZjHAU3jdXwyXkqBSJ0w+zek0EJE16y69qoVhIIRp/h8r5sIQQrhM7y2Yk2BxhktuvknkwMDk6k4vC2YxwFN43V8Ml5KgUidMPs3pNBCRNesuvaqFYSCEaf4fK+bCEEK4TO8tmJNgcYZLbr5J5MDA5OpOLwtmMcBTeN1fDJeSoFInTD7N6TQQkTXrLr2qhWEghGn+HyvmwhBCuEzvLZiTYHGGS36+SeTAwOTqTi8LZjHAU3jdXwyXkqBSJ0w+zek0EJE16y69qoVhIIRp/h8r5sIQQrhM7y2Yk2BxhktuvknkwMDk6k4vC2YxwFN43V8Ml5KgUidMPs3pNBCRNesuvaqFYSCEaf4fK+bCEEK4TO8tmJNgcYZLbr5J5MDA5OpOLwtmMcBTeN1fDJeSoFInTD7N6TQQkTXrLr2qhWEghGn+HyvmwhBCuEzvLZiTYHGGS26+SeTAwOTqTi8LZjHAU3jdXwyXkqBSJ0w+zek0EJE16y69qoVhIIRp/h8r5sIQQrhM7y2Yk2BxhktuvknkwMDk6k4vC2YxwFN43V8Ml5KgUidMPs3pNBCRNesuvaqFYSCEaf4fK+bCEEK4TO8tmJNgcYZLbr5J5MDA5OpOLwtmMcBTeN1fDJeSoFInTD7N6TQQkTXrLr2qhWEghGn+HyvmwhBCuEzvLZiTYHGGS26+SeTAwOTqTi8LZjHAU3jdXwyXkqBSJ0w+zek0EJE16y69qoVhIIRp/h8r5sIQQrhM7y2Yk2BxhktuvknkwMDk6k4vC2YxwFN43V8Ml5KgUidMPs3pNBCRNesuvaqFYSCEaf4fK+bCEEK4TO8tmJNgcYZLbr5J5MDA5OpOLwtmMcBTeN1fDJeSoFInTD7N6TQQkTXrLr2qhWEghGn+HyvmwhBCuEzvLZiTYHGGS26+SeTAwOTqTi8LZjHAU3jdXwyXkqBSJ0w+zek0EJE16y69qoVhIIRp/h8r5sIQQrhM7y2Yk2BxhktuvknkwMDk6k4vC2YxwFN43V8Ml5KgUidMPs3pNBCRNesuvaqFYSCEaf4fK+bA==" type="audio/wav">
+    </audio>
+    
+    <div id="vid-mod">
+        <video id="rem-vid" autoplay playsinline></video>
+        <video id="loc-vid" autoplay playsinline muted></video>
+        
+        <!-- 🎛️ Video Controls -->
+        <div class="video-controls">
+            <button class="control-btn mic-btn" id="mic-toggle" onclick="toggleMic()" title="Tắt/Bật mic">
+                <span class="material-icons-round" id="mic-icon">mic</span>
+            </button>
+            
+            <button class="control-btn end-btn" onclick="endCall()" title="Kết thúc cuộc gọi">
+                <span class="material-icons-round">call_end</span>
+            </button>
+            
+            <button class="control-btn cam-btn" id="cam-toggle" onclick="toggleCamera()" title="Tắt/Bật camera">
+                <span class="material-icons-round" id="cam-icon">videocam</span>
+            </button>
+        </div>
+    </div>
     
     <div id="sum-scr" class="screen">
         <div class="sum-head">
@@ -675,7 +775,8 @@
 
     async function startCall() {
         if (!getFriends().some(f => f.id == currentChatID)) { showT("Chỉ gọi cho bạn bè!"); return; }
-        document.getElementById('vid-mod').style.display = 'block'; 
+        document.getElementById('vid-mod').style.display = 'block';
+        resetVideoControls(); // Reset mic/camera state
         const mediaReady = await setupMedia();
         if (mediaReady) {
             createPeer();
@@ -695,7 +796,8 @@
         if(d.from) { 
             pendingOffer = d.offer; 
             currentChatID = d.from; 
-            document.getElementById('inc-call').style.display = 'block'; 
+            document.getElementById('inc-call').style.display = 'block';
+            playRingtone(); // 🔊 Phát nhạc chuông
         } 
     });
     
@@ -707,11 +809,17 @@
     
     socket.on('video_candidate', d => { if(peerConnection) peerConnection.addIceCandidate(d.candidate); });
 
-    function rejCall() { document.getElementById('inc-call').style.display = 'none'; socket.emit('video_reject', { to: currentChatID }); }
+    function rejCall() { 
+        stopRingtone(); // 🔇 Dừng nhạc chuông
+        document.getElementById('inc-call').style.display = 'none'; 
+        socket.emit('video_reject', { to: currentChatID }); 
+    }
 
     async function accCall() {
+        stopRingtone(); // 🔇 Dừng nhạc chuông
         document.getElementById('inc-call').style.display = 'none';
         document.getElementById('vid-mod').style.display = 'block';
+        resetVideoControls(); // Reset mic/camera state
         const mediaReady = await setupMedia();
         if(mediaReady) {
             createPeer();
@@ -755,9 +863,11 @@
     }
 
     function closeVideoModal() {
+        stopRingtone(); // 🔇 Dừng nhạc chuông nếu đang reo
         document.getElementById('vid-mod').style.display = 'none';
         if (localStream) localStream.getTracks().forEach(t => t.stop());
         if (peerConnection) peerConnection.close();
+        resetVideoControls(); // Reset state
     }
     
     // --- RATING STARS LOGIC ---
@@ -770,7 +880,85 @@
         showT("Đã đánh giá " + n + " sao!");
     }
 
-    let peerConnection, localStream; const rtcConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"}]};
+    let peerConnection, localStream; 
+    let isMicMuted = false;
+    let isCameraOff = false;
+    const rtcConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"}]};
+    const ringtone = document.getElementById('ringtone');
+    
+    // 🔊 PLAY RINGTONE
+    function playRingtone() {
+        if (ringtone) {
+            ringtone.currentTime = 0;
+            ringtone.play().catch(err => console.log('Ringtone blocked:', err));
+        }
+    }
+    
+    // 🔇 STOP RINGTONE
+    function stopRingtone() {
+        if (ringtone) {
+            ringtone.pause();
+            ringtone.currentTime = 0;
+        }
+    }
+    
+    // 🎤 TOGGLE MIC
+    function toggleMic() {
+        if (!localStream) return;
+        
+        const audioTrack = localStream.getAudioTracks()[0];
+        if (audioTrack) {
+            audioTrack.enabled = !audioTrack.enabled;
+            isMicMuted = !audioTrack.enabled;
+            
+            const micBtn = document.getElementById('mic-toggle');
+            const micIcon = document.getElementById('mic-icon');
+            
+            if (isMicMuted) {
+                micBtn.classList.add('muted');
+                micIcon.innerText = 'mic_off';
+                showT('Đã tắt mic');
+            } else {
+                micBtn.classList.remove('muted');
+                micIcon.innerText = 'mic';
+                showT('Đã bật mic');
+            }
+        }
+    }
+    
+    // 📹 TOGGLE CAMERA
+    function toggleCamera() {
+        if (!localStream) return;
+        
+        const videoTrack = localStream.getVideoTracks()[0];
+        if (videoTrack) {
+            videoTrack.enabled = !videoTrack.enabled;
+            isCameraOff = !videoTrack.enabled;
+            
+            const camBtn = document.getElementById('cam-toggle');
+            const camIcon = document.getElementById('cam-icon');
+            
+            if (isCameraOff) {
+                camBtn.classList.add('off');
+                camIcon.innerText = 'videocam_off';
+                showT('Đã tắt camera');
+            } else {
+                camBtn.classList.remove('off');
+                camIcon.innerText = 'videocam';
+                showT('Đã bật camera');
+            }
+        }
+    }
+    
+    // RESET CONTROLS
+    function resetVideoControls() {
+        isMicMuted = false;
+        isCameraOff = false;
+        document.getElementById('mic-toggle')?.classList.remove('muted');
+        document.getElementById('cam-toggle')?.classList.remove('off');
+        document.getElementById('mic-icon').innerText = 'mic';
+        document.getElementById('cam-icon').innerText = 'videocam';
+    }
     
     function createPeer() {
         peerConnection = new RTCPeerConnection(rtcConfig);

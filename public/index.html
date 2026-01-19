@@ -92,9 +92,105 @@
         .core { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 40px; }
         .rip { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); opacity: 0; animation: rip 2s infinite linear; }
         @keyframes rip { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+        
+        /* 🎨 RESPONSIVE DESIGN - DESKTOP SUPPORT */
+        @media (min-width: 768px) {
+            body {
+                background: var(--bg);
+            }
+            
+            #mobile-frame {
+                width: 100%;
+                max-width: 1200px;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            /* Desktop: Grid rộng hơn */
+            .grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            /* Chat messages rộng hơn */
+            .msg {
+                max-width: 65%;
+            }
+            
+            /* Input lớn hơn cho desktop */
+            #c-inp {
+                font-size: 16px;
+            }
+            
+            /* Video call controls */
+            #loc-vid {
+                width: 120px;
+                height: 180px;
+            }
+        }
+        
+        /* Desktop lớn */
+        @media (min-width: 1200px) {
+            #mobile-frame {
+                max-width: 1400px;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        /* Demo Mode Controls */
+        #demo-controls {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 10000;
+            display: none;
+        }
+        
+        #demo-btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 194, 255, 0.3);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        #demo-btn:hover {
+            background: #00A8E8;
+            box-shadow: 0 6px 20px rgba(0, 194, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        #demo-btn:active {
+            transform: translateY(0);
+        }
+        
+        @media (min-width: 768px) {
+            #demo-controls {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
+
+<!-- 🎮 DEMO MODE CONTROLS (Chỉ hiện trên Desktop) -->
+<div id="demo-controls">
+    <button id="demo-btn" onclick="toggleDemoMode()">
+        <span class="material-icons-outlined">devices</span>
+        <span id="demo-text">Demo Mode</span>
+    </button>
+</div>
 
 <div id="mobile-frame">
     <div id="toast">Thông báo</div>
@@ -547,6 +643,37 @@
         document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
         socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar}); initRandomWord();
         switchScreen('home-screen');
+    }
+    
+    // 🎮 DEMO MODE TOGGLE FUNCTION
+    let demoMode = false;
+    function toggleDemoMode() {
+        demoMode = !demoMode;
+        const frame = document.getElementById('mobile-frame');
+        const demoText = document.getElementById('demo-text');
+        const demoBtn = document.getElementById('demo-btn');
+        
+        if (demoMode) {
+            // Demo mode: Split view (2 cột)
+            frame.style.width = '48%';
+            frame.style.maxWidth = '600px';
+            frame.style.borderRadius = '20px';
+            frame.style.boxShadow = '0 10px 40px rgba(0,0,0,0.25)';
+            frame.style.margin = '0 10px';
+            demoText.innerText = 'Full Screen';
+            demoBtn.style.background = '#FF9F43';
+            showT('Demo Mode: Mở tab thứ 2 và đặt cạnh nhau!');
+        } else {
+            // Normal mode: Full screen
+            frame.style.width = '100%';
+            frame.style.maxWidth = '1200px';
+            frame.style.borderRadius = '0';
+            frame.style.boxShadow = 'none';
+            frame.style.margin = '0';
+            demoText.innerText = 'Demo Mode';
+            demoBtn.style.background = 'var(--primary)';
+            showT('Chế độ Full Screen');
+        }
     }
 </script>
 </body>

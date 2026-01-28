@@ -51,10 +51,50 @@
         .stats-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .tip-card { background: #E3F2FD; border-radius: 16px; padding: 15px; display: flex; gap: 15px; align-items: flex-start; }
-        #login-screen { justify-content: center; align-items: center; padding: 30px; text-align: center; background: white; }
+        #login-screen { 
+            justify-content: center; 
+            align-items: center; 
+            padding: 30px; 
+            text-align: center; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
         .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
-        .btn-main { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; }
-        .inp { width: 100%; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #F0F2F5; outline: none; margin-bottom: 15px; }
+        .btn-main { 
+            width: 100%; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s;
+        }
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+        }
+        .btn-main:active {
+            transform: translateY(0);
+        }
+        .inp { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px; 
+            background: rgba(255,255,255,0.9);
+            outline: none; 
+            margin-bottom: 15px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .inp:focus {
+            border-color: #f093fb;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+        }
         .search-box { padding: 0 20px 15px; }
         .search-inp { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
         .sec-title { padding: 0 20px 10px; font-size: 16px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 5px; margin-top: 15px; }
@@ -199,7 +239,12 @@
                 display: none !important; /* Ẩn bottom nav trên desktop */
             }
             
+            /* Sidebar CHỈ hiển thị khi có class has-sidebar */
             #desktop-sidebar {
+                display: none; /* Mặc định ẩn */
+            }
+            
+            #mobile-frame.has-sidebar #desktop-sidebar {
                 display: flex !important;
                 flex-direction: column;
                 background: linear-gradient(180deg, #4facfe 0%, #00d4ff 100%);
@@ -264,9 +309,14 @@
                 background: var(--bg);
             }
             
-            /* Login screen: Always full screen (no grid) */
+            /* Login screen: Always full screen (no grid, no sidebar) */
             #login-screen {
-                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                width: 100% !important;
+                max-width: 1400px !important;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
             }
             
             /* Video modal: Always full screen */
@@ -488,15 +538,15 @@
 
     <div id="login-screen" class="screen active">
         <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img">
-        <h2 id="form-title" style="margin-bottom: 5px; font-size: 26px; color: var(--primary);">BuddySpeak</h2>
-        <p style="color: #888; margin-bottom: 30px; font-size: 14px;">Kết nối và luyện tập tiếng Anh</p>
+        <h2 id="form-title" style="margin-bottom: 5px; font-size: 26px; color: white;">BuddySpeak</h2>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px; font-size: 14px;">Kết nối và luyện tập tiếng Anh</p>
         <div style="width: 100%; max-width: 300px;">
             <input type="text" id="username" class="inp" placeholder="Tên đăng nhập">
             <input type="password" id="password" class="inp" placeholder="Mật khẩu">
             <button id="auth-btn" onclick="handleLogin()" class="btn-main">Đăng nhập</button>
         </div>
-        <p id="login-msg" style="color:red; font-size:13px; margin-top:15px; min-height: 20px; font-weight: 700;"></p>
-        <p style="font-size: 13px; margin-top: 20px; color: #888;"><span id="toggle-text">Chưa có tài khoản?</span> <b id="toggle-btn" style="color: var(--orange); cursor: pointer;" onclick="toggleRegisterMode()">Đăng ký ngay</b></p>
+        <p id="login-msg" style="color:#ffebee; font-size:13px; margin-top:15px; min-height: 20px; font-weight: 700;"></p>
+        <p style="font-size: 13px; margin-top: 20px; color: rgba(255,255,255,0.9);"><span id="toggle-text">Chưa có tài khoản?</span> <b id="toggle-btn" style="color: #ffd54f; cursor: pointer; text-decoration: underline;" onclick="toggleRegisterMode()">Đăng ký ngay</b></p>
     </div>
 
     <div id="home-screen" class="screen">

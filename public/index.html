@@ -309,14 +309,19 @@
                 background: var(--bg);
             }
             
-            /* Login screen: Always full screen (no grid, no sidebar) */
-            #login-screen {
+            /* Login screen: Always full screen (no grid, no sidebar) - CHỈ khi active */
+            #login-screen.active {
                 width: 100% !important;
                 max-width: 1400px !important;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 display: flex !important;
                 align-items: center;
                 justify-content: center;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                z-index: 1000;
             }
             
             /* Video modal: Always full screen */

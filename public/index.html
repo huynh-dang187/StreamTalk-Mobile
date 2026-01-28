@@ -186,6 +186,10 @@
                 border-radius: 0;
                 box-shadow: none;
                 background: white;
+            }
+            
+            /* Chỉ apply grid khi có sidebar (không phải login screen) */
+            #mobile-frame.has-sidebar {
                 display: grid;
                 grid-template-columns: 280px 1fr;
             }
@@ -255,17 +259,19 @@
             }
             
             /* MAIN CONTENT AREA */
-            .screen {
+            #mobile-frame.has-sidebar .screen {
                 grid-column: 2;
                 background: var(--bg);
             }
             
+            /* Login screen: Always full screen (no grid) */
             #login-screen {
-                grid-column: 1 / -1;
                 background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             }
             
+            /* Video modal: Always full screen */
             #vid-mod {
+                position: fixed;
                 grid-column: 1 / -1;
             }
             
@@ -967,7 +973,18 @@
         peerConnection.onicecandidate = e => e.candidate && socket.emit('video_candidate', { to: currentChatID, candidate: e.candidate });
     }
 
-    function switchScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+    function switchScreen(id){
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        // Thêm/xóa class has-sidebar dựa vào màn hình
+        const frame = document.getElementById('mobile-frame');
+        if(id === 'login-screen') {
+            frame.classList.remove('has-sidebar'); // Login: Không có sidebar
+        } else {
+            frame.classList.add('has-sidebar'); // Các màn hình khác: Có sidebar
+        }
+    }
 
     
     function showError(msg) { const el = document.getElementById('login-msg'); el.innerText = msg; setTimeout(() => el.innerText = "", 3000); }
@@ -1016,12 +1033,14 @@
                 localStorage.setItem('chat_username',myName);localStorage.setItem('buddy_id',myID);localStorage.setItem('my_avatar',myAvatar);
                 socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar});
                 document.querySelectorAll('.d-name').forEach(e=>e.innerText=myName);document.getElementById('my-id').innerText=myID;document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
+                updateSidebarInfo(); // Cập nhật sidebar desktop
                 switchScreen('home-screen'); initRandomWord();
             }
         }else{showError(d.message);}}catch(e){showError("Lỗi kết nối Server!");}
     }
     function logout(){
         localStorage.removeItem('chat_username'); localStorage.removeItem('buddy_id'); localStorage.removeItem('my_avatar');
+        document.getElementById('mobile-frame').classList.remove('has-sidebar'); // Xóa sidebar khi đăng xuất
         window.location.reload();
     }
     function copyID(){navigator.clipboard.writeText(myID);showT("Đã sao chép ID!");}
@@ -1033,6 +1052,7 @@
         document.getElementById('my-profile-pic').src=`https://i.pravatar.cc/150?img=${myAvatar}`;
         updateSidebarInfo(); // Cập nhật sidebar
         socket.emit('register_user',{id:myID,username:myName,avatar:myAvatar}); initRandomWord();
+        document.getElementById('mobile-frame').classList.add('has-sidebar'); // Đã đăng nhập = có sidebar
         switchScreen('home-screen');
     }
     

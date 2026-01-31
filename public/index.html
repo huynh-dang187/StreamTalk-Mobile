@@ -51,49 +51,106 @@
         .stats-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .tip-card { background: #E3F2FD; border-radius: 16px; padding: 15px; display: flex; gap: 15px; align-items: flex-start; }
+        
+        /* 📱 MOBILE: Login screen đơn giản, xanh dương */
         #login-screen { 
             justify-content: center; 
             align-items: center; 
-            padding: 30px; 
+            padding: 40px 30px; 
             text-align: center; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%) !important;
         }
-        .login-img { width: 80%; max-width: 250px; margin-bottom: 20px; display: block; margin: 0 auto; }
+        
+        /* Ẩn login-left trên mobile */
+        .login-left {
+            display: none;
+        }
+        
+        /* login-right chiếm full width trên mobile */
+        .login-right {
+            width: 100%;
+            padding: 0;
+            background: transparent !important;
+        }
+        
+        .login-form-container {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        .form-title {
+            font-size: 28px !important;
+            font-weight: 800 !important;
+            color: white !important;
+            margin-bottom: 8px !important;
+            text-align: center !important;
+        }
+        
+        .form-subtitle {
+            color: rgba(255,255,255,0.95) !important;
+            margin-bottom: 30px !important;
+            font-size: 15px !important;
+            text-align: center !important;
+        }
+        
+        .form-footer {
+            color: white !important;
+        }
+        
+        .form-footer a {
+            color: #FFD54F !important;
+            font-weight: 700 !important;
+        }
+        
+        .login-img { 
+            width: 70%; 
+            max-width: 200px; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+            filter: drop-shadow(0 8px 16px rgba(66, 165, 245, 0.3));
+        }
         .btn-main { 
             width: 100%; 
-            padding: 15px; 
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%) !important;
+            color: white !important; 
             border: none; 
-            border-radius: 12px; 
+            border-radius: 16px; 
             font-weight: 800; 
             cursor: pointer; 
             font-size: 16px;
-            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            box-shadow: 0 6px 20px rgba(30, 136, 229, 0.35) !important;
             transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .btn-main:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+            box-shadow: 0 8px 25px rgba(30, 136, 229, 0.45) !important;
+            background: linear-gradient(135deg, #1E88E5 0%, #1976D2 100%) !important;
         }
         .btn-main:active {
             transform: translateY(0);
         }
         .inp { 
             width: 100%; 
-            padding: 15px; 
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 12px; 
-            background: rgba(255,255,255,0.9);
+            padding: 16px 20px; 
+            border: 2px solid rgba(66, 165, 245, 0.3);
+            border-radius: 16px; 
+            background: rgba(255,255,255,0.95);
             outline: none; 
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             font-size: 15px;
             transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .inp:focus {
-            border-color: #f093fb;
+            border-color: #42A5F5 !important;
             background: white;
-            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+            box-shadow: 0 4px 16px rgba(66, 165, 245, 0.2) !important;
+            transform: translateY(-2px);
         }
         .search-box { padding: 0 20px 15px; }
         .search-inp { width: 100%; padding: 12px 20px; border: none; border-radius: 20px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); outline: none; }
@@ -309,19 +366,148 @@
                 background: var(--bg);
             }
             
-            /* Login screen: Always full screen (no grid, no sidebar) - CHỈ khi active */
+            /* Login screen: Split layout (logo trái, form phải) */
             #login-screen.active {
                 width: 100% !important;
                 max-width: 1400px !important;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
+                background: white;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                align-items: stretch;
                 position: absolute;
                 top: 0;
                 left: 0;
                 height: 100%;
                 z-index: 1000;
+                padding: 0;
+            }
+            
+            /* Bên trái: Logo + Branding */
+            #login-screen.active .login-left {
+                background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 50%, #42A5F5 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 60px;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            #login-screen.active .login-left::before {
+                content: '';
+                position: absolute;
+                width: 500px;
+                height: 500px;
+                background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+                top: -200px;
+                left: -200px;
+                border-radius: 50%;
+            }
+            
+            #login-screen.active .login-left::after {
+                content: '';
+                position: absolute;
+                width: 400px;
+                height: 400px;
+                background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+                bottom: -150px;
+                right: -150px;
+                border-radius: 50%;
+            }
+            
+            #login-screen.active .login-img {
+                width: 100%;
+                max-width: 400px;
+                margin-bottom: 40px;
+                filter: drop-shadow(0 20px 40px rgba(66, 165, 245, 0.4));
+                position: relative;
+                z-index: 1;
+            }
+            
+            #login-screen.active .login-branding {
+                text-align: center;
+                color: white;
+                position: relative;
+                z-index: 1;
+            }
+            
+            #login-screen.active .login-branding h1 {
+                font-size: 48px;
+                font-weight: 800;
+                margin-bottom: 15px;
+                text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            
+            #login-screen.active .login-branding p {
+                font-size: 18px;
+                opacity: 0.95;
+                font-weight: 600;
+            }
+            
+            /* Bên phải: Form đăng nhập/đăng ký */
+            #login-screen.active .login-right {
+                background: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 80px 60px;
+            }
+            
+            #login-screen.active .login-form-container {
+                width: 100%;
+                max-width: 450px;
+            }
+            
+            #login-screen.active .form-title {
+                font-size: 32px;
+                font-weight: 800;
+                color: #1E88E5;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            
+            #login-screen.active .form-subtitle {
+                font-size: 16px;
+                color: #757575;
+                margin-bottom: 40px;
+                text-align: left;
+            }
+            
+            #login-screen.active .inp {
+                background: #F5F5F5;
+                border: 2px solid transparent;
+                padding: 18px 24px;
+                font-size: 16px;
+            }
+            
+            #login-screen.active .inp:focus {
+                background: white;
+                border-color: #42A5F5;
+            }
+            
+            #login-screen.active .btn-main {
+                margin-top: 10px;
+                padding: 18px;
+                font-size: 17px;
+            }
+            
+            #login-screen.active .form-footer {
+                text-align: center;
+                margin-top: 30px;
+                color: #757575;
+                font-size: 15px;
+            }
+            
+            #login-screen.active .form-footer a {
+                color: #42A5F5;
+                text-decoration: none;
+                font-weight: 700;
+            }
+            
+            #login-screen.active .form-footer a:hover {
+                text-decoration: underline;
             }
             
             /* Video modal: Always full screen */
@@ -542,16 +728,35 @@
     <div id="toast">Thông báo</div>
 
     <div id="login-screen" class="screen active">
-        <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img">
-        <h2 id="form-title" style="margin-bottom: 5px; font-size: 26px; color: white;">BuddySpeak</h2>
-        <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px; font-size: 14px;">Kết nối và luyện tập tiếng Anh</p>
-        <div style="width: 100%; max-width: 300px;">
-            <input type="text" id="username" class="inp" placeholder="Tên đăng nhập">
-            <input type="password" id="password" class="inp" placeholder="Mật khẩu">
-            <button id="auth-btn" onclick="handleLogin()" class="btn-main">Đăng nhập</button>
+        <!-- Bên trái: Logo & Branding (Chỉ hiện trên desktop) -->
+        <div class="login-left">
+            <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img">
+            <div class="login-branding">
+                <h1>BuddySpeak</h1>
+                <p>Kết nối và luyện tập tiếng Anh mọi lúc, mọi nơi</p>
+            </div>
         </div>
-        <p id="login-msg" style="color:#ffebee; font-size:13px; margin-top:15px; min-height: 20px; font-weight: 700;"></p>
-        <p style="font-size: 13px; margin-top: 20px; color: rgba(255,255,255,0.9);"><span id="toggle-text">Chưa có tài khoản?</span> <b id="toggle-btn" style="color: #ffd54f; cursor: pointer; text-decoration: underline;" onclick="toggleRegisterMode()">Đăng ký ngay</b></p>
+        
+        <!-- Bên phải: Form đăng nhập/đăng ký -->
+        <div class="login-right">
+            <div class="login-form-container">
+                <h2 class="form-title" id="form-title-text">Đăng nhập</h2>
+                <p class="form-subtitle">Chào mừng bạn quay trở lại!</p>
+                
+                <div style="width: 100%;">
+                    <input type="text" id="username" class="inp" placeholder="Tên đăng nhập">
+                    <input type="password" id="password" class="inp" placeholder="Mật khẩu">
+                    <button id="auth-btn" onclick="handleLogin()" class="btn-main">ĐĂNG NHẬP</button>
+                </div>
+                
+                <p id="login-msg" style="color:#EF5350; font-size:14px; margin-top:20px; min-height: 20px; font-weight: 600; text-align: center;"></p>
+                
+                <div class="form-footer">
+                    <span id="toggle-text">Chưa có tài khoản?</span> 
+                    <a href="#" id="toggle-btn" onclick="toggleRegisterMode(); return false;">Đăng ký ngay</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="home-screen" class="screen">
@@ -1075,7 +1280,14 @@
     }
     
     let isReg=false;
-    function toggleRegisterMode(){isReg=!isReg;document.getElementById('form-title').innerText=isReg?"Đăng ký":"BuddySpeak";document.getElementById('auth-btn').innerText=isReg?"Đăng ký":"Đăng nhập";document.getElementById('toggle-text').innerText=isReg?"Đã có TK?":"Chưa có TK?";document.getElementById('toggle-btn').innerText=isReg?"Đăng nhập":"Đăng ký";}
+    function toggleRegisterMode(){
+        isReg=!isReg;
+        document.getElementById('form-title-text').innerText=isReg?"Đăng ký":"Đăng nhập";
+        document.querySelector('.form-subtitle').innerText=isReg?"Tạo tài khoản mới để bắt đầu":"Chào mừng bạn quay trở lại!";
+        document.getElementById('auth-btn').innerText=isReg?"ĐĂNG KÝ":"ĐĂNG NHẬP";
+        document.getElementById('toggle-text').innerText=isReg?"Đã có tài khoản?":"Chưa có tài khoản?";
+        document.getElementById('toggle-btn').innerText=isReg?"Đăng nhập ngay":"Đăng ký ngay";
+    }
     async function handleLogin(){
         const u=document.getElementById('username').value,p=document.getElementById('password').value;
         if(!u||!p){ showError("Vui lòng nhập đủ thông tin!"); return; }

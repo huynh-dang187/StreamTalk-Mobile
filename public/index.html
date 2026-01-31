@@ -61,6 +61,44 @@
             background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%) !important;
         }
         
+        /* Mobile Logo - Hiển thị trên mobile */
+        .mobile-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 35px;
+            width: 100%;
+        }
+        
+        .mobile-logo-img {
+            width: 45%;
+            max-width: 180px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 25px rgba(66, 165, 245, 0.4));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .mobile-logo-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+            margin: 0 0 8px 0;
+            text-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+            letter-spacing: -0.5px;
+        }
+        
+        .mobile-logo-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.95);
+            margin: 0 0 0 0;
+            font-weight: 600;
+        }
+        
         /* Ẩn login-left trên mobile */
         .login-left {
             display: none;
@@ -380,6 +418,11 @@
                 height: 100%;
                 z-index: 1000;
                 padding: 0;
+            }
+            
+            /* Ẩn mobile-logo trên desktop */
+            .mobile-logo {
+                display: none !important;
             }
             
             /* Bên trái: Logo + Branding */
@@ -728,6 +771,13 @@
     <div id="toast">Thông báo</div>
 
     <div id="login-screen" class="screen active">
+        <!-- Logo cho Mobile (hiển thị trên cùng) -->
+        <div class="mobile-logo">
+            <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="mobile-logo-img">
+            <h1 class="mobile-logo-title">BuddySpeak</h1>
+            <p class="mobile-logo-subtitle">Kết nối & Luyện tập tiếng Anh</p>
+        </div>
+        
         <!-- Bên trái: Logo & Branding (Chỉ hiện trên desktop) -->
         <div class="login-left">
             <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg" class="login-img">
